@@ -6,8 +6,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 ///
 /// T is the type of data included in the event.
 abstract class EventHandler<P> {
-  const EventHandler();
-
   Future<void> call(String streamId, P params);
 }
 //
