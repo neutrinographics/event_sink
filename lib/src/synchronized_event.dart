@@ -1,7 +1,10 @@
 import '../event_sync.dart';
 
 class SynchronizedEvent {
-  const SynchronizedEvent();
+  /// Manually set the event name.
+  final String? name;
+
+  const SynchronizedEvent({this.name});
 }
 
 /// Defines a new event sync model.
@@ -13,6 +16,7 @@ class EventSync {
 
 abstract class EventSyncBase {
   Map<String, Command> get commandsMap;
+
   List<EventInfo> events = [];
 
   /// Adds an event to the queue.
