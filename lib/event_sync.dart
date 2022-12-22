@@ -7,3 +7,4 @@ export 'src/event_handler.dart';
 export 'src/command.dart';
 export 'src/event_info.dart';
 export 'src/event_sync_base.dart';
+export 'src/event_params.dart';
