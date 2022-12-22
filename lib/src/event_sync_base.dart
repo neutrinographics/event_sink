@@ -1,11 +1,22 @@
-import 'package:event_sync/src/event_handler.dart';
-import 'package:event_sync/src/event_info.dart';
+import 'package:event_sync/event_sync.dart';
+import 'package:meta/meta.dart';
+import 'injection_container.dart' as ic;
 
 /// Defines the logic for interacting with the event controller.
 abstract class EventSyncBase {
   Map<String, EventHandler> get eventHandlersMap;
 
+  late NetworkController _networkController;
+
   List<EventInfo> events = [];
+
+  @mustCallSuper
+  EventSyncBase({NetworkController? networkController}) {
+    ic.init();
+    _networkController = networkController ?? ic.sl<NetworkController>();
+    print('The event sync base is ready');
+    // TODO: create the sync controller here
+  }
 
   /// Adds an event to the queue.
   void add(EventInfo event) {

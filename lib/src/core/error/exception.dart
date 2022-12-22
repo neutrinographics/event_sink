@@ -30,3 +30,7 @@ class ServerException implements Exception {
     return message;
   }
 }
+
+class OutOfSyncException extends ServerException {
+  OutOfSyncException({message = ''}) : super(message: message);
+}
