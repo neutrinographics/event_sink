@@ -1,6 +1,9 @@
 library event_sync;
 
-export 'src/synchronized_event.dart';
-export 'src/core/domain/entities/event.dart';
-export 'src/core/domain/entities/event_handler.dart';
-export 'src/core/domain/command.dart';
+export 'src/annotations/event_sync.dart';
+export 'src/annotations/synchronized_event.dart';
+export 'src/event.dart';
+export 'src/event_handler.dart';
+export 'src/command.dart';
+export 'src/event_info.dart';
+export 'src/event_sync_base.dart';
