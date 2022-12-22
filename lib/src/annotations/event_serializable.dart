@@ -1,0 +1,3 @@
+class EventSerializable {
+  const EventSerializable();
+}

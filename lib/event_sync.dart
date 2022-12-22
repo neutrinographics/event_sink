@@ -1,5 +1,6 @@
 library event_sync;
 
+export 'src/annotations/event_serializable.dart';
 export 'src/annotations/event_sync.dart';
 export 'src/annotations/synchronized_event.dart';
 export 'src/event.dart';
