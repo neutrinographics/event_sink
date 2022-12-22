@@ -1,10 +1,10 @@
 import 'package:collection/collection.dart';
 import 'package:dartz/dartz.dart';
-import 'package:event_sync/event_sync.dart';
 import 'package:event_sync/src/core/data/id_generator.dart';
 import 'package:event_sync/src/core/error/exception.dart';
 import 'package:event_sync/src/core/error/failure.dart';
 import 'package:event_sync/src/core/time/time_info.dart';
+import 'package:event_sync/src/event_params.dart';
 import 'package:event_sync/src/feature/data/local/data_sources/event_local_data_source.dart';
 import 'package:event_sync/src/feature/data/local/models/event_model.dart';
 import 'package:event_sync/src/feature/data/remote/data_sources/event_remote_data_source.dart';

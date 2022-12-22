@@ -1,9 +1,5 @@
 import 'package:event_sync/event_sync.dart';
-import 'package:event_sync/src/feature/data/local/data_sources/event_local_data_source.dart';
-import 'package:event_sync/src/feature/data/remote/data_sources/event_remote_data_source.dart';
-import 'package:event_sync/src/feature/domain/repositories/event_repository.dart';
 import 'package:event_sync/src/sync_controller.dart';
-import 'package:meta/meta.dart';
 import 'injection_container.dart' as ic;
 
 typedef EventParamsGenerator = EventParams Function(Map<String, dynamic>);
@@ -29,7 +25,8 @@ abstract class EventSyncBase {
 
   /// Applies any un-processed events.
   /// This executes the event command.
-  Future<void> apply() => _controller.apply(eventHandlersMap, eventParamsGeneratorMap);
+  Future<void> apply() =>
+      _controller.apply(eventHandlersMap, eventParamsGeneratorMap);
 
   /// Compacts all of the event streams.
   /// This will attempt to combine and deduplicate events

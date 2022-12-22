@@ -9,6 +9,7 @@ environment:
 
 dependencies:
   clock: ^1.1.1
+  collection: ^1.16.0
   dartz: ^0.10.1
   equatable: ^2.0.5
   flutter:

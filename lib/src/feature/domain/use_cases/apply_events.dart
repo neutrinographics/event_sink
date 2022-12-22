@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart';
-import 'package:event_sync/event_sync.dart';
 import 'package:event_sync/src/core/domain/usecase.dart';
 import 'package:event_sync/src/core/error/failure.dart';
 import 'package:event_sync/src/event_handler.dart';
+import 'package:event_sync/src/event_sync_base.dart';
 import 'package:event_sync/src/feature/domain/repositories/event_repository.dart';
 
 class ApplyEvents extends UseCase<void, ApplyEventsParams> {
@@ -27,7 +27,9 @@ class ApplyEvents extends UseCase<void, ApplyEventsParams> {
         }
         final paramGenerator = params.paramGenerators[event.name];
         if (paramGenerator == null) {
-          return Left(CacheFailure(message: 'Missing event params generator for ${event.name}. This is likely a problem with the generator.'));
+          return Left(CacheFailure(
+              message:
+                  'Missing event params generator for ${event.name}. This is likely a problem with the generator.'));
         }
 
         try {
