@@ -1,7 +1,7 @@
-
 import 'package:event_sync/src/event_handler.dart';
 import 'package:event_sync/src/event_info.dart';
 
+@Deprecated('Use the @EventSync annotation to create a new manager')
 class SyncManager {
   Map<String, EventHandler> eventHandlers = {};
   List<EventInfo> events = [];

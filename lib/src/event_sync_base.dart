@@ -1,8 +1,7 @@
-
 import 'package:event_sync/src/event_handler.dart';
 import 'package:event_sync/src/event_info.dart';
 
-
+/// Defines the logic for interacting with the event controller.
 abstract class EventSyncBase {
   Map<String, EventHandler> get eventHandlersMap;
 

@@ -19,12 +19,12 @@ abstract class Response {
 
 class ResponseImpl implements Response {
   ResponseImpl(
-      this.body,
-      this.statusCode, {
-        this.headers = const {},
-        this.reasonPhrase,
-        this.url,
-      });
+    this.body,
+    this.statusCode, {
+    this.headers = const {},
+    this.reasonPhrase,
+    this.url,
+  });
 
   static ResponseImpl fromHttpResponse(http.Response response) {
     final contentType = response.headers['content-type'];
