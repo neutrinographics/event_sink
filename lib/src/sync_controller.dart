@@ -28,5 +28,5 @@ class SyncController {
   Future<Either<Failure, void>> apply(Map<String, EventHandler> handlers, Map<String, EventParamsGenerator> paramGenerators) =>
       _applyEvents(ApplyEventsParams(handlers: handlers, paramGenerators: paramGenerators));
 
-  Future<void> add(EventInfo<EventParams> event) => _addEvent(AddEventParams(event: event));
+  Future<Either<Failure, void>> add(EventInfo<EventParams> event) => _addEvent(AddEventParams(event: event));
 }

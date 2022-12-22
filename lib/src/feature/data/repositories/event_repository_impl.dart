@@ -221,8 +221,7 @@ class EventRepositoryImpl extends EventRepository {
         createdAt: timeInfo.now(),
         streamId: event.streamId,
         data: event.data?.toJson() ?? {},
-        // TODO: set the proper event name
-        name: 'event_name',
+        name: event.name,
       );
 
       await localDataSource.cacheEvent(eventModel);

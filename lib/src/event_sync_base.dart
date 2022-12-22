@@ -25,7 +25,7 @@ abstract class EventSyncBase {
   Future<void> sync() => _controller.sync();
 
   /// Adds an event to the queue.
-  void add(EventInfo<EventParams> event) => _controller.add(event);
+  Future<void> add(EventInfo<EventParams> event) => _controller.add(event);
 
   /// Applies any un-processed events.
   /// This executes the event command.
