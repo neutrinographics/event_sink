@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:event_sync/event_sync.dart';
 import 'package:event_sync/src/core/domain/usecase.dart';
 import 'package:event_sync/src/core/error/failure.dart';
 import 'package:event_sync/src/event_handler.dart';
@@ -24,8 +25,14 @@ class ApplyEvents extends UseCase<void, ApplyEventsParams> {
               message:
                   'No handler was found for ${event.name}. This is likely a bug in the code generator.'));
         }
+        final paramGenerator = params.paramGenerators[event.name];
+        if (paramGenerator == null) {
+          return Left(CacheFailure(message: 'Missing event params generator for ${event.name}. This is likely a problem with the generator.'));
+        }
+
         try {
-          await eventHandler(event.streamId, event.data);
+          final eventParams = paramGenerator(event.data);
+          await eventHandler(event.streamId, eventParams);
           await eventRepository.markReduced(event);
         } catch (e, stack) {
           return Left(CacheFailure(message: '$e\n\n$stack'));
@@ -38,6 +45,7 @@ class ApplyEvents extends UseCase<void, ApplyEventsParams> {
 
 class ApplyEventsParams {
   final Map<String, EventHandler> handlers;
+  final Map<String, EventParamsGenerator> paramGenerators;
 
-  ApplyEventsParams({required this.handlers});
+  ApplyEventsParams({required this.handlers, required this.paramGenerators});
 }

@@ -28,13 +28,13 @@ abstract class EventRepository {
 
   /// Adds an event to the cache, which can then later be applied to the graph
   /// or synced to the server.
-  Future<Either<Failure, void>> add(EventInfo event);
+  Future<Either<Failure, void>> add(EventInfo<EventParams> event);
 
   /// Returns a sorted list of events in the active graph
-  Future<Either<Failure, List<EventInfo>>> list();
+  Future<Either<Failure, List<EventStub>>> list();
 
   /// Marks an event as having been reduced into the graph.
-  Future<Either<Failure, void>> markReduced(EventInfo event);
+  Future<Either<Failure, void>> markReduced(EventStub event);
 
   /// Clear the local cache of [Event].
   Future<Either<Failure, void>> clearCache();

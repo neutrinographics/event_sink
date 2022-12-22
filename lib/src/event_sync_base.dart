@@ -6,9 +6,12 @@ import 'package:event_sync/src/sync_controller.dart';
 import 'package:meta/meta.dart';
 import 'injection_container.dart' as ic;
 
+typedef EventParamsGenerator = EventParams Function(Map<String, dynamic>);
+
 /// Defines the logic for interacting with the event controller.
 abstract class EventSyncBase {
   Map<String, EventHandler> get eventHandlersMap;
+  Map<String, EventParamsGenerator> get eventParamsGeneratorMap;
   late SyncController _controller;
 
   List<EventInfo> events = [];
@@ -22,11 +25,11 @@ abstract class EventSyncBase {
   Future<void> sync() => _controller.sync();
 
   /// Adds an event to the queue.
-  void add(EventInfo event) => _controller.add(event);
+  void add(EventInfo<EventParams> event) => _controller.add(event);
 
   /// Applies any un-processed events.
   /// This executes the event command.
-  Future<void> apply() => _controller.apply(eventHandlersMap);
+  Future<void> apply() => _controller.apply(eventHandlersMap, eventParamsGeneratorMap);
 
   /// Compacts all of the event streams.
   /// This will attempt to combine and deduplicate events

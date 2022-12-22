@@ -1,4 +1,5 @@
 import 'package:event_sync/src/core/data/local_cache.dart';
+import 'package:event_sync/src/core/error/exception.dart';
 import 'package:event_sync/src/feature/data/local/models/event_model.dart';
 
 abstract class EventLocalDataSource {
@@ -28,7 +29,12 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
 
   @override
   Future<List<EventModel>> getAllEvents() async {
-    final eventModels = await cache.values();
+    final List<EventModel> eventModels;
+    try {
+      eventModels = await cache.values();
+    } catch (e, trace) {
+      throw CacheException(message: '$e\n\n$trace');
+    }
 
     eventModels.sort((a, b) {
       if (a.streamId == b.streamId) {

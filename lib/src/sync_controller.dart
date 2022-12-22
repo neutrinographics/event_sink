@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:event_sync/event_sync.dart';
 import 'package:event_sync/src/core/domain/params.dart';
 import 'package:event_sync/src/core/error/failure.dart';
 import 'package:event_sync/src/event_handler.dart';
@@ -24,8 +25,8 @@ class SyncController {
 
   Future<Either<Failure, void>> sync() => _syncEvents(const SyncEventsParams());
 
-  Future<Either<Failure, void>> apply(Map<String, EventHandler> handlers) =>
-      _applyEvents(ApplyEventsParams(handlers: handlers));
+  Future<Either<Failure, void>> apply(Map<String, EventHandler> handlers, Map<String, EventParamsGenerator> paramGenerators) =>
+      _applyEvents(ApplyEventsParams(handlers: handlers, paramGenerators: paramGenerators));
 
-  Future<void> add(EventInfo event) => _addEvent(AddEventParams(event: event));
+  Future<void> add(EventInfo<EventParams> event) => _addEvent(AddEventParams(event: event));
 }

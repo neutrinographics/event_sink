@@ -1,6 +1,7 @@
 abstract class EventParams {
   /// Generates a class from a JSON object.
-  EventParams fromJson(Map<String, dynamic> json);
+  factory EventParams.fromJson(Map<String, dynamic> json) =>
+      throw Exception('You must override this method.');
 
   /// Converts the params to a JSON object.
   Map<String, dynamic> toJson();

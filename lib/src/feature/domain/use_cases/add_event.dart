@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
+import 'package:event_sync/event_sync.dart';
 import 'package:event_sync/src/core/domain/usecase.dart';
 import 'package:event_sync/src/core/error/failure.dart';
 import 'package:event_sync/src/feature/domain/entities/event_info.dart';
@@ -19,7 +20,7 @@ class AddEvent extends UseCase<void, AddEventParams> {
 }
 
 class AddEventParams extends Equatable {
-  final EventInfo event;
+  final EventInfo<EventParams> event;
 
   const AddEventParams({required this.event});
 

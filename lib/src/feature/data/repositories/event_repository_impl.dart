@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:dartz/dartz.dart';
+import 'package:event_sync/event_sync.dart';
 import 'package:event_sync/src/core/data/id_generator.dart';
 import 'package:event_sync/src/core/error/exception.dart';
 import 'package:event_sync/src/core/error/failure.dart';
@@ -204,7 +205,7 @@ class EventRepositoryImpl extends EventRepository {
   }
 
   @override
-  Future<Either<Failure, void>> add(EventInfo event) async {
+  Future<Either<Failure, void>> add(EventInfo<EventParams> event) async {
     // get stream version
     final int streamVersion;
     try {
@@ -219,7 +220,7 @@ class EventRepositoryImpl extends EventRepository {
         version: streamVersion + 1,
         createdAt: timeInfo.now(),
         streamId: event.streamId,
-        data: event.data,
+        data: event.data?.toJson() ?? {},
         // TODO: set the proper event name
         name: 'event_name',
       );
@@ -247,7 +248,7 @@ class EventRepositoryImpl extends EventRepository {
   }
 
   @override
-  Future<Either<Failure, List<EventInfo>>> list() async {
+  Future<Either<Failure, List<EventStub>>> list() async {
     List<EventModel> models;
     try {
       models = await localDataSource.getAllEvents();
@@ -260,12 +261,11 @@ class EventRepositoryImpl extends EventRepository {
       events.add(e.toDomain());
     }
 
-    // TODO: return the events instead of an empty list
-    return Right([]);
+    return Right(events);
   }
 
   @override
-  Future<Either<Failure, void>> markReduced(EventInfo event) async {
+  Future<Either<Failure, void>> markReduced(EventStub event) async {
     List<EventModel> models;
     try {
       models = await localDataSource.getAllEvents();
@@ -274,15 +274,14 @@ class EventRepositoryImpl extends EventRepository {
     }
 
     for (var m in models) {
-      // TODO: fix this
-      // if (m.id == event.id) {
-      //   try {
-      //     await localDataSource.cacheEvent(m.copyWith(merged: true));
-      //     return const Right(null);
-      //   } on CacheException catch (e) {
-      //     return Left(CacheFailure(message: e.message));
-      //   }
-      // }
+      if (m.id == event.id) {
+        try {
+          await localDataSource.cacheEvent(m.copyWith(merged: true));
+          return const Right(null);
+        } on CacheException catch (e) {
+          return Left(CacheFailure(message: e.message));
+        }
+      }
     }
     return const Left(CacheFailure(message: 'Event does not exist'));
   }
