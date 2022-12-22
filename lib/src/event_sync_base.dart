@@ -1,10 +1,10 @@
 
+import 'package:event_sync/src/event_handler.dart';
 import 'package:event_sync/src/event_info.dart';
 
-import 'command.dart';
 
 abstract class EventSyncBase {
-  Map<String, Command> get commandsMap;
+  Map<String, EventHandler> get eventHandlersMap;
 
   List<EventInfo> events = [];
 
@@ -21,7 +21,7 @@ abstract class EventSyncBase {
     // final List<EventInfo> events = [];
 
     for (final event in events) {
-      await commandsMap[event.name]!(event.streamId, event.data);
+      await eventHandlersMap[event.name]!(event.streamId, event.data);
     }
   }
 

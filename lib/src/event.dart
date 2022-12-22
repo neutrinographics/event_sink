@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:event_sync/event_sync.dart';
 
 import 'command.dart';
 
@@ -21,13 +22,8 @@ import 'command.dart';
 // }
 
 /// This defines a new event.
-/// The event commands must be unique
-///
-/// T is the type of data included in the event.
 class Event {
-  final Command command;
+  final EventHandler handler;
 
-  const Event({
-    required this.command,
-  });
+  const Event({required this.handler});
 }
