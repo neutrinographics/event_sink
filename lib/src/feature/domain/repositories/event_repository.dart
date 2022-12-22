@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:event_sync/event_sync.dart';
 import 'package:event_sync/src/core/error/failure.dart';
-
+import 'package:event_sync/src/feature/domain/entities/event_stub.dart';
 
 /// This is the contract for reading and writing [Event]s to the repository.
 /// Events are units of change that are synchronized to and from the server.
@@ -31,10 +31,10 @@ abstract class EventRepository {
   Future<Either<Failure, void>> add(EventInfo event);
 
   /// Returns a sorted list of events in the active graph
-  // Future<Either<Failure, List<EventStub>>> list();
+  Future<Either<Failure, List<EventInfo>>> list();
 
   /// Marks an event as having been reduced into the graph.
-  // Future<Either<Failure, void>> markReduced(EventStub event);
+  Future<Either<Failure, void>> markReduced(EventInfo event);
 
   /// Clear the local cache of [Event].
   Future<Either<Failure, void>> clearCache();

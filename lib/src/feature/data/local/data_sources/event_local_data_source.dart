@@ -1,5 +1,3 @@
-
-
 import 'package:event_sync/src/core/data/local_cache.dart';
 import 'package:event_sync/src/feature/data/local/models/event_model.dart';
 
