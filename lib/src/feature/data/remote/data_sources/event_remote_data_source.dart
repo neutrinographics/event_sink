@@ -40,7 +40,7 @@ class EventRemoteDataSourceImpl implements EventRemoteDataSource {
     required String token,
   }) async {
     try {
-      Uri path = Uri.parse("$host/api/graphs/<id>/events").normalizePath();
+      Uri path = Uri.parse("$host/events").normalizePath();
       Response response = await network.post(
         path,
         headers: {
@@ -76,7 +76,7 @@ class EventRemoteDataSourceImpl implements EventRemoteDataSource {
     required String token,
   }) async {
     try {
-      Uri path = Uri.parse("$host/api/graphs/<id>/events").normalizePath();
+      Uri path = Uri.parse("$host/events").normalizePath();
       Response response = await network.get(
         path,
         headers: {

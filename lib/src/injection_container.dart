@@ -5,7 +5,9 @@ import 'package:event_sync/src/core/data/id_generator.dart';
 import 'package:event_sync/src/core/data/local_cache.dart';
 import 'package:event_sync/src/core/network/network.dart';
 import 'package:event_sync/src/core/time/time_info.dart';
+import 'package:event_sync/src/feature/data/local/data_sources/config_local_data_source.dart';
 import 'package:event_sync/src/feature/data/local/data_sources/event_local_data_source.dart';
+import 'package:event_sync/src/feature/data/local/models/config_model.dart';
 import 'package:event_sync/src/feature/data/local/models/event_model.dart';
 import 'package:event_sync/src/feature/data/remote/data_sources/event_remote_data_source.dart';
 import 'package:event_sync/src/feature/data/repositories/event_repository_impl.dart';
@@ -23,8 +25,6 @@ import 'package:http/http.dart' as http;
 final sl = GetIt.instance;
 
 void init() {
-  print("The injection container is ready");
-
   // this is a test
   sl.registerLazySingleton<NetworkController>(() => DefaultNetworkController());
 
@@ -44,11 +44,18 @@ void init() {
   sl.registerLazySingleton<EventRepository>(() => EventRepositoryImpl(
         localDataSource: sl(),
         remoteDataSource: sl(),
+        configLocalDataSource: sl(),
         idGenerator: sl(),
         timeInfo: sl(),
       ));
 
   // Data sources
+  final configCache = MemoryCacheImpl<String, ConfigModel>();
+  sl.registerLazySingleton<ConfigLocalDataSource>(
+    () => ConfigLocalDataSourceImpl(
+      cache: configCache,
+    ),
+  );
   final eventCache = MemoryCacheImpl<String, EventModel>();
   sl.registerLazySingleton<EventLocalDataSource>(
     () => EventLocalDataSourceImpl(

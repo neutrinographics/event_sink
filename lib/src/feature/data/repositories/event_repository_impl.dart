@@ -1,10 +1,12 @@
 import 'package:collection/collection.dart';
 import 'package:dartz/dartz.dart';
 import 'package:event_sync/src/core/data/id_generator.dart';
+import 'package:event_sync/src/core/domain/config_options.dart';
 import 'package:event_sync/src/core/error/exception.dart';
 import 'package:event_sync/src/core/error/failure.dart';
 import 'package:event_sync/src/core/time/time_info.dart';
 import 'package:event_sync/src/event_params.dart';
+import 'package:event_sync/src/feature/data/local/data_sources/config_local_data_source.dart';
 import 'package:event_sync/src/feature/data/local/data_sources/event_local_data_source.dart';
 import 'package:event_sync/src/feature/data/local/models/event_model.dart';
 import 'package:event_sync/src/feature/data/remote/data_sources/event_remote_data_source.dart';
@@ -16,12 +18,14 @@ import 'package:event_sync/src/feature/domain/repositories/event_repository.dart
 class EventRepositoryImpl extends EventRepository {
   final EventLocalDataSource localDataSource;
   final EventRemoteDataSource remoteDataSource;
+  final ConfigLocalDataSource configLocalDataSource;
   final IdGenerator idGenerator;
   final TimeInfo timeInfo;
 
   EventRepositoryImpl({
     required this.localDataSource,
     required this.remoteDataSource,
+    required this.configLocalDataSource,
     required this.idGenerator,
     required this.timeInfo,
   });
@@ -31,6 +35,7 @@ class EventRepositoryImpl extends EventRepository {
   Future<Either<Failure, void>> fetch() async {
     List<EventModel> localEvents;
     try {
+      final config = await configLocalDataSource.read(ConfigOption.serverHost);
       localEvents = await localDataSource.getAllEvents();
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));
@@ -68,9 +73,9 @@ class EventRepositoryImpl extends EventRepository {
     try {
       remoteEvents = await remoteDataSource.getEvents(
         // TODO: set the proper uri
-        host: Uri.parse('uri'),
+        host: Uri.parse('https://example.com'),
         // TODO: set the proper token
-        token: 'user.token',
+        token: 'token',
       );
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
@@ -108,6 +113,7 @@ class EventRepositoryImpl extends EventRepository {
     List<EventModel> events;
 
     try {
+      final config = await configLocalDataSource.read(ConfigOption.serverHost);
       events = await localDataSource.getAllEvents();
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));
@@ -119,9 +125,9 @@ class EventRepositoryImpl extends EventRepository {
         final syncedEvent = await remoteDataSource.createEvent(
           e.toRemote(),
           // TODO: set the proper uri
-          host: Uri.parse('uri'),
+          host: Uri.parse('https://example.com'),
           // TODO: set the proper token
-          token: 'user.token',
+          token: 'token',
         );
 
         await localDataSource.cacheEvent(EventModel.fromRemote(

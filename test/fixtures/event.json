@@ -1,0 +1,14 @@
+{
+  "id": "event-id",
+  "remote_id": null,
+  "remote_created_at": null,
+  "graph_id": 1,
+  "stream_id": "stream-id",
+  "version": 1,
+  "name": "create_group",
+  "created_at": "2022-04-16T23:57:23.000Z",
+  "data": {
+    "group_stream_id": "group-stream-id"
+  },
+  "merged": false
+}

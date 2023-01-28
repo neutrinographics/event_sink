@@ -1,0 +1,13 @@
+{
+  "group_stream_id": "group_stream_id",
+  "events": [
+    {
+      "stream_id": "175794e2-83a6-4f9a-b873-d43484e2c0b5",
+      "version": 1,
+      "name": "create_group",
+      "data": {
+        "group_stream_id": "3304ABE8-D744-48CE-8FC6-2FEA19E6B4D8"
+      }
+    }
+  ]
+}
