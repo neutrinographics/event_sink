@@ -7,15 +7,20 @@ typedef EventParamsGenerator = EventParams Function(Map<String, dynamic>);
 /// Defines the logic for interacting with the event controller.
 abstract class EventSyncBase {
   Map<String, EventHandler> get eventHandlersMap;
+
   Map<String, EventParamsGenerator> get eventParamsGeneratorMap;
+
   late SyncController _controller;
 
   List<EventInfo> events = [];
 
-  EventSyncBase() {
+  EventSyncBase({String? host}) {
     ic.init();
     _controller = ic.sl<SyncController>();
   }
+
+  /// Configures the auth token used for API requests.
+  Future<void> setAuth(String token) => throw UnimplementedError();
 
   /// Uploads events to the server that have been generated on this device.
   Future<void> sync() => _controller.sync();
