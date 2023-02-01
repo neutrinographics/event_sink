@@ -15,12 +15,12 @@ import 'package:event_sync/src/feature/domain/entities/event_stub.dart';
 /// 2. rebase un-synced events onto new ones from the server
 /// 3. push all un-synced events to the server.
 abstract class EventRepository {
-  /// Downloads events from the server and stores it in the device
+  /// Downloads events from the [host] and stores it in the device
   /// event cache.
-  Future<Either<Failure, void>> fetch();
+  Future<Either<Failure, void>> fetch(String host, String authToken);
 
   /// Uploads events to the server that have been generated on this device.
-  Future<Either<Failure, void>> push();
+  Future<Either<Failure, void>> push(String host, String authToken);
 
   /// Re-applies any un-synced events on top of the event from the server.
   /// This is akin to a git rebase.

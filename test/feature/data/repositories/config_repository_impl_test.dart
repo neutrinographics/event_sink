@@ -33,7 +33,7 @@ void main() {
         // act
         final result = await repository.write(tKey, tValue);
         // assert
-        const tExpectedConfig = ConfigModel.string(key: tKey, value: tValue);
+        const tExpectedConfig = ConfigModel.string(option: tKey, value: tValue);
         expect(result, const Right(null));
         verify(mockLocalDataSource.write(tExpectedConfig));
       },
@@ -48,7 +48,7 @@ void main() {
         // act
         final result = await repository.write(tKey, tValue);
         // assert
-        const tExpectedConfig = ConfigModel.int(key: tKey, value: tValue);
+        const tExpectedConfig = ConfigModel.int(option: tKey, value: tValue);
         expect(result, const Right(null));
         verify(mockLocalDataSource.write(tExpectedConfig));
       },
@@ -63,7 +63,7 @@ void main() {
         // act
         final result = await repository.write(tKey, tValue);
         // assert
-        const tExpectedConfig = ConfigModel.double(key: tKey, value: tValue);
+        const tExpectedConfig = ConfigModel.double(option: tKey, value: tValue);
         expect(result, const Right(null));
         verify(mockLocalDataSource.write(tExpectedConfig));
       },
@@ -78,7 +78,7 @@ void main() {
         // act
         final result = await repository.write(tKey, tValue);
         // assert
-        const tExpectedConfig = ConfigModel.bool(key: tKey, value: tValue);
+        const tExpectedConfig = ConfigModel.bool(option: tKey, value: tValue);
         expect(result, const Right(null));
         verify(mockLocalDataSource.write(tExpectedConfig));
       },
@@ -93,7 +93,7 @@ void main() {
         // act
         final result = await repository.write(tKey, tValue);
         // assert
-        final tExpectedConfig = ConfigModel.date(key: tKey, value: tValue);
+        final tExpectedConfig = ConfigModel.date(option: tKey, value: tValue);
         expect(result, const Right(null));
         verify(mockLocalDataSource.write(tExpectedConfig));
       },
@@ -157,7 +157,7 @@ void main() {
         // arrange
         const tKey = ConfigOption.serverHost;
         const tValue = 1;
-        const tConfig = ConfigModel.int(key: tKey, value: tValue);
+        const tConfig = ConfigModel.int(option: tKey, value: tValue);
         when(mockLocalDataSource.read(any)).thenAnswer((_) async => tConfig);
         // act
         final result = await repository.require<int>(tKey);
@@ -175,7 +175,7 @@ void main() {
         // arrange
         const tKey = ConfigOption.serverHost;
         const tValue = 'value';
-        const tConfig = ConfigModel.string(key: tKey, value: tValue);
+        const tConfig = ConfigModel.string(option: tKey, value: tValue);
         when(mockLocalDataSource.read(any)).thenAnswer((_) async => tConfig);
         // act
         final result = await repository.read<String>(tKey);
@@ -191,7 +191,7 @@ void main() {
         // arrange
         const tKey = ConfigOption.serverHost;
         const tValue = true;
-        const tConfig = ConfigModel.bool(key: tKey, value: tValue);
+        const tConfig = ConfigModel.bool(option: tKey, value: tValue);
         when(mockLocalDataSource.read(any)).thenAnswer((_) async => tConfig);
         // act
         final result = await repository.read<bool>(tKey);
@@ -207,7 +207,7 @@ void main() {
         // arrange
         const tKey = ConfigOption.serverHost;
         const tValue = 1.1;
-        const tConfig = ConfigModel.double(key: tKey, value: tValue);
+        const tConfig = ConfigModel.double(option: tKey, value: tValue);
         when(mockLocalDataSource.read(any)).thenAnswer((_) async => tConfig);
         // act
         final result = await repository.read<double>(tKey);
@@ -223,7 +223,7 @@ void main() {
         // arrange
         const tKey = ConfigOption.serverHost;
         const tValue = 1;
-        const tConfig = ConfigModel.int(key: tKey, value: tValue);
+        const tConfig = ConfigModel.int(option: tKey, value: tValue);
         when(mockLocalDataSource.read(any)).thenAnswer((_) async => tConfig);
         // act
         final result = await repository.read<int>(tKey);
@@ -239,7 +239,7 @@ void main() {
         // arrange
         const tKey = ConfigOption.serverHost;
         final tValue = DateTime.now();
-        final tConfig = ConfigModel.date(key: tKey, value: tValue);
+        final tConfig = ConfigModel.date(option: tKey, value: tValue);
         when(mockLocalDataSource.read(any)).thenAnswer((_) async => tConfig);
         // act
         final result = await repository.read<DateTime>(tKey);
@@ -255,7 +255,7 @@ void main() {
         // arrange
         const tKey = ConfigOption.serverHost;
         const tValue = true;
-        const tConfig = ConfigModel.bool(key: tKey, value: tValue);
+        const tConfig = ConfigModel.bool(option: tKey, value: tValue);
         when(mockLocalDataSource.read(any)).thenAnswer((_) async => tConfig);
         // act
         final result = await repository.read<String>(tKey);

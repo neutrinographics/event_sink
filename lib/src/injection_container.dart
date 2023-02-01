@@ -37,14 +37,16 @@ void init() {
 
   // Use cases
   sl.registerLazySingleton(() => ApplyEvents(eventRepository: sl()));
-  sl.registerLazySingleton(() => SyncEvents(eventRepository: sl()));
+  sl.registerLazySingleton(() => SyncEvents(
+        eventRepository: sl(),
+        configRepository: sl(),
+      ));
   sl.registerLazySingleton(() => AddEvent(eventRepository: sl()));
 
   // Repositories
   sl.registerLazySingleton<EventRepository>(() => EventRepositoryImpl(
         localDataSource: sl(),
         remoteDataSource: sl(),
-        configLocalDataSource: sl(),
         idGenerator: sl(),
         timeInfo: sl(),
       ));

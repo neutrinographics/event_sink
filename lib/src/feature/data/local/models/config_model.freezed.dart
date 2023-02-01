@@ -35,33 +35,33 @@ ConfigModel _$ConfigModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$ConfigModel {
-  ConfigOption get key => throw _privateConstructorUsedError;
+  ConfigOption get option => throw _privateConstructorUsedError;
   Object get value => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(ConfigOption key, bool value) bool,
-    required TResult Function(ConfigOption key, String value) string,
-    required TResult Function(ConfigOption key, int value) int,
-    required TResult Function(ConfigOption key, double value) double,
-    required TResult Function(ConfigOption key, DateTime value) date,
+    required TResult Function(ConfigOption option, bool value) bool,
+    required TResult Function(ConfigOption option, String value) string,
+    required TResult Function(ConfigOption option, int value) int,
+    required TResult Function(ConfigOption option, double value) double,
+    required TResult Function(ConfigOption option, DateTime value) date,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(ConfigOption key, bool value)? bool,
-    TResult? Function(ConfigOption key, String value)? string,
-    TResult? Function(ConfigOption key, int value)? int,
-    TResult? Function(ConfigOption key, double value)? double,
-    TResult? Function(ConfigOption key, DateTime value)? date,
+    TResult? Function(ConfigOption option, bool value)? bool,
+    TResult? Function(ConfigOption option, String value)? string,
+    TResult? Function(ConfigOption option, int value)? int,
+    TResult? Function(ConfigOption option, double value)? double,
+    TResult? Function(ConfigOption option, DateTime value)? date,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(ConfigOption key, bool value)? bool,
-    TResult Function(ConfigOption key, String value)? string,
-    TResult Function(ConfigOption key, int value)? int,
-    TResult Function(ConfigOption key, double value)? double,
-    TResult Function(ConfigOption key, DateTime value)? date,
+    TResult Function(ConfigOption option, bool value)? bool,
+    TResult Function(ConfigOption option, String value)? string,
+    TResult Function(ConfigOption option, int value)? int,
+    TResult Function(ConfigOption option, double value)? double,
+    TResult Function(ConfigOption option, DateTime value)? date,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -105,7 +105,7 @@ abstract class $ConfigModelCopyWith<$Res> {
           ConfigModel value, $Res Function(ConfigModel) then) =
       _$ConfigModelCopyWithImpl<$Res, ConfigModel>;
   @useResult
-  $Res call({ConfigOption key});
+  $Res call({ConfigOption option});
 }
 
 /// @nodoc
@@ -121,12 +121,12 @@ class _$ConfigModelCopyWithImpl<$Res, $Val extends ConfigModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? key = null,
+    Object? option = null,
   }) {
     return _then(_value.copyWith(
-      key: null == key
-          ? _value.key
-          : key // ignore: cast_nullable_to_non_nullable
+      option: null == option
+          ? _value.option
+          : option // ignore: cast_nullable_to_non_nullable
               as ConfigOption,
     ) as $Val);
   }
@@ -140,7 +140,7 @@ abstract class _$$_ConfigBoolModelCopyWith<$Res>
       __$$_ConfigBoolModelCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({ConfigOption key, bool value});
+  $Res call({ConfigOption option, bool value});
 }
 
 /// @nodoc
@@ -154,13 +154,13 @@ class __$$_ConfigBoolModelCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? key = null,
+    Object? option = null,
     Object? value = null,
   }) {
     return _then(_$_ConfigBoolModel(
-      key: null == key
-          ? _value.key
-          : key // ignore: cast_nullable_to_non_nullable
+      option: null == option
+          ? _value.option
+          : option // ignore: cast_nullable_to_non_nullable
               as ConfigOption,
       value: null == value
           ? _value.value
@@ -174,14 +174,14 @@ class __$$_ConfigBoolModelCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_ConfigBoolModel implements _ConfigBoolModel {
   const _$_ConfigBoolModel(
-      {required this.key, required this.value, final String? $type})
+      {required this.option, required this.value, final String? $type})
       : $type = $type ?? 'bool';
 
   factory _$_ConfigBoolModel.fromJson(Map<String, dynamic> json) =>
       _$$_ConfigBoolModelFromJson(json);
 
   @override
-  final ConfigOption key;
+  final ConfigOption option;
   @override
   final bool value;
 
@@ -190,7 +190,7 @@ class _$_ConfigBoolModel implements _ConfigBoolModel {
 
   @override
   String toString() {
-    return 'ConfigModel.bool(key: $key, value: $value)';
+    return 'ConfigModel.bool(option: $option, value: $value)';
   }
 
   @override
@@ -198,13 +198,13 @@ class _$_ConfigBoolModel implements _ConfigBoolModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_ConfigBoolModel &&
-            (identical(other.key, key) || other.key == key) &&
+            (identical(other.option, option) || other.option == option) &&
             (identical(other.value, value) || other.value == value));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, key, value);
+  int get hashCode => Object.hash(runtimeType, option, value);
 
   @JsonKey(ignore: true)
   @override
@@ -215,39 +215,39 @@ class _$_ConfigBoolModel implements _ConfigBoolModel {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(ConfigOption key, bool value) bool,
-    required TResult Function(ConfigOption key, String value) string,
-    required TResult Function(ConfigOption key, int value) int,
-    required TResult Function(ConfigOption key, double value) double,
-    required TResult Function(ConfigOption key, DateTime value) date,
+    required TResult Function(ConfigOption option, bool value) bool,
+    required TResult Function(ConfigOption option, String value) string,
+    required TResult Function(ConfigOption option, int value) int,
+    required TResult Function(ConfigOption option, double value) double,
+    required TResult Function(ConfigOption option, DateTime value) date,
   }) {
-    return bool(key, value);
+    return bool(option, value);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(ConfigOption key, bool value)? bool,
-    TResult? Function(ConfigOption key, String value)? string,
-    TResult? Function(ConfigOption key, int value)? int,
-    TResult? Function(ConfigOption key, double value)? double,
-    TResult? Function(ConfigOption key, DateTime value)? date,
+    TResult? Function(ConfigOption option, bool value)? bool,
+    TResult? Function(ConfigOption option, String value)? string,
+    TResult? Function(ConfigOption option, int value)? int,
+    TResult? Function(ConfigOption option, double value)? double,
+    TResult? Function(ConfigOption option, DateTime value)? date,
   }) {
-    return bool?.call(key, value);
+    return bool?.call(option, value);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(ConfigOption key, bool value)? bool,
-    TResult Function(ConfigOption key, String value)? string,
-    TResult Function(ConfigOption key, int value)? int,
-    TResult Function(ConfigOption key, double value)? double,
-    TResult Function(ConfigOption key, DateTime value)? date,
+    TResult Function(ConfigOption option, bool value)? bool,
+    TResult Function(ConfigOption option, String value)? string,
+    TResult Function(ConfigOption option, int value)? int,
+    TResult Function(ConfigOption option, double value)? double,
+    TResult Function(ConfigOption option, DateTime value)? date,
     required TResult orElse(),
   }) {
     if (bool != null) {
-      return bool(key, value);
+      return bool(option, value);
     }
     return orElse();
   }
@@ -302,14 +302,14 @@ class _$_ConfigBoolModel implements _ConfigBoolModel {
 
 abstract class _ConfigBoolModel implements ConfigModel {
   const factory _ConfigBoolModel(
-      {required final ConfigOption key,
+      {required final ConfigOption option,
       required final bool value}) = _$_ConfigBoolModel;
 
   factory _ConfigBoolModel.fromJson(Map<String, dynamic> json) =
       _$_ConfigBoolModel.fromJson;
 
   @override
-  ConfigOption get key;
+  ConfigOption get option;
   @override
   bool get value;
   @override
@@ -326,7 +326,7 @@ abstract class _$$_ConfigStringModelCopyWith<$Res>
       __$$_ConfigStringModelCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({ConfigOption key, String value});
+  $Res call({ConfigOption option, String value});
 }
 
 /// @nodoc
@@ -340,13 +340,13 @@ class __$$_ConfigStringModelCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? key = null,
+    Object? option = null,
     Object? value = null,
   }) {
     return _then(_$_ConfigStringModel(
-      key: null == key
-          ? _value.key
-          : key // ignore: cast_nullable_to_non_nullable
+      option: null == option
+          ? _value.option
+          : option // ignore: cast_nullable_to_non_nullable
               as ConfigOption,
       value: null == value
           ? _value.value
@@ -360,14 +360,14 @@ class __$$_ConfigStringModelCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_ConfigStringModel implements _ConfigStringModel {
   const _$_ConfigStringModel(
-      {required this.key, required this.value, final String? $type})
+      {required this.option, required this.value, final String? $type})
       : $type = $type ?? 'string';
 
   factory _$_ConfigStringModel.fromJson(Map<String, dynamic> json) =>
       _$$_ConfigStringModelFromJson(json);
 
   @override
-  final ConfigOption key;
+  final ConfigOption option;
   @override
   final String value;
 
@@ -376,7 +376,7 @@ class _$_ConfigStringModel implements _ConfigStringModel {
 
   @override
   String toString() {
-    return 'ConfigModel.string(key: $key, value: $value)';
+    return 'ConfigModel.string(option: $option, value: $value)';
   }
 
   @override
@@ -384,13 +384,13 @@ class _$_ConfigStringModel implements _ConfigStringModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_ConfigStringModel &&
-            (identical(other.key, key) || other.key == key) &&
+            (identical(other.option, option) || other.option == option) &&
             (identical(other.value, value) || other.value == value));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, key, value);
+  int get hashCode => Object.hash(runtimeType, option, value);
 
   @JsonKey(ignore: true)
   @override
@@ -402,39 +402,39 @@ class _$_ConfigStringModel implements _ConfigStringModel {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(ConfigOption key, bool value) bool,
-    required TResult Function(ConfigOption key, String value) string,
-    required TResult Function(ConfigOption key, int value) int,
-    required TResult Function(ConfigOption key, double value) double,
-    required TResult Function(ConfigOption key, DateTime value) date,
+    required TResult Function(ConfigOption option, bool value) bool,
+    required TResult Function(ConfigOption option, String value) string,
+    required TResult Function(ConfigOption option, int value) int,
+    required TResult Function(ConfigOption option, double value) double,
+    required TResult Function(ConfigOption option, DateTime value) date,
   }) {
-    return string(key, value);
+    return string(option, value);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(ConfigOption key, bool value)? bool,
-    TResult? Function(ConfigOption key, String value)? string,
-    TResult? Function(ConfigOption key, int value)? int,
-    TResult? Function(ConfigOption key, double value)? double,
-    TResult? Function(ConfigOption key, DateTime value)? date,
+    TResult? Function(ConfigOption option, bool value)? bool,
+    TResult? Function(ConfigOption option, String value)? string,
+    TResult? Function(ConfigOption option, int value)? int,
+    TResult? Function(ConfigOption option, double value)? double,
+    TResult? Function(ConfigOption option, DateTime value)? date,
   }) {
-    return string?.call(key, value);
+    return string?.call(option, value);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(ConfigOption key, bool value)? bool,
-    TResult Function(ConfigOption key, String value)? string,
-    TResult Function(ConfigOption key, int value)? int,
-    TResult Function(ConfigOption key, double value)? double,
-    TResult Function(ConfigOption key, DateTime value)? date,
+    TResult Function(ConfigOption option, bool value)? bool,
+    TResult Function(ConfigOption option, String value)? string,
+    TResult Function(ConfigOption option, int value)? int,
+    TResult Function(ConfigOption option, double value)? double,
+    TResult Function(ConfigOption option, DateTime value)? date,
     required TResult orElse(),
   }) {
     if (string != null) {
-      return string(key, value);
+      return string(option, value);
     }
     return orElse();
   }
@@ -489,14 +489,14 @@ class _$_ConfigStringModel implements _ConfigStringModel {
 
 abstract class _ConfigStringModel implements ConfigModel {
   const factory _ConfigStringModel(
-      {required final ConfigOption key,
+      {required final ConfigOption option,
       required final String value}) = _$_ConfigStringModel;
 
   factory _ConfigStringModel.fromJson(Map<String, dynamic> json) =
       _$_ConfigStringModel.fromJson;
 
   @override
-  ConfigOption get key;
+  ConfigOption get option;
   @override
   String get value;
   @override
@@ -513,7 +513,7 @@ abstract class _$$_ConfigIntModelCopyWith<$Res>
       __$$_ConfigIntModelCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({ConfigOption key, int value});
+  $Res call({ConfigOption option, int value});
 }
 
 /// @nodoc
@@ -527,13 +527,13 @@ class __$$_ConfigIntModelCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? key = null,
+    Object? option = null,
     Object? value = null,
   }) {
     return _then(_$_ConfigIntModel(
-      key: null == key
-          ? _value.key
-          : key // ignore: cast_nullable_to_non_nullable
+      option: null == option
+          ? _value.option
+          : option // ignore: cast_nullable_to_non_nullable
               as ConfigOption,
       value: null == value
           ? _value.value
@@ -547,14 +547,14 @@ class __$$_ConfigIntModelCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_ConfigIntModel implements _ConfigIntModel {
   const _$_ConfigIntModel(
-      {required this.key, required this.value, final String? $type})
+      {required this.option, required this.value, final String? $type})
       : $type = $type ?? 'int';
 
   factory _$_ConfigIntModel.fromJson(Map<String, dynamic> json) =>
       _$$_ConfigIntModelFromJson(json);
 
   @override
-  final ConfigOption key;
+  final ConfigOption option;
   @override
   final int value;
 
@@ -563,7 +563,7 @@ class _$_ConfigIntModel implements _ConfigIntModel {
 
   @override
   String toString() {
-    return 'ConfigModel.int(key: $key, value: $value)';
+    return 'ConfigModel.int(option: $option, value: $value)';
   }
 
   @override
@@ -571,13 +571,13 @@ class _$_ConfigIntModel implements _ConfigIntModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_ConfigIntModel &&
-            (identical(other.key, key) || other.key == key) &&
+            (identical(other.option, option) || other.option == option) &&
             (identical(other.value, value) || other.value == value));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, key, value);
+  int get hashCode => Object.hash(runtimeType, option, value);
 
   @JsonKey(ignore: true)
   @override
@@ -588,39 +588,39 @@ class _$_ConfigIntModel implements _ConfigIntModel {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(ConfigOption key, bool value) bool,
-    required TResult Function(ConfigOption key, String value) string,
-    required TResult Function(ConfigOption key, int value) int,
-    required TResult Function(ConfigOption key, double value) double,
-    required TResult Function(ConfigOption key, DateTime value) date,
+    required TResult Function(ConfigOption option, bool value) bool,
+    required TResult Function(ConfigOption option, String value) string,
+    required TResult Function(ConfigOption option, int value) int,
+    required TResult Function(ConfigOption option, double value) double,
+    required TResult Function(ConfigOption option, DateTime value) date,
   }) {
-    return int(key, value);
+    return int(option, value);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(ConfigOption key, bool value)? bool,
-    TResult? Function(ConfigOption key, String value)? string,
-    TResult? Function(ConfigOption key, int value)? int,
-    TResult? Function(ConfigOption key, double value)? double,
-    TResult? Function(ConfigOption key, DateTime value)? date,
+    TResult? Function(ConfigOption option, bool value)? bool,
+    TResult? Function(ConfigOption option, String value)? string,
+    TResult? Function(ConfigOption option, int value)? int,
+    TResult? Function(ConfigOption option, double value)? double,
+    TResult? Function(ConfigOption option, DateTime value)? date,
   }) {
-    return int?.call(key, value);
+    return int?.call(option, value);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(ConfigOption key, bool value)? bool,
-    TResult Function(ConfigOption key, String value)? string,
-    TResult Function(ConfigOption key, int value)? int,
-    TResult Function(ConfigOption key, double value)? double,
-    TResult Function(ConfigOption key, DateTime value)? date,
+    TResult Function(ConfigOption option, bool value)? bool,
+    TResult Function(ConfigOption option, String value)? string,
+    TResult Function(ConfigOption option, int value)? int,
+    TResult Function(ConfigOption option, double value)? double,
+    TResult Function(ConfigOption option, DateTime value)? date,
     required TResult orElse(),
   }) {
     if (int != null) {
-      return int(key, value);
+      return int(option, value);
     }
     return orElse();
   }
@@ -675,14 +675,14 @@ class _$_ConfigIntModel implements _ConfigIntModel {
 
 abstract class _ConfigIntModel implements ConfigModel {
   const factory _ConfigIntModel(
-      {required final ConfigOption key,
+      {required final ConfigOption option,
       required final int value}) = _$_ConfigIntModel;
 
   factory _ConfigIntModel.fromJson(Map<String, dynamic> json) =
       _$_ConfigIntModel.fromJson;
 
   @override
-  ConfigOption get key;
+  ConfigOption get option;
   @override
   int get value;
   @override
@@ -699,7 +699,7 @@ abstract class _$$_ConfigDoubleModelCopyWith<$Res>
       __$$_ConfigDoubleModelCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({ConfigOption key, double value});
+  $Res call({ConfigOption option, double value});
 }
 
 /// @nodoc
@@ -713,13 +713,13 @@ class __$$_ConfigDoubleModelCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? key = null,
+    Object? option = null,
     Object? value = null,
   }) {
     return _then(_$_ConfigDoubleModel(
-      key: null == key
-          ? _value.key
-          : key // ignore: cast_nullable_to_non_nullable
+      option: null == option
+          ? _value.option
+          : option // ignore: cast_nullable_to_non_nullable
               as ConfigOption,
       value: null == value
           ? _value.value
@@ -733,14 +733,14 @@ class __$$_ConfigDoubleModelCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_ConfigDoubleModel implements _ConfigDoubleModel {
   const _$_ConfigDoubleModel(
-      {required this.key, required this.value, final String? $type})
+      {required this.option, required this.value, final String? $type})
       : $type = $type ?? 'double';
 
   factory _$_ConfigDoubleModel.fromJson(Map<String, dynamic> json) =>
       _$$_ConfigDoubleModelFromJson(json);
 
   @override
-  final ConfigOption key;
+  final ConfigOption option;
   @override
   final double value;
 
@@ -749,7 +749,7 @@ class _$_ConfigDoubleModel implements _ConfigDoubleModel {
 
   @override
   String toString() {
-    return 'ConfigModel.double(key: $key, value: $value)';
+    return 'ConfigModel.double(option: $option, value: $value)';
   }
 
   @override
@@ -757,13 +757,13 @@ class _$_ConfigDoubleModel implements _ConfigDoubleModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_ConfigDoubleModel &&
-            (identical(other.key, key) || other.key == key) &&
+            (identical(other.option, option) || other.option == option) &&
             (identical(other.value, value) || other.value == value));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, key, value);
+  int get hashCode => Object.hash(runtimeType, option, value);
 
   @JsonKey(ignore: true)
   @override
@@ -775,39 +775,39 @@ class _$_ConfigDoubleModel implements _ConfigDoubleModel {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(ConfigOption key, bool value) bool,
-    required TResult Function(ConfigOption key, String value) string,
-    required TResult Function(ConfigOption key, int value) int,
-    required TResult Function(ConfigOption key, double value) double,
-    required TResult Function(ConfigOption key, DateTime value) date,
+    required TResult Function(ConfigOption option, bool value) bool,
+    required TResult Function(ConfigOption option, String value) string,
+    required TResult Function(ConfigOption option, int value) int,
+    required TResult Function(ConfigOption option, double value) double,
+    required TResult Function(ConfigOption option, DateTime value) date,
   }) {
-    return double(key, value);
+    return double(option, value);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(ConfigOption key, bool value)? bool,
-    TResult? Function(ConfigOption key, String value)? string,
-    TResult? Function(ConfigOption key, int value)? int,
-    TResult? Function(ConfigOption key, double value)? double,
-    TResult? Function(ConfigOption key, DateTime value)? date,
+    TResult? Function(ConfigOption option, bool value)? bool,
+    TResult? Function(ConfigOption option, String value)? string,
+    TResult? Function(ConfigOption option, int value)? int,
+    TResult? Function(ConfigOption option, double value)? double,
+    TResult? Function(ConfigOption option, DateTime value)? date,
   }) {
-    return double?.call(key, value);
+    return double?.call(option, value);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(ConfigOption key, bool value)? bool,
-    TResult Function(ConfigOption key, String value)? string,
-    TResult Function(ConfigOption key, int value)? int,
-    TResult Function(ConfigOption key, double value)? double,
-    TResult Function(ConfigOption key, DateTime value)? date,
+    TResult Function(ConfigOption option, bool value)? bool,
+    TResult Function(ConfigOption option, String value)? string,
+    TResult Function(ConfigOption option, int value)? int,
+    TResult Function(ConfigOption option, double value)? double,
+    TResult Function(ConfigOption option, DateTime value)? date,
     required TResult orElse(),
   }) {
     if (double != null) {
-      return double(key, value);
+      return double(option, value);
     }
     return orElse();
   }
@@ -862,14 +862,14 @@ class _$_ConfigDoubleModel implements _ConfigDoubleModel {
 
 abstract class _ConfigDoubleModel implements ConfigModel {
   const factory _ConfigDoubleModel(
-      {required final ConfigOption key,
+      {required final ConfigOption option,
       required final double value}) = _$_ConfigDoubleModel;
 
   factory _ConfigDoubleModel.fromJson(Map<String, dynamic> json) =
       _$_ConfigDoubleModel.fromJson;
 
   @override
-  ConfigOption get key;
+  ConfigOption get option;
   @override
   double get value;
   @override
@@ -886,7 +886,7 @@ abstract class _$$_ConfigDateModelCopyWith<$Res>
       __$$_ConfigDateModelCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({ConfigOption key, DateTime value});
+  $Res call({ConfigOption option, DateTime value});
 }
 
 /// @nodoc
@@ -900,13 +900,13 @@ class __$$_ConfigDateModelCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? key = null,
+    Object? option = null,
     Object? value = null,
   }) {
     return _then(_$_ConfigDateModel(
-      key: null == key
-          ? _value.key
-          : key // ignore: cast_nullable_to_non_nullable
+      option: null == option
+          ? _value.option
+          : option // ignore: cast_nullable_to_non_nullable
               as ConfigOption,
       value: null == value
           ? _value.value
@@ -920,14 +920,14 @@ class __$$_ConfigDateModelCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_ConfigDateModel implements _ConfigDateModel {
   const _$_ConfigDateModel(
-      {required this.key, required this.value, final String? $type})
+      {required this.option, required this.value, final String? $type})
       : $type = $type ?? 'date';
 
   factory _$_ConfigDateModel.fromJson(Map<String, dynamic> json) =>
       _$$_ConfigDateModelFromJson(json);
 
   @override
-  final ConfigOption key;
+  final ConfigOption option;
   @override
   final DateTime value;
 
@@ -936,7 +936,7 @@ class _$_ConfigDateModel implements _ConfigDateModel {
 
   @override
   String toString() {
-    return 'ConfigModel.date(key: $key, value: $value)';
+    return 'ConfigModel.date(option: $option, value: $value)';
   }
 
   @override
@@ -944,13 +944,13 @@ class _$_ConfigDateModel implements _ConfigDateModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_ConfigDateModel &&
-            (identical(other.key, key) || other.key == key) &&
+            (identical(other.option, option) || other.option == option) &&
             (identical(other.value, value) || other.value == value));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, key, value);
+  int get hashCode => Object.hash(runtimeType, option, value);
 
   @JsonKey(ignore: true)
   @override
@@ -961,39 +961,39 @@ class _$_ConfigDateModel implements _ConfigDateModel {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(ConfigOption key, bool value) bool,
-    required TResult Function(ConfigOption key, String value) string,
-    required TResult Function(ConfigOption key, int value) int,
-    required TResult Function(ConfigOption key, double value) double,
-    required TResult Function(ConfigOption key, DateTime value) date,
+    required TResult Function(ConfigOption option, bool value) bool,
+    required TResult Function(ConfigOption option, String value) string,
+    required TResult Function(ConfigOption option, int value) int,
+    required TResult Function(ConfigOption option, double value) double,
+    required TResult Function(ConfigOption option, DateTime value) date,
   }) {
-    return date(key, value);
+    return date(option, value);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(ConfigOption key, bool value)? bool,
-    TResult? Function(ConfigOption key, String value)? string,
-    TResult? Function(ConfigOption key, int value)? int,
-    TResult? Function(ConfigOption key, double value)? double,
-    TResult? Function(ConfigOption key, DateTime value)? date,
+    TResult? Function(ConfigOption option, bool value)? bool,
+    TResult? Function(ConfigOption option, String value)? string,
+    TResult? Function(ConfigOption option, int value)? int,
+    TResult? Function(ConfigOption option, double value)? double,
+    TResult? Function(ConfigOption option, DateTime value)? date,
   }) {
-    return date?.call(key, value);
+    return date?.call(option, value);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(ConfigOption key, bool value)? bool,
-    TResult Function(ConfigOption key, String value)? string,
-    TResult Function(ConfigOption key, int value)? int,
-    TResult Function(ConfigOption key, double value)? double,
-    TResult Function(ConfigOption key, DateTime value)? date,
+    TResult Function(ConfigOption option, bool value)? bool,
+    TResult Function(ConfigOption option, String value)? string,
+    TResult Function(ConfigOption option, int value)? int,
+    TResult Function(ConfigOption option, double value)? double,
+    TResult Function(ConfigOption option, DateTime value)? date,
     required TResult orElse(),
   }) {
     if (date != null) {
-      return date(key, value);
+      return date(option, value);
     }
     return orElse();
   }
@@ -1048,14 +1048,14 @@ class _$_ConfigDateModel implements _ConfigDateModel {
 
 abstract class _ConfigDateModel implements ConfigModel {
   const factory _ConfigDateModel(
-      {required final ConfigOption key,
+      {required final ConfigOption option,
       required final DateTime value}) = _$_ConfigDateModel;
 
   factory _ConfigDateModel.fromJson(Map<String, dynamic> json) =
       _$_ConfigDateModel.fromJson;
 
   @override
-  ConfigOption get key;
+  ConfigOption get option;
   @override
   DateTime get value;
   @override

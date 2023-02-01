@@ -10,27 +10,27 @@ part 'config_model.g.dart';
 @freezed
 class ConfigModel with _$ConfigModel {
   const factory ConfigModel.bool({
-    required ConfigOption key,
+    required ConfigOption option,
     required bool value,
   }) = _ConfigBoolModel;
 
   const factory ConfigModel.string({
-    required ConfigOption key,
+    required ConfigOption option,
     required String value,
   }) = _ConfigStringModel;
 
   const factory ConfigModel.int({
-    required ConfigOption key,
+    required ConfigOption option,
     required int value,
   }) = _ConfigIntModel;
 
   const factory ConfigModel.double({
-    required ConfigOption key,
+    required ConfigOption option,
     required double value,
   }) = _ConfigDoubleModel;
 
   const factory ConfigModel.date({
-    required ConfigOption key,
+    required ConfigOption option,
     required DateTime value,
   }) = _ConfigDateModel;
 

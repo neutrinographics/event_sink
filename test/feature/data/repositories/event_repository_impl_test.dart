@@ -7,7 +7,6 @@ import 'package:event_sync/src/core/domain/config_options.dart';
 import 'package:event_sync/src/core/error/exception.dart';
 import 'package:event_sync/src/core/error/failure.dart';
 import 'package:event_sync/src/core/time/time_info.dart';
-import 'package:event_sync/src/feature/data/local/data_sources/config_local_data_source.dart';
 import 'package:event_sync/src/feature/data/local/data_sources/event_local_data_source.dart';
 import 'package:event_sync/src/feature/data/local/models/config_model.dart';
 import 'package:event_sync/src/feature/data/local/models/event_model.dart';
@@ -42,7 +41,6 @@ class MockEventParams implements EventParams {
 @GenerateMocks([
   EventRemoteDataSource,
   EventLocalDataSource,
-  ConfigLocalDataSource,
   IdGenerator,
   TimeInfo,
 ])
@@ -50,20 +48,17 @@ void main() {
   late EventRepositoryImpl repository;
   late MockEventRemoteDataSource mockEventRemoteDataSource;
   late MockEventLocalDataSource mockEventLocalDataSource;
-  late MockConfigLocalDataSource mockConfigLocalDataSource;
   late MockIdGenerator mockIdGenerator;
   late MockTimeInfo mockTimeInfo;
 
   setUp(() {
     mockEventRemoteDataSource = MockEventRemoteDataSource();
     mockEventLocalDataSource = MockEventLocalDataSource();
-    mockConfigLocalDataSource = MockConfigLocalDataSource();
     mockIdGenerator = MockIdGenerator();
     mockTimeInfo = MockTimeInfo();
     repository = EventRepositoryImpl(
       localDataSource: mockEventLocalDataSource,
       remoteDataSource: mockEventRemoteDataSource,
-      configLocalDataSource: mockConfigLocalDataSource,
       idGenerator: mockIdGenerator,
       timeInfo: mockTimeInfo,
     );
@@ -72,9 +67,9 @@ void main() {
   const tHost = 'https://example.com';
   const tToken = 'token';
   const tHostConfig =
-      ConfigModel.string(key: ConfigOption.serverHost, value: tHost);
+      ConfigModel.string(option: ConfigOption.serverHost, value: tHost);
   const tTokenConfig =
-      ConfigModel.string(key: ConfigOption.authToken, value: tToken);
+      ConfigModel.string(option: ConfigOption.authToken, value: tToken);
 
   group('fetch', () {
     const tEventId = 'event-id';
@@ -106,17 +101,13 @@ void main() {
         // arrange
         when(mockTimeInfo.now()).thenReturn(tToday);
         when(mockIdGenerator.generateId()).thenReturn(tEventId);
-        when(mockConfigLocalDataSource.read(ConfigOption.serverHost))
-            .thenAnswer((_) async => tHostConfig);
-        when(mockConfigLocalDataSource.read(ConfigOption.authToken))
-            .thenAnswer((_) async => tTokenConfig);
         when(mockEventLocalDataSource.getAllEvents())
             .thenAnswer((_) async => tLocalEvents);
         when(mockEventRemoteDataSource.getEvents(
                 host: anyNamed('host'), token: anyNamed('token')))
             .thenAnswer((_) async => tRemoteEvents);
         // act
-        final result = await repository.fetch();
+        final result = await repository.fetch(tHost, tToken);
         // assert
         verify(mockEventLocalDataSource.getAllEvents());
         verify(mockEventRemoteDataSource.getEvents(
@@ -136,17 +127,10 @@ void main() {
       () async {
         // arrange
         when(mockIdGenerator.generateId()).thenReturn(tEventId);
-        when(mockConfigLocalDataSource.read(ConfigOption.serverHost))
-            .thenAnswer((_) async => tHostConfig);
-        // when(mockConfigLocalDataSource.read(ConfigOption.graphId))
-        //     .thenAnswer((_) async => tGraphId.toString());
-        // when(mockGraphLocalDataSource.getGraph(any))
-        //     .thenAnswer((_) async => tGraph);
-        // when(mockUserLocalDataSource.getUser()).thenAnswer((_) async => tUser);
         when(mockEventLocalDataSource.getAllEvents())
             .thenThrow(CacheException());
         // act
-        final result = await repository.fetch();
+        final result = await repository.fetch(tHost, tToken);
         // assert
         expect(result, equals(const Left(CacheFailure())));
       },
@@ -158,24 +142,18 @@ void main() {
         // arrange
         when(mockTimeInfo.now()).thenReturn(tToday);
         when(mockIdGenerator.generateId()).thenReturn(tEventId);
-        when(mockConfigLocalDataSource.read(ConfigOption.serverHost))
-            .thenAnswer((_) async => tHostConfig);
-        // when(mockConfigLocalDataSource.read(ConfigOption.graphId))
-        //     .thenAnswer((_) async => tGraphId.toString());
-        // when(mockGraphLocalDataSource.getGraph(any))
-        //     .thenAnswer((_) async => tGraph);
-        // when(mockUserLocalDataSource.getUser()).thenAnswer((_) async => tUser);
         when(mockEventLocalDataSource.getAllEvents())
             .thenAnswer((_) async => tLocalEvents);
         when(mockEventRemoteDataSource.getEvents(
-                host: Uri.parse(tHost), token: tToken))
+                host: anyNamed('host'), token: anyNamed('token')))
             .thenAnswer((_) async => tRemoteEvents);
         when(mockEventLocalDataSource.cacheEvent(any))
             .thenThrow(CacheException());
         // act
-        final result = await repository.fetch();
+        final result = await repository.fetch(tHost, tToken);
         // assert
         expect(result, equals(const Left(CacheFailure())));
+        verify(mockEventLocalDataSource.cacheEvent(any));
       },
     );
 
@@ -184,39 +162,17 @@ void main() {
       () async {
         // arrange
         when(mockIdGenerator.generateId()).thenReturn(tEventId);
-        when(mockConfigLocalDataSource.read(ConfigOption.serverHost))
-            .thenAnswer((_) async => tHostConfig);
-        // when(mockConfigLocalDataSource.read(ConfigOption.graphId))
-        //     .thenAnswer((_) async => tGraphId.toString());
-        // when(mockGraphLocalDataSource.getGraph(any))
-        //     .thenAnswer((_) async => tGraph);
-        // when(mockUserLocalDataSource.getUser()).thenAnswer((_) async => tUser);
         when(mockEventLocalDataSource.getAllEvents())
             .thenAnswer((_) async => tLocalEvents);
         when(mockEventRemoteDataSource.getEvents(
-                host: Uri.parse(tHost), token: tToken))
+                host: anyNamed('host'), token: anyNamed('token')))
             .thenThrow(ServerException());
         // act
-        final result = await repository.fetch();
+        final result = await repository.fetch(tHost, tToken);
         // assert
         expect(result, equals(const Left(ServerFailure())));
-      },
-    );
-
-    test(
-      'should return CacheFailure if the server host config cannot be loaded',
-      () async {
-        // arrange
-        when(mockConfigLocalDataSource.read(ConfigOption.serverHost))
-            .thenThrow(CacheException());
-        // when(mockConfigLocalDataSource.read(ConfigOption.graphId))
-        //     .thenAnswer((_) async => tGraphId.toString());
-        // when(mockGraphLocalDataSource.getGraph(any))
-        //     .thenAnswer((_) async => tGraph);
-        // act
-        final result = await repository.fetch();
-        // assert
-        expect(result, equals(const Left(CacheFailure())));
+        verify(mockEventRemoteDataSource.getEvents(
+            host: Uri.parse(tHost), token: tToken));
       },
     );
   });
@@ -239,9 +195,6 @@ void main() {
       () async {
         // arrange
         when(mockTimeInfo.now()).thenReturn(tTime);
-        when(mockConfigLocalDataSource.read(ConfigOption.serverHost))
-            .thenAnswer((_) async => tHostConfig);
-        // when(mockUserLocalDataSource.getUser()).thenAnswer((_) async => tUser);
         when(mockEventLocalDataSource.getAllEvents())
             .thenAnswer((_) async => tCachedEvents);
         final remoteEvents = [...tRemoteEvents];
@@ -249,7 +202,7 @@ void main() {
                 token: anyNamed('token'), host: anyNamed('host')))
             .thenAnswer((_) async => remoteEvents.removeAt(0));
         // act
-        final result = await repository.push();
+        final result = await repository.push(tHost, tToken);
         // assert
         verify(mockEventLocalDataSource.getAllEvents());
         for (var e in tCachedEvents) {
@@ -278,13 +231,10 @@ void main() {
       'should return CacheFailure if the events cannot be read from the cache',
       () async {
         // arrange
-        when(mockConfigLocalDataSource.read(ConfigOption.serverHost))
-            .thenAnswer((_) async => tHostConfig);
-        // when(mockUserLocalDataSource.getUser()).thenAnswer((_) async => tUser);
         when(mockEventLocalDataSource.getAllEvents())
             .thenThrow(CacheException());
         // act
-        final result = await repository.push();
+        final result = await repository.push(tHost, tToken);
         // assert
         expect(result, equals(const Left(CacheFailure())));
       },
@@ -294,16 +244,13 @@ void main() {
       'should return ServerFailure if the upload fails',
       () async {
         // arrange
-        when(mockConfigLocalDataSource.read(ConfigOption.serverHost))
-            .thenAnswer((_) async => tHostConfig);
         when(mockEventLocalDataSource.getAllEvents())
             .thenAnswer((_) async => tCachedEvents);
-        // when(mockUserLocalDataSource.getUser()).thenAnswer((_) async => tUser);
         when(mockEventRemoteDataSource.createEvent(any,
                 host: anyNamed('host'), token: anyNamed('token')))
             .thenThrow(ServerException());
         // act
-        final result = await repository.push();
+        final result = await repository.push(tHost, tToken);
         // assert
         expect(result, equals(const Left(ServerFailure())));
       },
@@ -314,11 +261,8 @@ void main() {
       () async {
         // arrange
         when(mockTimeInfo.now()).thenReturn(tTime);
-        when(mockConfigLocalDataSource.read(ConfigOption.serverHost))
-            .thenAnswer((_) async => tHostConfig);
         when(mockEventLocalDataSource.getAllEvents())
             .thenAnswer((_) async => tCachedEvents);
-        // when(mockUserLocalDataSource.getUser()).thenAnswer((_) async => tUser);
         final remoteEvents = [...tRemoteEvents];
         when(mockEventRemoteDataSource.createEvent(any,
                 token: anyNamed('token'), host: anyNamed('host')))
@@ -327,7 +271,7 @@ void main() {
             .thenThrow(CacheException());
 
         // act
-        final result = await repository.push();
+        final result = await repository.push(tHost, tToken);
         // assert
         expect(result, equals(const Left(CacheFailure())));
       },
@@ -337,35 +281,17 @@ void main() {
       'should return OutOfSyncFailure if the server has newer events',
       () async {
         // arrange
-        when(mockConfigLocalDataSource.read(ConfigOption.serverHost))
-            .thenAnswer((_) async => tHostConfig);
         when(mockEventLocalDataSource.getAllEvents())
             .thenAnswer((_) async => tCachedEvents);
-        // when(mockUserLocalDataSource.getUser()).thenAnswer((_) async => tUser);
         when(mockEventRemoteDataSource.createEvent(any,
                 host: anyNamed('host'), token: anyNamed('token')))
             .thenThrow(OutOfSyncException());
         // act
-        final result = await repository.push();
+        final result = await repository.push(tHost, tToken);
         // assert
         expect(result, equals(const Left(OutOfSyncFailure())));
       },
     );
-
-    test(
-      'should return CacheFailure if the server host config cannot be loaded',
-      () async {
-        // arrange
-        when(mockConfigLocalDataSource.read(ConfigOption.serverHost))
-            .thenThrow(CacheException());
-        // act
-        final result = await repository.push();
-        // assert
-        expect(result, equals(const Left(CacheFailure())));
-      },
-    );
-
-    //  TODO: fail if user cannot be loaded
   });
 
   group('rebase', () {
@@ -566,8 +492,6 @@ void main() {
           streamId: tEventModel.streamId,
         );
         when(mockTimeInfo.now()).thenReturn(tTime);
-        // when(mockConfigLocalDataSource.read(ConfigOption.graphId))
-        //     .thenAnswer((_) async => tGraphId.toString());
         when(mockEventLocalDataSource.getAllEvents())
             .thenAnswer((_) async => []);
         when(mockIdGenerator.generateId()).thenReturn(tEventId);

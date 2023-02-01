@@ -12,10 +12,10 @@ class ConfigRepositoryImpl implements ConfigRepository {
   ConfigRepositoryImpl({required this.localDataSource});
 
   @override
-  Future<Either<Failure, T?>> read<T>(ConfigOption key) async {
+  Future<Either<Failure, T?>> read<T>(ConfigOption option) async {
     ConfigModel model;
     try {
-      model = await localDataSource.read(key);
+      model = await localDataSource.read(option);
     } on CacheException {
       return const Right(null);
     }
@@ -36,24 +36,24 @@ class ConfigRepositoryImpl implements ConfigRepository {
   }
 
   @override
-  Future<Either<Failure, void>> write<T>(ConfigOption key, T value) async {
+  Future<Either<Failure, void>> write<T>(ConfigOption option, T value) async {
     ConfigModel config;
 
     switch (T) {
       case String:
-        config = ConfigModel.string(key: key, value: value as String);
+        config = ConfigModel.string(option: option, value: value as String);
         break;
       case bool:
-        config = ConfigModel.bool(key: key, value: value as bool);
+        config = ConfigModel.bool(option: option, value: value as bool);
         break;
       case double:
-        config = ConfigModel.double(key: key, value: value as double);
+        config = ConfigModel.double(option: option, value: value as double);
         break;
       case int:
-        config = ConfigModel.int(key: key, value: value as int);
+        config = ConfigModel.int(option: option, value: value as int);
         break;
       case DateTime:
-        config = ConfigModel.date(key: key, value: value as DateTime);
+        config = ConfigModel.date(option: option, value: value as DateTime);
         break;
       default:
         return Left(CacheFailure(message: "Unsupported config type '$T'"));
@@ -77,14 +77,14 @@ class ConfigRepositoryImpl implements ConfigRepository {
   }
 
   @override
-  Future<Either<Failure, T>> require<T>(ConfigOption key) async {
-    final failureOrValue = await read<T>(key);
+  Future<Either<Failure, T>> require<T>(ConfigOption option) async {
+    final failureOrValue = await read<T>(option);
     return failureOrValue.fold(
       (failure) => Left(failure),
       (value) {
         if (value == null) {
           return Left(CacheFailure(
-              message: "The config '$key' does not have a value."));
+              message: "The config '$option' does not have a value."));
         } else {
           return Right(value);
         }
@@ -93,9 +93,9 @@ class ConfigRepositoryImpl implements ConfigRepository {
   }
 
   @override
-  Future<Either<Failure, void>> delete(ConfigOption key) async {
+  Future<Either<Failure, void>> delete(ConfigOption option) async {
     try {
-      await localDataSource.delete(key);
+      await localDataSource.delete(option);
       return const Right(null);
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));

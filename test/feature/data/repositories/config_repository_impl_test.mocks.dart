@@ -52,25 +52,25 @@ class MockConfigLocalDataSource extends _i1.Mock
         returnValueForMissingStub: _i4.Future<void>.value(),
       ) as _i4.Future<void>);
   @override
-  _i4.Future<_i2.ConfigModel> read(_i5.ConfigOption? key) =>
+  _i4.Future<_i2.ConfigModel> read(_i5.ConfigOption? option) =>
       (super.noSuchMethod(
         Invocation.method(
           #read,
-          [key],
+          [option],
         ),
         returnValue: _i4.Future<_i2.ConfigModel>.value(_FakeConfigModel_0(
           this,
           Invocation.method(
             #read,
-            [key],
+            [option],
           ),
         )),
       ) as _i4.Future<_i2.ConfigModel>);
   @override
-  _i4.Future<void> delete(_i5.ConfigOption? key) => (super.noSuchMethod(
+  _i4.Future<void> delete(_i5.ConfigOption? option) => (super.noSuchMethod(
         Invocation.method(
           #delete,
-          [key],
+          [option],
         ),
         returnValue: _i4.Future<void>.value(),
         returnValueForMissingStub: _i4.Future<void>.value(),

@@ -1,16 +1,20 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
+import 'package:event_sync/src/core/domain/config_options.dart';
 import 'package:event_sync/src/core/domain/usecase.dart';
 import 'package:event_sync/src/core/error/failure.dart';
+import 'package:event_sync/src/feature/domain/repositories/config_repository.dart';
 import 'package:event_sync/src/feature/domain/repositories/event_repository.dart';
 
 class SyncEvents extends UseCase<void, SyncEventsParams> {
   EventRepository eventRepository;
+  ConfigRepository configRepository;
 
   Failure? _lastPushFailure;
 
   SyncEvents({
     required this.eventRepository,
+    required this.configRepository,
   });
 
   @override
@@ -35,38 +39,72 @@ class SyncEvents extends UseCase<void, SyncEventsParams> {
         return const Left(ServerFailure());
       }
     }
-    final downloadFailureOrSuccess = await eventRepository.fetch();
-
-    // if fetch fails then we can return
-    if (downloadFailureOrSuccess.isLeft()) {
-      return downloadFailureOrSuccess;
+    // fetch the server config
+    final failureOrConfig = await _getServerConfig();
+    if (failureOrConfig.isLeft()) {
+      return failureOrConfig;
     }
+    late _ServerConfig config;
+    failureOrConfig.fold((_) => null, (c) => config = c);
 
-    final rebaseFailureOrSuccess = await eventRepository.rebase();
+    // download events
+    final failureOrDownload =
+        await eventRepository.fetch(config.host, config.token);
 
-    // if rebase fails then we can return
-    if (rebaseFailureOrSuccess.isLeft()) {
-      return rebaseFailureOrSuccess;
-    }
+    // rebase events
+    final failureOrRebase = await failureOrDownload.fold(
+      (l) async => Left(l),
+      (_) => eventRepository.rebase(),
+    );
 
-    final pushFailureOrSuccess = await eventRepository.push();
+    // push events
+    final failureOrPush = await failureOrRebase.fold(
+      (l) async => Left(l),
+      (r) => eventRepository.push(config.host, config.token),
+    );
 
     // if push is successful then we can return
-    if (pushFailureOrSuccess.isRight()) {
-      return pushFailureOrSuccess;
+    if (failureOrPush.isRight()) {
+      return failureOrPush;
     }
 
     // if push is failing because of errors other than OutOfSync,
     // then we can return
     late final Failure pushFailure;
-    pushFailureOrSuccess.fold((l) => pushFailure = l, (r) => null);
+    failureOrPush.fold((l) => pushFailure = l, (r) => null);
     if (pushFailure is! OutOfSyncFailure) {
-      return pushFailureOrSuccess;
+      return failureOrPush;
     }
     _lastPushFailure = pushFailure;
 
     return _recursiveRebase(allowedRetries, retryCount: retryCount + 1);
   }
+
+  /// Loads the server settings and combines them into a convenient object.
+  Future<Either<Failure, _ServerConfig>> _getServerConfig() async {
+    final failureOrHost =
+        await configRepository.require<String>(ConfigOption.serverHost);
+
+    return failureOrHost.fold(
+      (l) => Left(l),
+      (host) async {
+        final failureOrToken = await configRepository.require<String>(
+          ConfigOption.authToken,
+        );
+        return failureOrToken.fold(
+          (l) => Left(l),
+          (token) => Right(_ServerConfig(host: host, token: token)),
+        );
+      },
+    );
+  }
+}
+
+class _ServerConfig {
+  final String host;
+  final String token;
+
+  _ServerConfig({required this.host, required this.token});
 }
 
 class SyncEventsParams extends Equatable {

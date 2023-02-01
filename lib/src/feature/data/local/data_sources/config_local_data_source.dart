@@ -5,9 +5,9 @@ import 'package:event_sync/src/feature/data/local/models/config_model.dart';
 abstract class ConfigLocalDataSource {
   Future<void> write(ConfigModel model);
 
-  Future<ConfigModel> read(ConfigOption key);
+  Future<ConfigModel> read(ConfigOption option);
 
-  Future<void> delete(ConfigOption key);
+  Future<void> delete(ConfigOption option);
 
   Future<void> clear();
 }
@@ -18,13 +18,13 @@ class ConfigLocalDataSourceImpl implements ConfigLocalDataSource {
   ConfigLocalDataSourceImpl({required this.cache});
 
   @override
-  Future<void> write(ConfigModel model) => cache.write(model.key.key, model);
+  Future<void> write(ConfigModel model) => cache.write(model.option.key, model);
 
   @override
-  Future<ConfigModel> read(ConfigOption key) => cache.read(key.key);
+  Future<ConfigModel> read(ConfigOption option) => cache.read(option.key);
 
   @override
-  Future<void> delete(ConfigOption key) => cache.delete(key.key);
+  Future<void> delete(ConfigOption option) => cache.delete(option.key);
 
   @override
   Future<void> clear() => cache.clear();
