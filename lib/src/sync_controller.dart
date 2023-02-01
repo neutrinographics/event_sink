@@ -7,7 +7,7 @@ import 'package:event_sync/src/event_sync_base.dart';
 import 'package:event_sync/src/feature/domain/entities/event_info.dart';
 import 'package:event_sync/src/feature/domain/use_cases/add_event.dart';
 import 'package:event_sync/src/feature/domain/use_cases/apply_events.dart';
-import 'package:event_sync/src/feature/domain/use_cases/set_config.dart';
+import 'package:event_sync/src/feature/domain/use_cases/set_string_config.dart';
 import 'package:event_sync/src/feature/domain/use_cases/sync_events.dart';
 
 // this is sort of in the position of a bloc.
@@ -16,13 +16,13 @@ class SyncController {
   final SyncEvents _syncEvents;
   final ApplyEvents _applyEvents;
   final AddEvent _addEvent;
-  final SetConfig _setConfig;
+  final SetStringConfig _setConfig;
 
   SyncController({
     required SyncEvents syncEvents,
     required ApplyEvents applyEvents,
     required AddEvent addEvent,
-    required SetConfig setConfig,
+    required SetStringConfig setConfig,
   })  : _syncEvents = syncEvents,
         _applyEvents = applyEvents,
         _addEvent = addEvent,
@@ -38,9 +38,10 @@ class SyncController {
   Future<Either<Failure, void>> add(EventInfo<EventParams> event) =>
       _addEvent(AddEventParams(event: event));
 
-  Future<Either<Failure, void>> setAuth(String token) =>
-      _setConfig(SetConfigParams(option: ConfigOption.authToken, value: token));
+  Future<Either<Failure, void>> setAuth(String token) => _setConfig(
+      SetStringConfigParams(option: ConfigOption.authToken, value: token));
 
-  Future<Either<Failure, void>> setHost(String host) =>
-      _setConfig(SetConfigParams(option: ConfigOption.serverHost, value: host));
+  Future<Either<Failure, void>> setHost(Uri host) =>
+      _setConfig(SetStringConfigParams(
+          option: ConfigOption.serverHost, value: host.toString()));
 }

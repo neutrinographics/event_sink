@@ -15,7 +15,7 @@ import 'package:event_sync/src/feature/domain/repositories/config_repository.dar
 import 'package:event_sync/src/feature/domain/repositories/event_repository.dart';
 import 'package:event_sync/src/feature/domain/use_cases/add_event.dart';
 import 'package:event_sync/src/feature/domain/use_cases/apply_events.dart';
-import 'package:event_sync/src/feature/domain/use_cases/set_config.dart';
+import 'package:event_sync/src/feature/domain/use_cases/set_string_config.dart';
 import 'package:event_sync/src/feature/domain/use_cases/sync_events.dart';
 import 'package:event_sync/src/sync_controller.dart';
 import 'package:get_it/get_it.dart';
@@ -42,7 +42,7 @@ void init() {
         configRepository: sl(),
       ));
   sl.registerLazySingleton(() => AddEvent(eventRepository: sl()));
-  sl.registerLazySingleton(() => SetConfig(configRepository: sl()));
+  sl.registerLazySingleton(() => SetStringConfig(configRepository: sl()));
 
   // Repositories
   sl.registerLazySingleton<EventRepository>(() => EventRepositoryImpl(

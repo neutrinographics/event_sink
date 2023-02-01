@@ -5,24 +5,24 @@ import 'package:event_sync/src/core/domain/usecase.dart';
 import 'package:event_sync/src/core/error/failure.dart';
 import 'package:event_sync/src/feature/domain/repositories/config_repository.dart';
 
-class SetConfig extends UseCase<void, SetConfigParams> {
+class SetStringConfig extends UseCase<void, SetStringConfigParams> {
   ConfigRepository configRepository;
 
-  SetConfig({
+  SetStringConfig({
     required this.configRepository,
   });
 
   @override
-  Future<Either<Failure, void>> call(SetConfigParams params) {
-    return configRepository.write(params.option, params.value);
+  Future<Either<Failure, void>> call(SetStringConfigParams params) {
+    return configRepository.write<String>(params.option, params.value);
   }
 }
 
-class SetConfigParams<T> extends Equatable {
+class SetStringConfigParams extends Equatable {
   final ConfigOption option;
-  final T value;
+  final String value;
 
-  const SetConfigParams({required this.option, required this.value});
+  const SetStringConfigParams({required this.option, required this.value});
 
   @override
   List<Object?> get props => [option, value];

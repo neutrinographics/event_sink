@@ -1,4 +1,6 @@
+import 'package:dartz/dartz.dart';
 import 'package:event_sync/event_sync.dart';
+import 'package:event_sync/src/core/error/failure.dart';
 import 'package:event_sync/src/sync_controller.dart';
 import 'injection_container.dart' as ic;
 
@@ -20,26 +22,28 @@ abstract class EventSyncBase {
   }
 
   /// Configures the auth token used for API requests.
-  Future<void> setAuth(String token) => _controller.setAuth(token);
+  Future<Either<Failure, void>> setAuth(String token) =>
+      _controller.setAuth(token);
 
   /// Configures the remote host for API requests.
-  Future<void> setHost(String host) => _controller.setHost(host);
+  Future<Either<Failure, void>> setHost(Uri host) => _controller.setHost(host);
 
   /// Uploads events to the server that have been generated on this device.
-  Future<void> sync() => _controller.sync();
+  Future<Either<Failure, void>> sync() => _controller.sync();
 
   /// Adds an event to the queue.
-  Future<void> add(EventInfo<EventParams> event) => _controller.add(event);
+  Future<Either<Failure, void>> add(EventInfo<EventParams> event) =>
+      _controller.add(event);
 
   /// Applies any un-processed events.
   /// This executes the event command.
-  Future<void> apply() =>
+  Future<Either<Failure, void>> apply() =>
       _controller.apply(eventHandlersMap, eventParamsGeneratorMap);
 
   /// Compacts all of the event streams.
   /// This will attempt to combine and deduplicate events
   /// within individual streams.
-  Future<void> compact() async {
+  Future<Either<Failure, void>> compact() async {
     // TODO: implement this
     throw UnimplementedError();
   }
