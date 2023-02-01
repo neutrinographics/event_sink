@@ -33,6 +33,7 @@ void init() {
         syncEvents: sl(),
         applyEvents: sl(),
         addEvent: sl(),
+        setConfig: sl(),
       ));
 
   // Use cases

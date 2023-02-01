@@ -20,7 +20,10 @@ abstract class EventSyncBase {
   }
 
   /// Configures the auth token used for API requests.
-  Future<void> setAuth(String token) => throw UnimplementedError();
+  Future<void> setAuth(String token) => _controller.setAuth(token);
+
+  /// Configures the remote host for API requests.
+  Future<void> setHost(String host) => _controller.setHost(host);
 
   /// Uploads events to the server that have been generated on this device.
   Future<void> sync() => _controller.sync();
