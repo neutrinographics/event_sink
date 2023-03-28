@@ -8,7 +8,7 @@ typedef EventParamsGenerator = EventParams Function(Map<String, dynamic>);
 
 /// Defines the logic for interacting with the event controller.
 abstract class EventSyncBase {
-  Map<String, EventHandler> get eventHandlersMap;
+  Map<String, EventHandler> eventHandlersMap();
 
   Map<String, EventParamsGenerator> get eventParamsGeneratorMap;
 
@@ -38,7 +38,7 @@ abstract class EventSyncBase {
   /// Applies any un-processed events.
   /// This executes the event command.
   Future<Either<Failure, void>> apply() =>
-      _controller.apply(eventHandlersMap, eventParamsGeneratorMap);
+      _controller.apply(eventHandlersMap(), eventParamsGeneratorMap);
 
   /// Compacts all of the event streams.
   /// This will attempt to combine and deduplicate events
