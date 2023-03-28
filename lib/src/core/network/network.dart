@@ -6,65 +6,65 @@ import 'package:http/http.dart' as http;
 
 abstract class Network {
   Future<Response> head(
-      Uri url, {
-        Map<String, String>? headers,
+    Uri url, {
+    Map<String, String>? headers,
 
-        /// Raises an [AuthException] if the response code is 403
-        bool strictAuth,
-      });
+    /// Raises an [AuthException] if the response code is 403
+    bool strictAuth,
+  });
 
   Future<Response> get(
-      Uri url, {
-        Map<String, String>? headers,
+    Uri url, {
+    Map<String, String>? headers,
 
-        /// Raises an [AuthException] if the response code is 403
-        bool strictAuth,
-      });
+    /// Raises an [AuthException] if the response code is 403
+    bool strictAuth,
+  });
 
   Future<Response> post(
-      Uri url, {
-        Map<String, String>? headers,
-        Object? body,
-        Encoding? encoding,
+    Uri url, {
+    Map<String, String>? headers,
+    Object? body,
+    Encoding? encoding,
 
-        /// Raises an [AuthException] if the response code is 403
-        bool strictAuth,
-      });
+    /// Raises an [AuthException] if the response code is 403
+    bool strictAuth,
+  });
 
   Future<Response> put(
-      Uri url, {
-        Map<String, String>? headers,
-        Object? body,
-        Encoding? encoding,
+    Uri url, {
+    Map<String, String>? headers,
+    Object? body,
+    Encoding? encoding,
 
-        /// Raises an [AuthException] if the response code is 403
-        bool strictAuth,
-      });
+    /// Raises an [AuthException] if the response code is 403
+    bool strictAuth,
+  });
 
   Future<Response> patch(
-      Uri url, {
-        Map<String, String>? headers,
-        Object? body,
-        Encoding? encoding,
+    Uri url, {
+    Map<String, String>? headers,
+    Object? body,
+    Encoding? encoding,
 
-        /// Raises an [AuthException] if the response code is 403
-        bool strictAuth,
-      });
+    /// Raises an [AuthException] if the response code is 403
+    bool strictAuth,
+  });
 
   Future<Response> delete(
-      Uri url, {
-        Map<String, String>? headers,
-        Object? body,
-        Encoding? encoding,
+    Uri url, {
+    Map<String, String>? headers,
+    Object? body,
+    Encoding? encoding,
 
-        /// Raises an [AuthException] if the response code is 403
-        bool strictAuth,
-      });
+    /// Raises an [AuthException] if the response code is 403
+    bool strictAuth,
+  });
 
   Future<String> read(
-      Uri url, {
-        Map<String, String>? headers,
-      });
+    Uri url, {
+    Map<String, String>? headers,
+  });
 }
 
 class NetworkImpl implements Network {
@@ -75,11 +75,11 @@ class NetworkImpl implements Network {
 
   @override
   Future<Response> head(
-      Uri url, {
-        Map<String, String>? headers,
-        Duration timeout = defaultTimeout,
-        strictAuth = true,
-      }) =>
+    Uri url, {
+    Map<String, String>? headers,
+    Duration timeout = defaultTimeout,
+    strictAuth = true,
+  }) =>
       _requestHandler(
         requester: () => client
             .head(url, headers: headers)
@@ -89,11 +89,11 @@ class NetworkImpl implements Network {
 
   @override
   Future<Response> get(
-      Uri url, {
-        Map<String, String>? headers,
-        Duration timeout = defaultTimeout,
-        strictAuth = true,
-      }) =>
+    Uri url, {
+    Map<String, String>? headers,
+    Duration timeout = defaultTimeout,
+    strictAuth = true,
+  }) =>
       _requestHandler(
         requester: () => client
             .get(url, headers: headers)
@@ -103,13 +103,13 @@ class NetworkImpl implements Network {
 
   @override
   Future<Response> post(
-      Uri url, {
-        Map<String, String>? headers,
-        Object? body,
-        Encoding? encoding,
-        Duration timeout = defaultTimeout,
-        strictAuth = true,
-      }) =>
+    Uri url, {
+    Map<String, String>? headers,
+    Object? body,
+    Encoding? encoding,
+    Duration timeout = defaultTimeout,
+    strictAuth = true,
+  }) =>
       _requestHandler(
         requester: () => client
             .post(url, headers: headers, body: body, encoding: encoding)
@@ -119,13 +119,13 @@ class NetworkImpl implements Network {
 
   @override
   Future<Response> put(
-      Uri url, {
-        Map<String, String>? headers,
-        Object? body,
-        Encoding? encoding,
-        Duration timeout = defaultTimeout,
-        strictAuth = true,
-      }) =>
+    Uri url, {
+    Map<String, String>? headers,
+    Object? body,
+    Encoding? encoding,
+    Duration timeout = defaultTimeout,
+    strictAuth = true,
+  }) =>
       _requestHandler(
         requester: () => client
             .put(url, headers: headers, body: body, encoding: encoding)
@@ -135,13 +135,13 @@ class NetworkImpl implements Network {
 
   @override
   Future<Response> patch(
-      Uri url, {
-        Map<String, String>? headers,
-        Object? body,
-        Encoding? encoding,
-        Duration timeout = defaultTimeout,
-        strictAuth = true,
-      }) =>
+    Uri url, {
+    Map<String, String>? headers,
+    Object? body,
+    Encoding? encoding,
+    Duration timeout = defaultTimeout,
+    strictAuth = true,
+  }) =>
       _requestHandler(
         requester: () => client
             .patch(url, headers: headers, body: body, encoding: encoding)
@@ -151,13 +151,13 @@ class NetworkImpl implements Network {
 
   @override
   Future<Response> delete(
-      Uri url, {
-        Map<String, String>? headers,
-        Object? body,
-        Encoding? encoding,
-        Duration timeout = defaultTimeout,
-        strictAuth = true,
-      }) =>
+    Uri url, {
+    Map<String, String>? headers,
+    Object? body,
+    Encoding? encoding,
+    Duration timeout = defaultTimeout,
+    strictAuth = true,
+  }) =>
       _requestHandler(
         requester: () => client
             .delete(url, headers: headers, body: body, encoding: encoding)
@@ -167,10 +167,10 @@ class NetworkImpl implements Network {
 
   @override
   Future<String> read(
-      Uri url, {
-        Map<String, String>? headers,
-        Duration timeout = defaultTimeout,
-      }) {
+    Uri url, {
+    Map<String, String>? headers,
+    Duration timeout = defaultTimeout,
+  }) {
     // TRICKY: `read` will process the response and return a string result if
     // the response status code is successful. If the response doesn't have a
     // success status code, an exception is raised.

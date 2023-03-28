@@ -5,16 +5,18 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i4;
 
-import 'package:event_sync/src/core/data/id_generator.dart' as _i7;
-import 'package:event_sync/src/core/time/time_info.dart' as _i8;
+import 'package:event_sync/src/core/data/id_generator.dart' as _i8;
+import 'package:event_sync/src/core/time/time_info.dart' as _i9;
 import 'package:event_sync/src/feature/data/local/data_sources/event_local_data_source.dart'
-    as _i5;
-import 'package:event_sync/src/feature/data/local/models/event_model.dart'
     as _i6;
+import 'package:event_sync/src/feature/data/local/models/event_model.dart'
+    as _i7;
 import 'package:event_sync/src/feature/data/remote/data_sources/event_remote_data_source.dart'
     as _i3;
 import 'package:event_sync/src/feature/data/remote/models/remote_event_model.dart'
     as _i2;
+import 'package:event_sync/src/feature/data/remote/models/remote_new_event_model.dart'
+    as _i5;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -77,7 +79,7 @@ class MockEventRemoteDataSource extends _i1.Mock
       ) as _i4.Future<List<_i2.RemoteEventModel>>);
   @override
   _i4.Future<_i2.RemoteEventModel> createEvent(
-    _i2.RemoteEventModel? event, {
+    _i5.RemoteNewEventModel? event, {
     required Uri? host,
     required String? token,
   }) =>
@@ -109,13 +111,13 @@ class MockEventRemoteDataSource extends _i1.Mock
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockEventLocalDataSource extends _i1.Mock
-    implements _i5.EventLocalDataSource {
+    implements _i6.EventLocalDataSource {
   MockEventLocalDataSource() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Future<void> cacheEvent(_i6.EventModel? model) => (super.noSuchMethod(
+  _i4.Future<void> cacheEvent(_i7.EventModel? model) => (super.noSuchMethod(
         Invocation.method(
           #cacheEvent,
           [model],
@@ -124,13 +126,13 @@ class MockEventLocalDataSource extends _i1.Mock
         returnValueForMissingStub: _i4.Future<void>.value(),
       ) as _i4.Future<void>);
   @override
-  _i4.Future<List<_i6.EventModel>> getAllEvents() => (super.noSuchMethod(
+  _i4.Future<List<_i7.EventModel>> getAllEvents() => (super.noSuchMethod(
         Invocation.method(
           #getAllEvents,
           [],
         ),
-        returnValue: _i4.Future<List<_i6.EventModel>>.value(<_i6.EventModel>[]),
-      ) as _i4.Future<List<_i6.EventModel>>);
+        returnValue: _i4.Future<List<_i7.EventModel>>.value(<_i7.EventModel>[]),
+      ) as _i4.Future<List<_i7.EventModel>>);
   @override
   _i4.Future<void> deleteEvent(String? eventId) => (super.noSuchMethod(
         Invocation.method(
@@ -154,7 +156,7 @@ class MockEventLocalDataSource extends _i1.Mock
 /// A class which mocks [IdGenerator].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockIdGenerator extends _i1.Mock implements _i7.IdGenerator {
+class MockIdGenerator extends _i1.Mock implements _i8.IdGenerator {
   MockIdGenerator() {
     _i1.throwOnMissingStub(this);
   }
@@ -172,7 +174,7 @@ class MockIdGenerator extends _i1.Mock implements _i7.IdGenerator {
 /// A class which mocks [TimeInfo].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockTimeInfo extends _i1.Mock implements _i8.TimeInfo {
+class MockTimeInfo extends _i1.Mock implements _i9.TimeInfo {
   MockTimeInfo() {
     _i1.throwOnMissingStub(this);
   }

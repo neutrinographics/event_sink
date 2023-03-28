@@ -186,8 +186,14 @@ void main() {
       baseEvent.copyWith(remoteId: 1, streamId: "synced-stream"),
     ];
     final List<RemoteEventModel> tRemoteEvents = [
-      // second graph
-      baseEvent.toRemote().copyWith(id: 3),
+      RemoteEventModel(
+        id: 2,
+        createdAt: tTime,
+        streamId: baseEvent.streamId,
+        version: baseEvent.version,
+        name: baseEvent.name,
+        data: baseEvent.data,
+      ),
     ];
 
     test(
@@ -208,21 +214,23 @@ void main() {
         for (var e in tCachedEvents) {
           if (e.synced == true) {
             verifyNever(mockEventRemoteDataSource.createEvent(
-              e.toRemote(),
+              e.toNewRemote(),
               host: Uri.parse(tHost),
               token: tToken,
             ));
           } else {
             verify(mockEventRemoteDataSource.createEvent(
-              e.toRemote(),
+              e.toNewRemote(),
               host: Uri.parse(tHost),
               token: tToken,
             ));
           }
         }
         // verify events were updated with their remote id
-        verify(mockEventLocalDataSource
-            .cacheEvent(baseEvent.copyWith(remoteId: 3)));
+        verify(mockEventLocalDataSource.cacheEvent(baseEvent.copyWith(
+          remoteId: 2,
+          remoteCreatedAt: tTime,
+        )));
         expect(result, equals(const Right(null)));
       },
     );

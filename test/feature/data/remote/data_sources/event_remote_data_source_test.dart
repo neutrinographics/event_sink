@@ -5,6 +5,7 @@ import 'package:event_sync/src/core/network/network.dart';
 import 'package:event_sync/src/core/network/response.dart';
 import 'package:event_sync/src/feature/data/remote/data_sources/event_remote_data_source.dart';
 import 'package:event_sync/src/feature/data/remote/models/remote_event_model.dart';
+import 'package:event_sync/src/feature/data/remote/models/remote_new_event_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -27,6 +28,12 @@ void main() {
     final tHost = Uri.parse('https://example.com');
     final tEvent =
         RemoteEventModel.fromJson(json.decode(fixture('remote_event.json')));
+    final tNewEvent = RemoteNewEventModel(
+      streamId: tEvent.streamId,
+      version: tEvent.version,
+      name: tEvent.name,
+      data: tEvent.data,
+    );
     final tBody = fixture('remote_event.json');
     final tHeaders = {
       "Content-Type": "application/json",
@@ -46,13 +53,13 @@ void main() {
         )).thenAnswer((_) async => tResponse);
         // act
         final result = await dataSource.createEvent(
-          tEvent,
+          tNewEvent,
           host: tHost,
           token: tToken,
         );
         // assert
         final tExpectedBody = json.encode({
-          "event": tEvent.toJson(),
+          "event": tNewEvent.toJson(),
         });
         verify(mockNetwork.post(tCreateEventHost,
             headers: tHeaders, body: tExpectedBody));
@@ -70,7 +77,7 @@ void main() {
         // act
         final call = dataSource.createEvent;
         // assert
-        expect(() => call(tEvent, host: tHost, token: tToken),
+        expect(() => call(tNewEvent, host: tHost, token: tToken),
             throwsA(const TypeMatcher<ServerException>()));
       },
     );
@@ -83,7 +90,7 @@ void main() {
         // act
         final call = dataSource.createEvent;
         // assert
-        expect(() => call(tEvent, host: tHost, token: tToken),
+        expect(() => call(tNewEvent, host: tHost, token: tToken),
             throwsA(const TypeMatcher<ServerException>()));
       },
     );

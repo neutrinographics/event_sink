@@ -5,6 +5,7 @@ import 'package:event_sync/src/core/network/network.dart';
 import 'package:event_sync/src/core/network/network_utils.dart';
 import 'package:event_sync/src/core/network/response.dart';
 import 'package:event_sync/src/feature/data/remote/models/remote_event_model.dart';
+import 'package:event_sync/src/feature/data/remote/models/remote_new_event_model.dart';
 
 abstract class EventRemoteDataSource {
   /// Fetches a list of events from the server.
@@ -15,12 +16,12 @@ abstract class EventRemoteDataSource {
     required String token,
   });
 
-  /// Uploads a [RemoteEventModel] to the server.
+  /// Uploads a [RemoteNewEventModel] to the server.
   /// Returns the newly created remote event.
   ///
   /// Throws [ServerException] if the upload fails.
   Future<RemoteEventModel> createEvent(
-    RemoteEventModel event, {
+    RemoteNewEventModel event, {
     required Uri host,
     required String token,
   });
@@ -35,7 +36,7 @@ class EventRemoteDataSourceImpl implements EventRemoteDataSource {
 
   @override
   Future<RemoteEventModel> createEvent(
-    RemoteEventModel event, {
+    RemoteNewEventModel event, {
     required Uri host,
     required String token,
   }) async {
@@ -93,7 +94,7 @@ class EventRemoteDataSourceImpl implements EventRemoteDataSource {
       final List<dynamic> events = responseJson['events'] as List<dynamic>;
       final remoteEvents =
           events.map((e) => RemoteEventModel.fromJson(e)).toList();
-      remoteEvents.sort((a, b) => a.id! - b.id!);
+      remoteEvents.sort((a, b) => a.id - b.id);
       return remoteEvents;
     } on ServerException {
       rethrow;

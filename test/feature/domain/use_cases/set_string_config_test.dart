@@ -29,8 +29,8 @@ void main() {
       when(mockConfigRepository.write(any, any))
           .thenAnswer((_) async => const Right(null));
       // act
-      final result =
-          await useCase(const SetStringConfigParams(option: tOption, value: tHost));
+      final result = await useCase(
+          const SetStringConfigParams(option: tOption, value: tHost));
       // assert
       expect(result, const Right(null));
       verify(mockConfigRepository.write(tOption, tHost));

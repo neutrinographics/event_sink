@@ -50,7 +50,7 @@ mixin _$EventModel {
   /// The unique name of the event.
   String get name => throw _privateConstructorUsedError;
 
-  /// Information specific to the [EventActionType]
+  /// Custom event data
   Map<String, dynamic> get data => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -281,10 +281,10 @@ class _$_EventModel extends _EventModel {
   @override
   final String name;
 
-  /// Information specific to the [EventActionType]
+  /// Custom event data
   final Map<String, dynamic> _data;
 
-  /// Information specific to the [EventActionType]
+  /// Custom event data
   @override
   Map<String, dynamic> get data {
     if (_data is EqualUnmodifiableMapView) return _data;
@@ -401,7 +401,7 @@ abstract class _EventModel extends EventModel {
   String get name;
   @override
 
-  /// Information specific to the [EventActionType]
+  /// Custom event data
   Map<String, dynamic> get data;
   @override
   @JsonKey(ignore: true)

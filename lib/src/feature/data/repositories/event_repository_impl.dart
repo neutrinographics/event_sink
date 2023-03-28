@@ -114,7 +114,7 @@ class EventRepositoryImpl extends EventRepository {
       if (e.synced) continue;
       try {
         final syncedEvent = await remoteDataSource.createEvent(
-          e.toRemote(),
+          e.toNewRemote(),
           host: Uri.parse(host),
           token: authToken,
         );

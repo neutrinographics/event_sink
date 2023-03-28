@@ -1,4 +1,5 @@
 import 'package:event_sync/src/feature/data/remote/models/remote_event_model.dart';
+import 'package:event_sync/src/feature/data/remote/models/remote_new_event_model.dart';
 import 'package:event_sync/src/feature/domain/entities/event_stub.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -40,7 +41,7 @@ class EventModel with _$EventModel {
     /// The unique name of the event.
     required String name,
 
-    /// Information specific to the [EventActionType]
+    /// Custom event data
     required Map<String, dynamic> data,
   }) = _EventModel;
 
@@ -70,14 +71,12 @@ class EventModel with _$EventModel {
     );
   }
 
-  RemoteEventModel toRemote() {
-    return RemoteEventModel(
-      id: remoteId,
-      createdAt: remoteCreatedAt,
+  RemoteNewEventModel toNewRemote() {
+    return RemoteNewEventModel(
       streamId: streamId,
       version: version,
-      data: data,
       name: name,
+      data: data,
     );
   }
 

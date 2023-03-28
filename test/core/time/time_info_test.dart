@@ -19,7 +19,7 @@ main() {
   group('now', () {
     test(
       'should forward the call to DateTime.now',
-          () async {
+      () async {
         // arrange
         final tTime = DateTime.now();
         when(mockClock.now()).thenReturn(tTime);
