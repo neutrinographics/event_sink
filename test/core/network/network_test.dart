@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:event_sync/src/core/error/exception.dart';
 import 'package:event_sync/src/core/network/network.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
@@ -53,12 +54,12 @@ void main() {
     group('post', () {
       test(
         'should forward the call to Client.post',
-        () async {
+            () async {
           // arrange
           when(mockClient.post(tUrl,
-                  body: anyNamed('body'),
-                  headers: anyNamed('headers'),
-                  encoding: anyNamed('encoding')))
+              body: anyNamed('body'),
+              headers: anyNamed('headers'),
+              encoding: anyNamed('encoding')))
               .thenAnswer((_) => tResponseFuture);
           // act
           final result = await network.post(tUrl,
@@ -76,30 +77,29 @@ void main() {
 
       test(
         'should throw AuthException if the request is not authorized',
-        () async {
+            () async {
           // arrange
           when(mockClient.post(tUrl))
               .thenAnswer((_) => tResponseFutureAuthFailure);
           // act
           final call = network.post;
           // assert
-          expect(() => call(tUrl),
-              throwsA(const TypeMatcher<NetworkAuthException>()));
+          expect(() => call(tUrl), throwsA(const TypeMatcher<AuthException>()));
           verify(mockClient.post(tUrl));
         },
       );
 
       test(
-        'should throw NetworkException if the request fails',
-        () async {
+        'should throw ServerException if the request fails',
+            () async {
           // arrange
           when(mockClient.post(tUrl)).thenThrow((_) => Exception());
           // act
           final call = network.post;
           // assert
           expect(
-            () => call(tUrl),
-            throwsA(const TypeMatcher<NetworkException>()),
+                () => call(tUrl),
+            throwsA(const TypeMatcher<ServerException>()),
           );
           verify(mockClient.post(tUrl));
         },
@@ -109,7 +109,7 @@ void main() {
     group('head', () {
       test(
         'should forward the call to Client.head',
-        () async {
+            () async {
           // arrange
           when(mockClient.head(tUrl, headers: anyNamed('headers')))
               .thenAnswer((_) => tResponseFuture);
@@ -123,30 +123,29 @@ void main() {
 
       test(
         'should throw AuthException if the request is not authorized',
-        () async {
+            () async {
           // arrange
           when(mockClient.head(tUrl))
               .thenAnswer((_) => tResponseFutureAuthFailure);
           // act
           final call = network.head;
           // assert
-          expect(() => call(tUrl),
-              throwsA(const TypeMatcher<NetworkAuthException>()));
+          expect(() => call(tUrl), throwsA(const TypeMatcher<AuthException>()));
           verify(mockClient.head(tUrl));
         },
       );
 
       test(
-        'should throw NetworkException if the request fails',
-        () async {
+        'should throw ServerException if the request fails',
+            () async {
           // arrange
           when(mockClient.head(tUrl)).thenThrow((_) => Exception());
           // act
           final call = network.head;
           // assert
           expect(
-            () => call(tUrl),
-            throwsA(const TypeMatcher<NetworkException>()),
+                () => call(tUrl),
+            throwsA(const TypeMatcher<ServerException>()),
           );
           verify(mockClient.head(tUrl));
         },
@@ -156,7 +155,7 @@ void main() {
     group('get', () {
       test(
         'should forward the call to Client.get',
-        () async {
+            () async {
           // arrange
           when(mockClient.get(tUrl, headers: anyNamed('headers')))
               .thenAnswer((_) => tResponseFuture);
@@ -169,30 +168,29 @@ void main() {
       );
       test(
         'should throw AuthException if the request is not authorized',
-        () async {
+            () async {
           // arrange
           when(mockClient.get(tUrl))
               .thenAnswer((_) => tResponseFutureAuthFailure);
           // act
           final call = network.get;
           // assert
-          expect(() => call(tUrl),
-              throwsA(const TypeMatcher<NetworkAuthException>()));
+          expect(() => call(tUrl), throwsA(const TypeMatcher<AuthException>()));
           verify(mockClient.get(tUrl));
         },
       );
 
       test(
-        'should throw NetworkException if the request fails',
-        () async {
+        'should throw ServerException if the request fails',
+            () async {
           // arrange
           when(mockClient.get(tUrl)).thenThrow((_) => Exception());
           // act
           final call = network.get;
           // assert
           expect(
-            () => call(tUrl),
-            throwsA(const TypeMatcher<NetworkException>()),
+                () => call(tUrl),
+            throwsA(const TypeMatcher<ServerException>()),
           );
           verify(mockClient.get(tUrl));
         },
@@ -202,12 +200,12 @@ void main() {
     group('put', () {
       test(
         'should forward the call to Client.put',
-        () async {
+            () async {
           // arrange
           when(mockClient.put(tUrl,
-                  body: anyNamed('body'),
-                  headers: anyNamed('headers'),
-                  encoding: anyNamed('encoding')))
+              body: anyNamed('body'),
+              headers: anyNamed('headers'),
+              encoding: anyNamed('encoding')))
               .thenAnswer((_) => tResponseFuture);
           // act
           final result = await network.put(tUrl,
@@ -220,30 +218,29 @@ void main() {
       );
       test(
         'should throw AuthException if the request is not authorized',
-        () async {
+            () async {
           // arrange
           when(mockClient.put(tUrl))
               .thenAnswer((_) => tResponseFutureAuthFailure);
           // act
           final call = network.put;
           // assert
-          expect(() => call(tUrl),
-              throwsA(const TypeMatcher<NetworkAuthException>()));
+          expect(() => call(tUrl), throwsA(const TypeMatcher<AuthException>()));
           verify(mockClient.put(tUrl));
         },
       );
 
       test(
-        'should throw NetworkException if the request fails',
-        () async {
+        'should throw ServerException if the request fails',
+            () async {
           // arrange
           when(mockClient.put(tUrl)).thenThrow((_) => Exception());
           // act
           final call = network.put;
           // assert
           expect(
-            () => call(tUrl),
-            throwsA(const TypeMatcher<NetworkException>()),
+                () => call(tUrl),
+            throwsA(const TypeMatcher<ServerException>()),
           );
           verify(mockClient.put(tUrl));
         },
@@ -253,12 +250,12 @@ void main() {
     group('patch', () {
       test(
         'should forward the call to Client.patch',
-        () async {
+            () async {
           // arrange
           when(mockClient.patch(tUrl,
-                  body: anyNamed('body'),
-                  headers: anyNamed('headers'),
-                  encoding: anyNamed('encoding')))
+              body: anyNamed('body'),
+              headers: anyNamed('headers'),
+              encoding: anyNamed('encoding')))
               .thenAnswer((_) => tResponseFuture);
           // act
           final result = await network.patch(tUrl,
@@ -271,30 +268,29 @@ void main() {
       );
       test(
         'should throw AuthException if the request is not authorized',
-        () async {
+            () async {
           // arrange
           when(mockClient.patch(tUrl))
               .thenAnswer((_) => tResponseFutureAuthFailure);
           // act
           final call = network.patch;
           // assert
-          expect(() => call(tUrl),
-              throwsA(const TypeMatcher<NetworkAuthException>()));
+          expect(() => call(tUrl), throwsA(const TypeMatcher<AuthException>()));
           verify(mockClient.patch(tUrl));
         },
       );
 
       test(
-        'should throw NetworkException if the request fails',
-        () async {
+        'should throw ServerException if the request fails',
+            () async {
           // arrange
           when(mockClient.patch(tUrl)).thenThrow((_) => Exception());
           // act
           final call = network.patch;
           // assert
           expect(
-            () => call(tUrl),
-            throwsA(const TypeMatcher<NetworkException>()),
+                () => call(tUrl),
+            throwsA(const TypeMatcher<ServerException>()),
           );
           verify(mockClient.patch(tUrl));
         },
@@ -304,12 +300,12 @@ void main() {
     group('delete', () {
       test(
         'should forward the call to Client.delete',
-        () async {
+            () async {
           // arrange
           when(mockClient.delete(tUrl,
-                  body: anyNamed('body'),
-                  headers: anyNamed('headers'),
-                  encoding: anyNamed('encoding')))
+              body: anyNamed('body'),
+              headers: anyNamed('headers'),
+              encoding: anyNamed('encoding')))
               .thenAnswer((_) => tResponseFuture);
           // act
           final result = await network.delete(tUrl,
@@ -322,30 +318,29 @@ void main() {
       );
       test(
         'should throw AuthException if the request is not authorized',
-        () async {
+            () async {
           // arrange
           when(mockClient.delete(tUrl))
               .thenAnswer((_) => tResponseFutureAuthFailure);
           // act
           final call = network.delete;
           // assert
-          expect(() => call(tUrl),
-              throwsA(const TypeMatcher<NetworkAuthException>()));
+          expect(() => call(tUrl), throwsA(const TypeMatcher<AuthException>()));
           verify(mockClient.delete(tUrl));
         },
       );
 
       test(
-        'should throw NetworkException if the request fails',
-        () async {
+        'should throw ServerException if the request fails',
+            () async {
           // arrange
           when(mockClient.delete(tUrl)).thenThrow((_) => Exception());
           // act
           final call = network.delete;
           // assert
           expect(
-            () => call(tUrl),
-            throwsA(const TypeMatcher<NetworkException>()),
+                () => call(tUrl),
+            throwsA(const TypeMatcher<ServerException>()),
           );
           verify(mockClient.delete(tUrl));
         },
@@ -355,7 +350,7 @@ void main() {
     group('read', () {
       test(
         'should forward the call to Client.read',
-        () async {
+            () async {
           // arrange
           final tFuture = Future.value(tResponseBody);
           when(mockClient.read(tUrl, headers: anyNamed('headers')))
@@ -369,8 +364,8 @@ void main() {
       );
 
       test(
-        'should throw NetworkException if the request fails',
-        () async {
+        'should throw ServerException if the request fails',
+            () async {
           // TRICKY: `read` will return a string, and any non-successful
           // response code will raise an exception.
 
@@ -380,8 +375,8 @@ void main() {
           final call = network.read;
           // assert
           expect(
-            () => call(tUrl),
-            throwsA(const TypeMatcher<NetworkException>()),
+                () => call(tUrl),
+            throwsA(const TypeMatcher<ServerException>()),
           );
           verify(mockClient.read(tUrl));
         },

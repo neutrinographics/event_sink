@@ -43,7 +43,6 @@ class MockNetwork extends _i1.Mock implements _i3.Network {
   _i4.Future<_i2.Response> head(
     Uri? url, {
     Map<String, String>? headers,
-    Duration? timeout,
     bool? strictAuth,
   }) =>
       (super.noSuchMethod(
@@ -52,7 +51,6 @@ class MockNetwork extends _i1.Mock implements _i3.Network {
           [url],
           {
             #headers: headers,
-            #timeout: timeout,
             #strictAuth: strictAuth,
           },
         ),
@@ -63,7 +61,6 @@ class MockNetwork extends _i1.Mock implements _i3.Network {
             [url],
             {
               #headers: headers,
-              #timeout: timeout,
               #strictAuth: strictAuth,
             },
           ),
@@ -73,7 +70,6 @@ class MockNetwork extends _i1.Mock implements _i3.Network {
   _i4.Future<_i2.Response> get(
     Uri? url, {
     Map<String, String>? headers,
-    Duration? timeout,
     bool? strictAuth,
   }) =>
       (super.noSuchMethod(
@@ -82,7 +78,6 @@ class MockNetwork extends _i1.Mock implements _i3.Network {
           [url],
           {
             #headers: headers,
-            #timeout: timeout,
             #strictAuth: strictAuth,
           },
         ),
@@ -93,7 +88,6 @@ class MockNetwork extends _i1.Mock implements _i3.Network {
             [url],
             {
               #headers: headers,
-              #timeout: timeout,
               #strictAuth: strictAuth,
             },
           ),
@@ -105,7 +99,6 @@ class MockNetwork extends _i1.Mock implements _i3.Network {
     Map<String, String>? headers,
     Object? body,
     _i5.Encoding? encoding,
-    Duration? timeout,
     bool? strictAuth,
   }) =>
       (super.noSuchMethod(
@@ -116,7 +109,6 @@ class MockNetwork extends _i1.Mock implements _i3.Network {
             #headers: headers,
             #body: body,
             #encoding: encoding,
-            #timeout: timeout,
             #strictAuth: strictAuth,
           },
         ),
@@ -129,7 +121,6 @@ class MockNetwork extends _i1.Mock implements _i3.Network {
               #headers: headers,
               #body: body,
               #encoding: encoding,
-              #timeout: timeout,
               #strictAuth: strictAuth,
             },
           ),
@@ -141,7 +132,6 @@ class MockNetwork extends _i1.Mock implements _i3.Network {
     Map<String, String>? headers,
     Object? body,
     _i5.Encoding? encoding,
-    Duration? timeout,
     bool? strictAuth,
   }) =>
       (super.noSuchMethod(
@@ -152,7 +142,6 @@ class MockNetwork extends _i1.Mock implements _i3.Network {
             #headers: headers,
             #body: body,
             #encoding: encoding,
-            #timeout: timeout,
             #strictAuth: strictAuth,
           },
         ),
@@ -165,7 +154,6 @@ class MockNetwork extends _i1.Mock implements _i3.Network {
               #headers: headers,
               #body: body,
               #encoding: encoding,
-              #timeout: timeout,
               #strictAuth: strictAuth,
             },
           ),
@@ -177,7 +165,6 @@ class MockNetwork extends _i1.Mock implements _i3.Network {
     Map<String, String>? headers,
     Object? body,
     _i5.Encoding? encoding,
-    Duration? timeout,
     bool? strictAuth,
   }) =>
       (super.noSuchMethod(
@@ -188,7 +175,6 @@ class MockNetwork extends _i1.Mock implements _i3.Network {
             #headers: headers,
             #body: body,
             #encoding: encoding,
-            #timeout: timeout,
             #strictAuth: strictAuth,
           },
         ),
@@ -201,7 +187,6 @@ class MockNetwork extends _i1.Mock implements _i3.Network {
               #headers: headers,
               #body: body,
               #encoding: encoding,
-              #timeout: timeout,
               #strictAuth: strictAuth,
             },
           ),
@@ -213,7 +198,6 @@ class MockNetwork extends _i1.Mock implements _i3.Network {
     Map<String, String>? headers,
     Object? body,
     _i5.Encoding? encoding,
-    Duration? timeout,
     bool? strictAuth,
   }) =>
       (super.noSuchMethod(
@@ -224,7 +208,6 @@ class MockNetwork extends _i1.Mock implements _i3.Network {
             #headers: headers,
             #body: body,
             #encoding: encoding,
-            #timeout: timeout,
             #strictAuth: strictAuth,
           },
         ),
@@ -237,7 +220,6 @@ class MockNetwork extends _i1.Mock implements _i3.Network {
               #headers: headers,
               #body: body,
               #encoding: encoding,
-              #timeout: timeout,
               #strictAuth: strictAuth,
             },
           ),
@@ -247,16 +229,12 @@ class MockNetwork extends _i1.Mock implements _i3.Network {
   _i4.Future<String> read(
     Uri? url, {
     Map<String, String>? headers,
-    Duration? timeout,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
           #read,
           [url],
-          {
-            #headers: headers,
-            #timeout: timeout,
-          },
+          {#headers: headers},
         ),
         returnValue: _i4.Future<String>.value(''),
       ) as _i4.Future<String>);

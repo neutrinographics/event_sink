@@ -23,8 +23,6 @@ Map<String, dynamic> _$$_ConfigBoolModelToJson(_$_ConfigBoolModel instance) =>
 const _$ConfigOptionEnumMap = {
   ConfigOption.serverHost: 'serverHost',
   ConfigOption.authToken: 'authToken',
-  ConfigOption.pin: 'pin',
-  ConfigOption.lockTimeout: 'lockTimeout',
 };
 
 _$_ConfigStringModel _$$_ConfigStringModelFromJson(Map<String, dynamic> json) =>

@@ -7,12 +7,6 @@ enum ConfigOption {
 
   /// The API authentication token
   authToken,
-
-  /// The Pin to use for authentication
-  pin,
-
-  /// The screen lock timeout in minutes
-  lockTimeout,
 }
 
 extension ConfigOptionsExtension on ConfigOption {
