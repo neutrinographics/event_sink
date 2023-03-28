@@ -109,7 +109,7 @@ class MockEventRepository extends _i1.Mock implements _i3.EventRepository {
       ) as _i4.Future<_i2.Either<_i5.Failure, void>>);
   @override
   _i4.Future<_i2.Either<_i5.Failure, void>> add(
-          _i6.EventInfo<_i6.EventParams>? event) =>
+          _i6.EventInfo<_i6.EventData>? event) =>
       (super.noSuchMethod(
         Invocation.method(
           #add,

@@ -8,13 +8,13 @@ import 'package:mockito/mockito.dart';
 
 import 'add_event_test.mocks.dart';
 
-class MockEvent extends EventInfo<MockEventParams> {
+class MockEvent extends EventInfo<MockEventData> {
   MockEvent(
       {required super.streamId, required super.data, required super.name});
 }
 
-class MockEventParams implements EventParams {
-  const MockEventParams();
+class MockEventData implements EventData {
+  const MockEventData();
 
   @override
   Map<String, dynamic> toJson() {
@@ -22,8 +22,8 @@ class MockEventParams implements EventParams {
   }
 
   @override
-  factory MockEventParams.fromJson(Map<String, dynamic> json) {
-    return const MockEventParams();
+  factory MockEventData.fromJson(Map<String, dynamic> json) {
+    return const MockEventData();
   }
 }
 
@@ -40,7 +40,7 @@ void main() {
 
   final tEvent = MockEvent(
     streamId: 'streamId',
-    data: const MockEventParams(),
+    data: const MockEventData(),
     name: 'name',
   );
 

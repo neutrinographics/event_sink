@@ -4,7 +4,7 @@ import 'package:event_sync/src/core/error/failure.dart';
 import 'package:event_sync/src/sync_controller.dart';
 import 'injection_container.dart' as ic;
 
-typedef EventParamsGenerator = EventParams Function(Map<String, dynamic>);
+typedef EventParamsGenerator = EventData Function(Map<String, dynamic>);
 
 /// Defines the logic for interacting with the event controller.
 abstract class EventSyncBase {
@@ -32,7 +32,7 @@ abstract class EventSyncBase {
   Future<Either<Failure, void>> sync() => _controller.sync();
 
   /// Adds an event to the queue.
-  Future<Either<Failure, void>> add(EventInfo<EventParams> event) =>
+  Future<Either<Failure, void>> add(EventInfo<EventData> event) =>
       _controller.add(event);
 
   /// Applies any un-processed events.

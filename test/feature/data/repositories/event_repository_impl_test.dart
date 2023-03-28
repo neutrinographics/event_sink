@@ -22,8 +22,8 @@ import '../../../fixtures/fixture_reader.dart';
 import '../../../test_utils.dart';
 import 'event_repository_impl_test.mocks.dart';
 
-class MockEvent extends EventInfo<MockEventParams> {
-  MockEvent({required String streamId, required MockEventParams params})
+class MockEvent extends EventInfo<MockEventData> {
+  MockEvent({required String streamId, required MockEventData params})
       : super(
           streamId: streamId,
           name: 'add_member',
@@ -31,7 +31,7 @@ class MockEvent extends EventInfo<MockEventParams> {
         );
 }
 
-class MockEventParams implements EventParams {
+class MockEventData implements EventData {
   @override
   Map<String, dynamic> toJson() {
     return {};
@@ -496,7 +496,7 @@ void main() {
       () async {
         // arrange
         final event = MockEvent(
-          params: MockEventParams(),
+          params: MockEventData(),
           streamId: tEventModel.streamId,
         );
         when(mockTimeInfo.now()).thenReturn(tTime);
@@ -518,7 +518,7 @@ void main() {
       () async {
         // arrange
         final event = MockEvent(
-          params: MockEventParams(),
+          params: MockEventData(),
           streamId: tEventModel.streamId,
         );
         when(mockTimeInfo.now()).thenReturn(tTime);
@@ -541,7 +541,7 @@ void main() {
       () async {
         // arrange
         final event = MockEvent(
-          params: MockEventParams(),
+          params: MockEventData(),
           streamId: tEventModel.streamId,
         );
         when(mockEventLocalDataSource.getAllEvents())
@@ -561,7 +561,7 @@ void main() {
       () async {
         // arrange
         final event = MockEvent(
-          params: MockEventParams(),
+          params: MockEventData(),
           streamId: tEventModel.streamId,
         );
         when(mockTimeInfo.now()).thenReturn(tTime);

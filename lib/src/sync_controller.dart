@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:event_sync/src/core/domain/config_options.dart';
 import 'package:event_sync/src/core/error/failure.dart';
+import 'package:event_sync/src/event_data.dart';
 import 'package:event_sync/src/event_handler.dart';
 import 'package:event_sync/src/event_params.dart';
 import 'package:event_sync/src/event_sync_base.dart';
@@ -35,7 +36,7 @@ class SyncController {
       _applyEvents(ApplyEventsParams(
           handlers: handlers, paramGenerators: paramGenerators));
 
-  Future<Either<Failure, void>> add(EventInfo<EventParams> event) =>
+  Future<Either<Failure, void>> add(EventInfo<EventData> event) =>
       _addEvent(AddEventParams(event: event));
 
   Future<Either<Failure, void>> setAuth(String token) => _setConfig(

@@ -1,9 +1,9 @@
-import 'package:event_sync/src/event_params.dart';
+import 'package:event_sync/src/event_data.dart';
 
 /// Defines how an event should be handled locally.
 /// For example, after creating a new event, the local database can be updated
 /// to reflect the changes in the event.
-abstract class EventHandler<P extends EventParams> {
+abstract class EventHandler<P extends EventData> {
   const EventHandler();
 
   /// Processes the [params] of an event that has entered the stream identified by [streamId].

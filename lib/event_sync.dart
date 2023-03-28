@@ -8,3 +8,4 @@ export 'src/event_handler.dart';
 export 'src/feature/domain/entities/event_info.dart';
 export 'src/event_sync_base.dart';
 export 'src/event_params.dart';
+export 'src/event_data.dart';

@@ -4,6 +4,7 @@ import 'package:event_sync/src/core/data/id_generator.dart';
 import 'package:event_sync/src/core/error/exception.dart';
 import 'package:event_sync/src/core/error/failure.dart';
 import 'package:event_sync/src/core/time/time_info.dart';
+import 'package:event_sync/src/event_data.dart';
 import 'package:event_sync/src/event_params.dart';
 import 'package:event_sync/src/feature/data/local/data_sources/event_local_data_source.dart';
 import 'package:event_sync/src/feature/data/local/models/event_model.dart';
@@ -200,7 +201,7 @@ class EventRepositoryImpl extends EventRepository {
   }
 
   @override
-  Future<Either<Failure, void>> add(EventInfo<EventParams> event) async {
+  Future<Either<Failure, void>> add(EventInfo<EventData> event) async {
     // get stream version
     final int streamVersion;
     try {
