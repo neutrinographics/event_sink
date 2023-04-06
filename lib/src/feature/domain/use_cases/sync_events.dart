@@ -1,10 +1,10 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
-import 'package:event_sync/src/core/domain/config_options.dart';
-import 'package:event_sync/src/core/domain/usecase.dart';
-import 'package:event_sync/src/core/error/failure.dart';
-import 'package:event_sync/src/feature/domain/repositories/config_repository.dart';
-import 'package:event_sync/src/feature/domain/repositories/event_repository.dart';
+import 'package:event_sink/src/core/domain/config_options.dart';
+import 'package:event_sink/src/core/domain/usecase.dart';
+import 'package:event_sink/src/core/error/failure.dart';
+import 'package:event_sink/src/feature/domain/repositories/config_repository.dart';
+import 'package:event_sink/src/feature/domain/repositories/event_repository.dart';
 
 class SyncEvents extends UseCase<void, SyncEventsParams> {
   EventRepository eventRepository;

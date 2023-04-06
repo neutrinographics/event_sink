@@ -1,24 +1,24 @@
 import 'package:dartz/dartz.dart';
-import 'package:event_sync/event_sync.dart';
-import 'package:event_sync/src/core/error/failure.dart';
-import 'package:event_sync/src/sync_controller.dart';
+import 'package:event_sink/event_sink.dart';
+import 'package:event_sink/src/core/error/failure.dart';
+import 'package:event_sink/src/sink_controller.dart';
 import 'injection_container.dart' as ic;
 
 typedef EventParamsGenerator = EventData Function(Map<String, dynamic>);
 
 /// Defines the logic for interacting with the event controller.
-abstract class EventSyncBase {
+abstract class EventSinkBase {
   Map<String, EventHandler> eventHandlersMap();
 
   Map<String, EventParamsGenerator> get eventParamsGeneratorMap;
 
-  late SyncController _controller;
+  late SinkController _controller;
 
   List<EventInfo> events = [];
 
-  EventSyncBase({String? host}) {
+  EventSinkBase({String? host}) {
     ic.init();
-    _controller = ic.sl<SyncController>();
+    _controller = ic.sl<SinkController>();
   }
 
   /// Configures the auth token used for API requests.

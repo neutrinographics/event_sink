@@ -1,6 +1,6 @@
-import 'package:event_sync/src/core/data/local_cache.dart';
-import 'package:event_sync/src/core/error/exception.dart';
-import 'package:event_sync/src/feature/data/local/models/event_model.dart';
+import 'package:event_sink/src/core/data/local_cache.dart';
+import 'package:event_sink/src/core/error/exception.dart';
+import 'package:event_sink/src/feature/data/local/models/event_model.dart';
 
 abstract class EventLocalDataSource {
   /// Writes an event to the cache.

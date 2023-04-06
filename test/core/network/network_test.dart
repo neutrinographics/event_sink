@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:event_sync/src/core/error/exception.dart';
-import 'package:event_sync/src/core/network/network.dart';
+import 'package:event_sink/src/core/error/exception.dart';
+import 'package:event_sink/src/core/network/network.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';

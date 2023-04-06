@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-import 'package:event_sync/src/core/error/exception.dart';
-import 'package:event_sync/src/core/network/network.dart';
-import 'package:event_sync/src/core/network/network_utils.dart';
-import 'package:event_sync/src/core/network/response.dart';
-import 'package:event_sync/src/feature/data/remote/models/remote_event_model.dart';
-import 'package:event_sync/src/feature/data/remote/models/remote_new_event_model.dart';
+import 'package:event_sink/src/core/error/exception.dart';
+import 'package:event_sink/src/core/network/network.dart';
+import 'package:event_sink/src/core/network/network_utils.dart';
+import 'package:event_sink/src/core/network/response.dart';
+import 'package:event_sink/src/feature/data/remote/models/remote_event_model.dart';
+import 'package:event_sink/src/feature/data/remote/models/remote_new_event_model.dart';
 
 abstract class EventRemoteDataSource {
   /// Fetches a list of events from the server.

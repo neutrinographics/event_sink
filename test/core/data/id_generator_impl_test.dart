@@ -1,4 +1,4 @@
-import 'package:event_sync/src/core/data/id_generator.dart';
+import 'package:event_sink/src/core/data/id_generator.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';

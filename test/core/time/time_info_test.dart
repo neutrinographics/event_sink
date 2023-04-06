@@ -1,5 +1,5 @@
 import 'package:clock/clock.dart';
-import 'package:event_sync/src/core/time/time_info.dart';
+import 'package:event_sink/src/core/time/time_info.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';

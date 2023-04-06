@@ -1,6 +1,6 @@
-import 'package:event_sync/src/feature/data/remote/models/remote_event_model.dart';
-import 'package:event_sync/src/feature/data/remote/models/remote_new_event_model.dart';
-import 'package:event_sync/src/feature/domain/entities/event_stub.dart';
+import 'package:event_sink/src/feature/data/remote/models/remote_event_model.dart';
+import 'package:event_sink/src/feature/data/remote/models/remote_new_event_model.dart';
+import 'package:event_sink/src/feature/domain/entities/event_stub.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'event_model.freezed.dart';

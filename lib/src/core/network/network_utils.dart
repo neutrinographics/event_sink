@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:event_sync/src/core/network/response.dart';
+import 'package:event_sink/src/core/network/response.dart';
 
 /// Utility to read the response message.
 /// This will parse the response and piece together as much information as possible.

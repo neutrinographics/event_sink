@@ -1,10 +1,10 @@
 import 'package:dartz/dartz.dart';
-import 'package:event_sync/src/core/domain/config_options.dart';
-import 'package:event_sync/src/core/error/exception.dart';
-import 'package:event_sync/src/core/error/failure.dart';
-import 'package:event_sync/src/feature/data/local/data_sources/config_local_data_source.dart';
-import 'package:event_sync/src/feature/data/local/models/config_model.dart';
-import 'package:event_sync/src/feature/domain/repositories/config_repository.dart';
+import 'package:event_sink/src/core/domain/config_options.dart';
+import 'package:event_sink/src/core/error/exception.dart';
+import 'package:event_sink/src/core/error/failure.dart';
+import 'package:event_sink/src/feature/data/local/data_sources/config_local_data_source.dart';
+import 'package:event_sink/src/feature/data/local/models/config_model.dart';
+import 'package:event_sink/src/feature/domain/repositories/config_repository.dart';
 
 class ConfigRepositoryImpl implements ConfigRepository {
   ConfigLocalDataSource localDataSource;

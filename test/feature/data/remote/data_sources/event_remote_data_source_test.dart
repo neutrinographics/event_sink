@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-import 'package:event_sync/src/core/error/exception.dart';
-import 'package:event_sync/src/core/network/network.dart';
-import 'package:event_sync/src/core/network/response.dart';
-import 'package:event_sync/src/feature/data/remote/data_sources/event_remote_data_source.dart';
-import 'package:event_sync/src/feature/data/remote/models/remote_event_model.dart';
-import 'package:event_sync/src/feature/data/remote/models/remote_new_event_model.dart';
+import 'package:event_sink/src/core/error/exception.dart';
+import 'package:event_sink/src/core/network/network.dart';
+import 'package:event_sink/src/core/network/response.dart';
+import 'package:event_sink/src/feature/data/remote/data_sources/event_remote_data_source.dart';
+import 'package:event_sink/src/feature/data/remote/models/remote_event_model.dart';
+import 'package:event_sink/src/feature/data/remote/models/remote_new_event_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';

@@ -1,4 +1,4 @@
-import 'package:event_sync/src/core/domain/config_options.dart';
+import 'package:event_sink/src/core/domain/config_options.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'config_model.freezed.dart';

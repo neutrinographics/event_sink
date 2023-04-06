@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
-import 'package:event_sync/src/core/domain/config_options.dart';
-import 'package:event_sync/src/core/error/failure.dart';
+import 'package:event_sink/src/core/domain/config_options.dart';
+import 'package:event_sink/src/core/error/failure.dart';
 
 abstract class ConfigRepository {
   /// Writes a typed config value to the repository.

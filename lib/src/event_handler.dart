@@ -1,4 +1,4 @@
-import 'package:event_sync/src/event_data.dart';
+import 'package:event_sink/src/event_data.dart';
 
 /// Defines how an event should be handled locally.
 /// For example, after creating a new event, the local database can be updated

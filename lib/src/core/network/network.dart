@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:event_sync/src/core/error/exception.dart';
-import 'package:event_sync/src/core/network/response.dart';
+import 'package:event_sink/src/core/error/exception.dart';
+import 'package:event_sink/src/core/network/response.dart';
 import 'package:http/http.dart' as http;
 
 abstract class Network {

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:event_sync/src/core/error/exception.dart';
+import 'package:event_sink/src/core/error/exception.dart';
 import 'package:hive/hive.dart';
 
 /// This provides an abstraction over the cache.

@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
-import 'package:event_sync/event_sync.dart';
-import 'package:event_sync/src/feature/domain/repositories/event_repository.dart';
-import 'package:event_sync/src/feature/domain/use_cases/add_event.dart';
+import 'package:event_sink/event_sink.dart';
+import 'package:event_sink/src/feature/domain/repositories/event_repository.dart';
+import 'package:event_sink/src/feature/domain/use_cases/add_event.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';

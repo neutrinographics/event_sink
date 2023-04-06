@@ -1,6 +1,6 @@
-import 'package:event_sync/src/core/data/local_cache.dart';
-import 'package:event_sync/src/core/domain/config_options.dart';
-import 'package:event_sync/src/feature/data/local/models/config_model.dart';
+import 'package:event_sink/src/core/data/local_cache.dart';
+import 'package:event_sink/src/core/domain/config_options.dart';
+import 'package:event_sink/src/feature/data/local/models/config_model.dart';
 
 abstract class ConfigLocalDataSource {
   Future<void> write(ConfigModel model);

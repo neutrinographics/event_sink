@@ -1,6 +1,6 @@
-import 'package:event_sync/src/core/data/local_cache.dart';
-import 'package:event_sync/src/feature/data/local/data_sources/event_local_data_source.dart';
-import 'package:event_sync/src/feature/data/local/models/event_model.dart';
+import 'package:event_sink/src/core/data/local_cache.dart';
+import 'package:event_sink/src/feature/data/local/data_sources/event_local_data_source.dart';
+import 'package:event_sink/src/feature/data/local/models/event_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:hive/hive.dart';

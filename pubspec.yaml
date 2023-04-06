@@ -1,6 +1,6 @@
-name: event_sync
+name: event_sink
 description: A data synchronization tool based on event sourcing and CQRS
-version: 0.0.1
+version: 0.0.2
 homepage:
 
 environment:

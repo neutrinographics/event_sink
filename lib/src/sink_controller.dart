@@ -1,25 +1,24 @@
 import 'package:dartz/dartz.dart';
-import 'package:event_sync/src/core/domain/config_options.dart';
-import 'package:event_sync/src/core/error/failure.dart';
-import 'package:event_sync/src/event_data.dart';
-import 'package:event_sync/src/event_handler.dart';
-import 'package:event_sync/src/event_params.dart';
-import 'package:event_sync/src/event_sync_base.dart';
-import 'package:event_sync/src/feature/domain/entities/event_info.dart';
-import 'package:event_sync/src/feature/domain/use_cases/add_event.dart';
-import 'package:event_sync/src/feature/domain/use_cases/apply_events.dart';
-import 'package:event_sync/src/feature/domain/use_cases/set_string_config.dart';
-import 'package:event_sync/src/feature/domain/use_cases/sync_events.dart';
+import 'package:event_sink/src/core/domain/config_options.dart';
+import 'package:event_sink/src/core/error/failure.dart';
+import 'package:event_sink/src/event_data.dart';
+import 'package:event_sink/src/event_handler.dart';
+import 'package:event_sink/src/event_sink_base.dart';
+import 'package:event_sink/src/feature/domain/entities/event_info.dart';
+import 'package:event_sink/src/feature/domain/use_cases/add_event.dart';
+import 'package:event_sink/src/feature/domain/use_cases/apply_events.dart';
+import 'package:event_sink/src/feature/domain/use_cases/set_string_config.dart';
+import 'package:event_sink/src/feature/domain/use_cases/sync_events.dart';
 
 // this is sort of in the position of a bloc.
 // So this should only interact directly with the use-cases.
-class SyncController {
+class SinkController {
   final SyncEvents _syncEvents;
   final ApplyEvents _applyEvents;
   final AddEvent _addEvent;
   final SetStringConfig _setConfig;
 
-  SyncController({
+  SinkController({
     required SyncEvents syncEvents,
     required ApplyEvents applyEvents,
     required AddEvent addEvent,

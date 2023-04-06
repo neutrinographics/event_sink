@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
-import 'package:event_sync/src/core/data/local_cache.dart';
-import 'package:event_sync/src/core/error/exception.dart';
+import 'package:event_sink/src/core/data/local_cache.dart';
+import 'package:event_sink/src/core/error/exception.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
 import 'package:mockito/annotations.dart';

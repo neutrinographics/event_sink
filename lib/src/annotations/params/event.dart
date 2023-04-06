@@ -1,8 +1,7 @@
-import 'package:event_sync/event_sync.dart';
-import 'package:event_sync/src/event_data.dart';
+import 'package:event_sink/event_sink.dart';
 
 /// This defines a new event.
-/// This is used when registering events in the [EventSync] annotation.
+/// This is used when registering events in the [EventSink] annotation.
 class Event<T extends EventData> {
   /// The unique name of the event.
   final String name;

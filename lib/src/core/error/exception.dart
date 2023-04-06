@@ -1,5 +1,5 @@
-import 'package:event_sync/src/core/network/network_utils.dart';
-import 'package:event_sync/src/core/network/response.dart';
+import 'package:event_sink/src/core/network/network_utils.dart';
+import 'package:event_sink/src/core/network/response.dart';
 
 /// These exceptions occur when there is a problem in the local data source.
 class CacheException implements Exception {
