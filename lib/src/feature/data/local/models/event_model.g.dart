@@ -18,6 +18,7 @@ _$_EventModel _$$_EventModelFromJson(Map<String, dynamic> json) =>
       streamId: json['stream_id'] as String,
       version: json['version'] as int,
       name: json['name'] as String,
+      pool: json['pool'] as int,
       data: json['data'] as Map<String, dynamic>,
     );
 
@@ -31,5 +32,6 @@ Map<String, dynamic> _$$_EventModelToJson(_$_EventModel instance) =>
       'stream_id': instance.streamId,
       'version': instance.version,
       'name': instance.name,
+      'pool': instance.pool,
       'data': instance.data,
     };

@@ -16,6 +16,8 @@ class EventStub with _$EventStub {
     /// The name of the event
     required String name,
 
+    required int pool,
+
     /// The stream version
     required int version,
 

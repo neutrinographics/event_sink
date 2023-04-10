@@ -48,8 +48,10 @@ class SyncEvents extends UseCase<void, SyncEventsParams> {
     failureOrConfig.fold((_) => null, (c) => config = c);
 
     // download events
+    // TODO: download events from all pools
+    int pool = 1;
     final failureOrDownload =
-        await eventRepository.fetch(config.host, config.token);
+        await eventRepository.fetch(config.host, pool, config.token);
 
     // rebase events
     final failureOrRebase = await failureOrDownload.fold(
@@ -58,9 +60,10 @@ class SyncEvents extends UseCase<void, SyncEventsParams> {
     );
 
     // push events
+    // TODO: push events from all pools
     final failureOrPush = await failureOrRebase.fold(
       (l) async => Left(l),
-      (r) => eventRepository.push(config.host, config.token),
+      (_) => eventRepository.push(config.host, pool, config.token),
     );
 
     // if push is successful then we can return

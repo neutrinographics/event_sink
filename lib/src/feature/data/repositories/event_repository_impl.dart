@@ -27,7 +27,7 @@ class EventRepositoryImpl extends EventRepository {
   });
 
   @override
-  Future<Either<Failure, void>> fetch(String host, String authToken) async {
+  Future<Either<Failure, void>> fetch(String host, int pool, String authToken) async {
     List<EventModel> localEvents;
     try {
       localEvents = await localDataSource.getAllEvents();
@@ -92,6 +92,7 @@ class EventRepositoryImpl extends EventRepository {
         await localDataSource.cacheEvent(EventModel.fromRemote(
           remoteEvent: e,
           id: idGenerator.generateId(),
+          pool: pool,
         ).copyWith(createdAt: timeInfo.now()));
       } on CacheException catch (e) {
         return Left(CacheFailure(message: e.message));
@@ -100,8 +101,12 @@ class EventRepositoryImpl extends EventRepository {
     return const Right(null);
   }
 
+  /// pass in a Pool instead of the host.
+  /// The pool will contain the url, and a storage key.
+  /// Maybe the host, and then the pool suffix.
+  /// Perhaps the pool should contain the auth token as well.
   @override
-  Future<Either<Failure, void>> push(String host, String authToken) async {
+  Future<Either<Failure, void>> push(String host, int pool, String authToken) async {
     List<EventModel> events;
 
     try {
@@ -122,6 +127,7 @@ class EventRepositoryImpl extends EventRepository {
         await localDataSource.cacheEvent(EventModel.fromRemote(
           remoteEvent: syncedEvent,
           id: e.id,
+          pool: pool,
         ).copyWith(merged: e.merged, createdAt: timeInfo.now()));
       } on OutOfSyncException catch (e) {
         return Left(OutOfSyncFailure(message: e.message));
@@ -217,6 +223,7 @@ class EventRepositoryImpl extends EventRepository {
         streamId: event.streamId,
         data: event.data?.toJson() ?? {},
         name: event.name,
+        pool: event.pool,
       );
 
       await localDataSource.cacheEvent(eventModel);

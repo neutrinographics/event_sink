@@ -35,7 +35,7 @@ class ApplyEvents extends UseCase<void, ApplyEventsParams> {
         try {
           final eventParams = paramGenerator(event.data);
           // TODO: allow returning a failure from the event handler
-          await eventHandler(event.streamId, eventParams);
+          await eventHandler(event.streamId, event.pool, eventParams);
           // TODO: handle failures
           await eventRepository.markReduced(event);
         } catch (e, stack) {

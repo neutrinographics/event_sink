@@ -24,6 +24,7 @@ mixin _$EventStub {
 
   /// The name of the event
   String get name => throw _privateConstructorUsedError;
+  int get pool => throw _privateConstructorUsedError;
 
   /// The stream version
   int get version => throw _privateConstructorUsedError;
@@ -48,6 +49,7 @@ abstract class $EventStubCopyWith<$Res> {
       {String id,
       String streamId,
       String name,
+      int pool,
       int version,
       bool merged,
       Map<String, dynamic> data});
@@ -69,6 +71,7 @@ class _$EventStubCopyWithImpl<$Res, $Val extends EventStub>
     Object? id = null,
     Object? streamId = null,
     Object? name = null,
+    Object? pool = null,
     Object? version = null,
     Object? merged = null,
     Object? data = null,
@@ -86,6 +89,10 @@ class _$EventStubCopyWithImpl<$Res, $Val extends EventStub>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
+      pool: null == pool
+          ? _value.pool
+          : pool // ignore: cast_nullable_to_non_nullable
+              as int,
       version: null == version
           ? _value.version
           : version // ignore: cast_nullable_to_non_nullable
@@ -113,6 +120,7 @@ abstract class _$$_EventStubCopyWith<$Res> implements $EventStubCopyWith<$Res> {
       {String id,
       String streamId,
       String name,
+      int pool,
       int version,
       bool merged,
       Map<String, dynamic> data});
@@ -132,6 +140,7 @@ class __$$_EventStubCopyWithImpl<$Res>
     Object? id = null,
     Object? streamId = null,
     Object? name = null,
+    Object? pool = null,
     Object? version = null,
     Object? merged = null,
     Object? data = null,
@@ -149,6 +158,10 @@ class __$$_EventStubCopyWithImpl<$Res>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
+      pool: null == pool
+          ? _value.pool
+          : pool // ignore: cast_nullable_to_non_nullable
+              as int,
       version: null == version
           ? _value.version
           : version // ignore: cast_nullable_to_non_nullable
@@ -172,6 +185,7 @@ class _$_EventStub implements _EventStub {
       {required this.id,
       required this.streamId,
       required this.name,
+      required this.pool,
       required this.version,
       required this.merged,
       required final Map<String, dynamic> data})
@@ -188,6 +202,8 @@ class _$_EventStub implements _EventStub {
   /// The name of the event
   @override
   final String name;
+  @override
+  final int pool;
 
   /// The stream version
   @override
@@ -210,7 +226,7 @@ class _$_EventStub implements _EventStub {
 
   @override
   String toString() {
-    return 'EventStub(id: $id, streamId: $streamId, name: $name, version: $version, merged: $merged, data: $data)';
+    return 'EventStub(id: $id, streamId: $streamId, name: $name, pool: $pool, version: $version, merged: $merged, data: $data)';
   }
 
   @override
@@ -222,14 +238,15 @@ class _$_EventStub implements _EventStub {
             (identical(other.streamId, streamId) ||
                 other.streamId == streamId) &&
             (identical(other.name, name) || other.name == name) &&
+            (identical(other.pool, pool) || other.pool == pool) &&
             (identical(other.version, version) || other.version == version) &&
             (identical(other.merged, merged) || other.merged == merged) &&
             const DeepCollectionEquality().equals(other._data, _data));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, id, streamId, name, version,
-      merged, const DeepCollectionEquality().hash(_data));
+  int get hashCode => Object.hash(runtimeType, id, streamId, name, pool,
+      version, merged, const DeepCollectionEquality().hash(_data));
 
   @JsonKey(ignore: true)
   @override
@@ -243,6 +260,7 @@ abstract class _EventStub implements EventStub {
       {required final String id,
       required final String streamId,
       required final String name,
+      required final int pool,
       required final int version,
       required final bool merged,
       required final Map<String, dynamic> data}) = _$_EventStub;
@@ -259,6 +277,8 @@ abstract class _EventStub implements EventStub {
 
   /// The name of the event
   String get name;
+  @override
+  int get pool;
   @override
 
   /// The stream version

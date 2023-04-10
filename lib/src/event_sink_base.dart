@@ -12,6 +12,9 @@ abstract class EventSinkBase {
 
   Map<String, EventParamsGenerator> get eventParamsGeneratorMap;
 
+  /// Returns the correct url path to which a pool of events will be synced.
+  String remotePoolPath(int pool);
+
   late SinkController _controller;
 
   List<EventInfo> events = [];

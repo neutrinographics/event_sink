@@ -49,6 +49,7 @@ mixin _$EventModel {
 
   /// The unique name of the event.
   String get name => throw _privateConstructorUsedError;
+  int get pool => throw _privateConstructorUsedError;
 
   /// Custom event data
   Map<String, dynamic> get data => throw _privateConstructorUsedError;
@@ -74,6 +75,7 @@ abstract class $EventModelCopyWith<$Res> {
       @JsonKey(name: 'stream_id') String streamId,
       int version,
       String name,
+      int pool,
       Map<String, dynamic> data});
 }
 
@@ -98,6 +100,7 @@ class _$EventModelCopyWithImpl<$Res, $Val extends EventModel>
     Object? streamId = null,
     Object? version = null,
     Object? name = null,
+    Object? pool = null,
     Object? data = null,
   }) {
     return _then(_value.copyWith(
@@ -133,6 +136,10 @@ class _$EventModelCopyWithImpl<$Res, $Val extends EventModel>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
+      pool: null == pool
+          ? _value.pool
+          : pool // ignore: cast_nullable_to_non_nullable
+              as int,
       data: null == data
           ? _value.data
           : data // ignore: cast_nullable_to_non_nullable
@@ -158,6 +165,7 @@ abstract class _$$_EventModelCopyWith<$Res>
       @JsonKey(name: 'stream_id') String streamId,
       int version,
       String name,
+      int pool,
       Map<String, dynamic> data});
 }
 
@@ -180,6 +188,7 @@ class __$$_EventModelCopyWithImpl<$Res>
     Object? streamId = null,
     Object? version = null,
     Object? name = null,
+    Object? pool = null,
     Object? data = null,
   }) {
     return _then(_$_EventModel(
@@ -215,6 +224,10 @@ class __$$_EventModelCopyWithImpl<$Res>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
+      pool: null == pool
+          ? _value.pool
+          : pool // ignore: cast_nullable_to_non_nullable
+              as int,
       data: null == data
           ? _value._data
           : data // ignore: cast_nullable_to_non_nullable
@@ -235,6 +248,7 @@ class _$_EventModel extends _EventModel {
       @JsonKey(name: 'stream_id') required this.streamId,
       required this.version,
       required this.name,
+      required this.pool,
       required final Map<String, dynamic> data})
       : _data = data,
         super._();
@@ -280,6 +294,8 @@ class _$_EventModel extends _EventModel {
   /// The unique name of the event.
   @override
   final String name;
+  @override
+  final int pool;
 
   /// Custom event data
   final Map<String, dynamic> _data;
@@ -294,7 +310,7 @@ class _$_EventModel extends _EventModel {
 
   @override
   String toString() {
-    return 'EventModel(id: $id, remoteId: $remoteId, remoteCreatedAt: $remoteCreatedAt, createdAt: $createdAt, merged: $merged, streamId: $streamId, version: $version, name: $name, data: $data)';
+    return 'EventModel(id: $id, remoteId: $remoteId, remoteCreatedAt: $remoteCreatedAt, createdAt: $createdAt, merged: $merged, streamId: $streamId, version: $version, name: $name, pool: $pool, data: $data)';
   }
 
   @override
@@ -314,6 +330,7 @@ class _$_EventModel extends _EventModel {
                 other.streamId == streamId) &&
             (identical(other.version, version) || other.version == version) &&
             (identical(other.name, name) || other.name == name) &&
+            (identical(other.pool, pool) || other.pool == pool) &&
             const DeepCollectionEquality().equals(other._data, _data));
   }
 
@@ -329,6 +346,7 @@ class _$_EventModel extends _EventModel {
       streamId,
       version,
       name,
+      pool,
       const DeepCollectionEquality().hash(_data));
 
   @JsonKey(ignore: true)
@@ -355,6 +373,7 @@ abstract class _EventModel extends EventModel {
       @JsonKey(name: 'stream_id') required final String streamId,
       required final int version,
       required final String name,
+      required final int pool,
       required final Map<String, dynamic> data}) = _$_EventModel;
   const _EventModel._() : super._();
 
@@ -399,6 +418,8 @@ abstract class _EventModel extends EventModel {
 
   /// The unique name of the event.
   String get name;
+  @override
+  int get pool;
   @override
 
   /// Custom event data

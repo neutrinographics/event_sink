@@ -6,6 +6,7 @@ class SinkManager {
   Map<String, EventHandler> eventHandlers = {};
   List<EventInfo> events = [];
 
+  @Deprecated('handlers are registered automatically')
   void registerHandler(EventHandler handler) {
     // eventHandlers[handler.name] = handler;
   }
@@ -21,7 +22,7 @@ class SinkManager {
   Future<void> apply() async {
     // TODO: get a list of the un-processed events
     for (final event in events) {
-      await eventHandlers[event.name]!(event.streamId, event.data);
+      await eventHandlers[event.name]!(event.streamId, event.pool, event.data);
     }
   }
 

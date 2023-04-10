@@ -41,6 +41,8 @@ class EventModel with _$EventModel {
     /// The unique name of the event.
     required String name,
 
+    required int pool,
+
     /// Custom event data
     required Map<String, dynamic> data,
   }) = _EventModel;
@@ -57,6 +59,7 @@ class EventModel with _$EventModel {
   factory EventModel.fromRemote({
     required RemoteEventModel remoteEvent,
     required String id,
+    required int pool,
   }) {
     return EventModel(
       id: id,
@@ -68,6 +71,7 @@ class EventModel with _$EventModel {
       version: remoteEvent.version,
       data: remoteEvent.data,
       name: remoteEvent.name,
+      pool: pool,
     );
   }
 
@@ -88,6 +92,7 @@ class EventModel with _$EventModel {
       data: data,
       merged: merged,
       name: name,
+      pool: pool,
     );
   }
 }
