@@ -82,16 +82,12 @@ void main() {
         RemoteEventModel.fromJson(json.decode(fixture('remote_event.json')));
     final baseLocalEvent =
         EventModel.fromRemote(remoteEvent: baseRemoteEvent, pool: 1)
-            .copyWith(remoteId: null, remoteCreatedAt: null, createdAt: tToday);
+            .copyWith(remoteId: null, createdAt: tToday);
     final List<EventModel> tLocalEvents = [
-      baseLocalEvent.copyWith(
-          eventId: 'synced', remoteId: 1, remoteCreatedAt: yesterday),
+      baseLocalEvent.copyWith(eventId: 'synced', remoteId: 1),
       baseLocalEvent.copyWith(eventId: 'un-synced'),
       baseLocalEvent.copyWith(
-          eventId: 'synced',
-          remoteId: 9,
-          remoteCreatedAt: yesterday,
-          streamId: 'a-different-stream'),
+          eventId: 'synced', remoteId: 9, streamId: 'a-different-stream'),
     ];
     final List<RemoteEventModel> tRemoteEvents = [
       baseRemoteEvent.copyWith(id: 1, createdAt: yesterday),
@@ -119,7 +115,6 @@ void main() {
         final expectedNewEvent = baseLocalEvent.copyWith(
           eventId: tEventId,
           remoteId: 2,
-          remoteCreatedAt: tToday,
         );
         verify(mockEventLocalDataSource.addEvent(expectedNewEvent));
         verifyNoMoreInteractions(mockEventLocalDataSource);
@@ -195,7 +190,6 @@ void main() {
       RemoteEventModel(
         id: 2,
         eventId: 'event-id',
-        createdAt: tTime,
         streamId: baseEvent.streamId,
         version: baseEvent.version,
         name: baseEvent.name,
@@ -236,7 +230,6 @@ void main() {
         // verify events were updated with their remote id
         verify(mockEventLocalDataSource.addEvent(baseEvent.copyWith(
           remoteId: 2,
-          remoteCreatedAt: tTime,
         )));
         expect(result, equals(const Right(null)));
       },
@@ -310,6 +303,7 @@ void main() {
   });
 
   group('rebase', () {
+    const tPool = 1;
     final baseEvent = EventModel.fromJson(json.decode(fixture('event.json')));
     final List<EventModel> tCachedEventsFirst = [
       // un-synced events
@@ -353,7 +347,7 @@ void main() {
         when(mockEventLocalDataSource.getAllEvents())
             .thenAnswer((_) async => tCachedEventsFirst);
         // act
-        final result = await repository.rebase();
+        final result = await repository.rebase(tPool);
         // assert
         verify(mockEventLocalDataSource.getAllEvents());
         verifyEvent(
@@ -377,7 +371,7 @@ void main() {
           (_) async => combinedEvents,
         );
         // act
-        final result = await repository.rebase();
+        final result = await repository.rebase(tPool);
         // assert
         verifyEvent(
             baseEvent.copyWith(streamId: 'first', version: 4, eventId: '1.4'));
@@ -412,7 +406,7 @@ void main() {
           (_) async => combinedEvents,
         );
         // act
-        final result = await repository.rebase();
+        final result = await repository.rebase(tPool);
         // assert
         verifyNever(mockEventLocalDataSource
             .addEvent(combinedEvents.first.copyWith(version: 33)));
@@ -435,7 +429,7 @@ void main() {
           (_) async => syncedEvents,
         );
         // act
-        final result = await repository.rebase();
+        final result = await repository.rebase(tPool);
         // assert
         verifyNever(mockEventLocalDataSource
             .addEvent(syncedEvents.first.copyWith(version: 33)));
@@ -450,7 +444,7 @@ void main() {
         when(mockEventLocalDataSource.getAllEvents())
             .thenThrow(CacheException());
         // act
-        final result = await repository.rebase();
+        final result = await repository.rebase(tPool);
         // assert
         verify(mockEventLocalDataSource.getAllEvents());
         // assert
@@ -467,7 +461,7 @@ void main() {
         when(mockEventLocalDataSource.addEvent(any))
             .thenThrow(CacheException());
         // act
-        final result = await repository.rebase();
+        final result = await repository.rebase(tPool);
         // assert
         verify(mockEventLocalDataSource.getAllEvents());
         // assert

@@ -24,7 +24,7 @@ abstract class EventRepository {
 
   /// Re-applies any un-synced events on top of the event from the server.
   /// This is akin to a git rebase.
-  Future<Either<Failure, void>> rebase();
+  Future<Either<Failure, void>> rebase(int pool);
 
   /// Adds an event to the cache, which can then later be applied to the graph
   /// or synced to the server.

@@ -56,7 +56,7 @@ class SyncEvents extends UseCase<void, SyncEventsParams> {
     // rebase events
     final failureOrRebase = await failureOrDownload.fold(
       (l) async => Left(l),
-      (_) => eventRepository.rebase(),
+      (_) => eventRepository.rebase(pool),
     );
 
     // push events

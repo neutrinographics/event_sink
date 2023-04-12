@@ -26,18 +26,8 @@ mixin _$EventModel {
 
   /// The remote id of the event.
   /// This will only have a value if this has been downloaded from the server.
-  @Deprecated('this will be removed')
   @JsonKey(name: 'remote_id')
   int? get remoteId => throw _privateConstructorUsedError;
-
-  /// The time when this event was created on the remote host.
-  /// This will only have a value if this has been downloaded from the server.
-  @Deprecated('this will be removed')
-  @JsonKey(name: 'remote_created_at')
-  DateTime? get remoteCreatedAt => throw _privateConstructorUsedError;
-
-  /// Indicates that this event has been synced with the server.
-  bool get synced => throw _privateConstructorUsedError;
 
   /// The time when this event was recorded locally.
   @JsonKey(name: 'created_at')
@@ -73,20 +63,11 @@ abstract class $EventModelCopyWith<$Res> {
       _$EventModelCopyWithImpl<$Res, EventModel>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'event_id')
-          String eventId,
-      @Deprecated('this will be removed')
-      @JsonKey(name: 'remote_id')
-          int? remoteId,
-      @Deprecated('this will be removed')
-      @JsonKey(name: 'remote_created_at')
-          DateTime? remoteCreatedAt,
-      bool synced,
-      @JsonKey(name: 'created_at')
-          DateTime createdAt,
+      {@JsonKey(name: 'event_id') String eventId,
+      @JsonKey(name: 'remote_id') int? remoteId,
+      @JsonKey(name: 'created_at') DateTime createdAt,
       bool merged,
-      @JsonKey(name: 'stream_id')
-          String streamId,
+      @JsonKey(name: 'stream_id') String streamId,
       int version,
       String name,
       int pool,
@@ -108,8 +89,6 @@ class _$EventModelCopyWithImpl<$Res, $Val extends EventModel>
   $Res call({
     Object? eventId = null,
     Object? remoteId = freezed,
-    Object? remoteCreatedAt = freezed,
-    Object? synced = null,
     Object? createdAt = null,
     Object? merged = null,
     Object? streamId = null,
@@ -127,14 +106,6 @@ class _$EventModelCopyWithImpl<$Res, $Val extends EventModel>
           ? _value.remoteId
           : remoteId // ignore: cast_nullable_to_non_nullable
               as int?,
-      remoteCreatedAt: freezed == remoteCreatedAt
-          ? _value.remoteCreatedAt
-          : remoteCreatedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      synced: null == synced
-          ? _value.synced
-          : synced // ignore: cast_nullable_to_non_nullable
-              as bool,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -176,20 +147,11 @@ abstract class _$$_EventModelCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'event_id')
-          String eventId,
-      @Deprecated('this will be removed')
-      @JsonKey(name: 'remote_id')
-          int? remoteId,
-      @Deprecated('this will be removed')
-      @JsonKey(name: 'remote_created_at')
-          DateTime? remoteCreatedAt,
-      bool synced,
-      @JsonKey(name: 'created_at')
-          DateTime createdAt,
+      {@JsonKey(name: 'event_id') String eventId,
+      @JsonKey(name: 'remote_id') int? remoteId,
+      @JsonKey(name: 'created_at') DateTime createdAt,
       bool merged,
-      @JsonKey(name: 'stream_id')
-          String streamId,
+      @JsonKey(name: 'stream_id') String streamId,
       int version,
       String name,
       int pool,
@@ -209,8 +171,6 @@ class __$$_EventModelCopyWithImpl<$Res>
   $Res call({
     Object? eventId = null,
     Object? remoteId = freezed,
-    Object? remoteCreatedAt = freezed,
-    Object? synced = null,
     Object? createdAt = null,
     Object? merged = null,
     Object? streamId = null,
@@ -228,14 +188,6 @@ class __$$_EventModelCopyWithImpl<$Res>
           ? _value.remoteId
           : remoteId // ignore: cast_nullable_to_non_nullable
               as int?,
-      remoteCreatedAt: freezed == remoteCreatedAt
-          ? _value.remoteCreatedAt
-          : remoteCreatedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      synced: null == synced
-          ? _value.synced
-          : synced // ignore: cast_nullable_to_non_nullable
-              as bool,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -272,20 +224,11 @@ class __$$_EventModelCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_EventModel extends _EventModel {
   const _$_EventModel(
-      {@JsonKey(name: 'event_id')
-          required this.eventId,
-      @Deprecated('this will be removed')
-      @JsonKey(name: 'remote_id')
-          this.remoteId,
-      @Deprecated('this will be removed')
-      @JsonKey(name: 'remote_created_at')
-          this.remoteCreatedAt,
-      this.synced = false,
-      @JsonKey(name: 'created_at')
-          required this.createdAt,
+      {@JsonKey(name: 'event_id') required this.eventId,
+      @JsonKey(name: 'remote_id') this.remoteId,
+      @JsonKey(name: 'created_at') required this.createdAt,
       this.merged = false,
-      @JsonKey(name: 'stream_id')
-          required this.streamId,
+      @JsonKey(name: 'stream_id') required this.streamId,
       required this.version,
       required this.name,
       required this.pool,
@@ -304,21 +247,8 @@ class _$_EventModel extends _EventModel {
   /// The remote id of the event.
   /// This will only have a value if this has been downloaded from the server.
   @override
-  @Deprecated('this will be removed')
   @JsonKey(name: 'remote_id')
   final int? remoteId;
-
-  /// The time when this event was created on the remote host.
-  /// This will only have a value if this has been downloaded from the server.
-  @override
-  @Deprecated('this will be removed')
-  @JsonKey(name: 'remote_created_at')
-  final DateTime? remoteCreatedAt;
-
-  /// Indicates that this event has been synced with the server.
-  @override
-  @JsonKey()
-  final bool synced;
 
   /// The time when this event was recorded locally.
   @override
@@ -358,7 +288,7 @@ class _$_EventModel extends _EventModel {
 
   @override
   String toString() {
-    return 'EventModel(eventId: $eventId, remoteId: $remoteId, remoteCreatedAt: $remoteCreatedAt, synced: $synced, createdAt: $createdAt, merged: $merged, streamId: $streamId, version: $version, name: $name, pool: $pool, data: $data)';
+    return 'EventModel(eventId: $eventId, remoteId: $remoteId, createdAt: $createdAt, merged: $merged, streamId: $streamId, version: $version, name: $name, pool: $pool, data: $data)';
   }
 
   @override
@@ -369,9 +299,6 @@ class _$_EventModel extends _EventModel {
             (identical(other.eventId, eventId) || other.eventId == eventId) &&
             (identical(other.remoteId, remoteId) ||
                 other.remoteId == remoteId) &&
-            (identical(other.remoteCreatedAt, remoteCreatedAt) ||
-                other.remoteCreatedAt == remoteCreatedAt) &&
-            (identical(other.synced, synced) || other.synced == synced) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.merged, merged) || other.merged == merged) &&
@@ -389,8 +316,6 @@ class _$_EventModel extends _EventModel {
       runtimeType,
       eventId,
       remoteId,
-      remoteCreatedAt,
-      synced,
       createdAt,
       merged,
       streamId,
@@ -415,20 +340,11 @@ class _$_EventModel extends _EventModel {
 
 abstract class _EventModel extends EventModel {
   const factory _EventModel(
-      {@JsonKey(name: 'event_id')
-          required final String eventId,
-      @Deprecated('this will be removed')
-      @JsonKey(name: 'remote_id')
-          final int? remoteId,
-      @Deprecated('this will be removed')
-      @JsonKey(name: 'remote_created_at')
-          final DateTime? remoteCreatedAt,
-      final bool synced,
-      @JsonKey(name: 'created_at')
-          required final DateTime createdAt,
+      {@JsonKey(name: 'event_id') required final String eventId,
+      @JsonKey(name: 'remote_id') final int? remoteId,
+      @JsonKey(name: 'created_at') required final DateTime createdAt,
       final bool merged,
-      @JsonKey(name: 'stream_id')
-          required final String streamId,
+      @JsonKey(name: 'stream_id') required final String streamId,
       required final int version,
       required final String name,
       required final int pool,
@@ -447,20 +363,8 @@ abstract class _EventModel extends EventModel {
 
   /// The remote id of the event.
   /// This will only have a value if this has been downloaded from the server.
-  @Deprecated('this will be removed')
   @JsonKey(name: 'remote_id')
   int? get remoteId;
-  @override
-
-  /// The time when this event was created on the remote host.
-  /// This will only have a value if this has been downloaded from the server.
-  @Deprecated('this will be removed')
-  @JsonKey(name: 'remote_created_at')
-  DateTime? get remoteCreatedAt;
-  @override
-
-  /// Indicates that this event has been synced with the server.
-  bool get synced;
   @override
 
   /// The time when this event was recorded locally.

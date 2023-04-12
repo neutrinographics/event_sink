@@ -18,18 +18,7 @@ class EventModel with _$EventModel {
 
     /// The remote id of the event.
     /// This will only have a value if this has been downloaded from the server.
-    @Deprecated('this will be removed')
-    @JsonKey(name: 'remote_id')
-        int? remoteId,
-
-    /// The time when this event was created on the remote host.
-    /// This will only have a value if this has been downloaded from the server.
-    @Deprecated('this will be removed')
-    @JsonKey(name: 'remote_created_at')
-        DateTime? remoteCreatedAt,
-
-    /// Indicates that this event has been synced with the server.
-    @Default(false) bool synced,
+    @JsonKey(name: 'remote_id') int? remoteId,
 
     /// The time when this event was recorded locally.
     @JsonKey(name: 'created_at') required DateTime createdAt,
@@ -51,6 +40,12 @@ class EventModel with _$EventModel {
     required Map<String, dynamic> data,
   }) = _EventModel;
 
+  /// A convenience method to check if this event has been synced with the server.
+  /// This is more readable than checking if the remote id is not null.
+  bool get synced {
+    return remoteId != null;
+  }
+
   factory EventModel.fromJson(Map<String, dynamic> json) =>
       _$EventModelFromJson(json);
 
@@ -61,7 +56,6 @@ class EventModel with _$EventModel {
     return EventModel(
       eventId: remoteEvent.eventId,
       remoteId: remoteEvent.id,
-      remoteCreatedAt: remoteEvent.createdAt,
       merged: false,
       createdAt: DateTime.now(),
       streamId: remoteEvent.streamId,
