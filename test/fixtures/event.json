@@ -1,8 +1,10 @@
 {
   "id": "event-id",
   "remote_id": null,
+  "event_id": "event-id",
   "remote_created_at": null,
   "graph_id": 1,
+  "pool": 1,
   "stream_id": "stream-id",
   "version": 1,
   "name": "create_group",
