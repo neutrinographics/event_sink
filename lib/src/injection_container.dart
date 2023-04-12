@@ -63,9 +63,11 @@ void init() {
     ),
   );
   final eventCache = MemoryCacheImpl<String, EventModel>();
+  final poolCache = MemoryCacheImpl<int, List<String>>();
   sl.registerLazySingleton<EventLocalDataSource>(
     () => EventLocalDataSourceImpl(
-      cache: eventCache,
+      eventCache: eventCache,
+      poolCache: poolCache,
     ),
   );
   sl.registerLazySingleton<EventRemoteDataSource>(

@@ -31,6 +31,9 @@ Some benefits of our sync design include:
 
 TODO: List what your package can do. Maybe include images, gifs, or videos.
 
+### Pooling
+Events can be optionally pooled together.
+
 ## Getting started
 
 TODO: List prerequisites and provide or point to information on how to

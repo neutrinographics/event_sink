@@ -8,14 +8,13 @@ part 'event_stub.freezed.dart';
 class EventStub with _$EventStub {
   factory EventStub({
     /// The local ID of the event.
-    required String id,
+    required String eventId,
 
     /// The id of the stream being modified
     required String streamId,
 
     /// The name of the event
     required String name,
-
     required int pool,
 
     /// The stream version

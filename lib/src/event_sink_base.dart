@@ -35,8 +35,8 @@ abstract class EventSinkBase {
   Future<Either<Failure, void>> sync() => _controller.sync();
 
   /// Adds an event to the queue.
-  Future<Either<Failure, void>> add(EventInfo<EventData> event) =>
-      _controller.add(event);
+  Future<Either<Failure, void>> add(EventInfo<EventData> event, int pool) =>
+      _controller.add(event, pool);
 
   /// Applies any un-processed events.
   /// This executes the event command.

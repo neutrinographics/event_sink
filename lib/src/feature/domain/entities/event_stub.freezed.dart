@@ -17,7 +17,7 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$EventStub {
   /// The local ID of the event.
-  String get id => throw _privateConstructorUsedError;
+  String get eventId => throw _privateConstructorUsedError;
 
   /// The id of the stream being modified
   String get streamId => throw _privateConstructorUsedError;
@@ -46,7 +46,7 @@ abstract class $EventStubCopyWith<$Res> {
       _$EventStubCopyWithImpl<$Res, EventStub>;
   @useResult
   $Res call(
-      {String id,
+      {String eventId,
       String streamId,
       String name,
       int pool,
@@ -68,7 +68,7 @@ class _$EventStubCopyWithImpl<$Res, $Val extends EventStub>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
+    Object? eventId = null,
     Object? streamId = null,
     Object? name = null,
     Object? pool = null,
@@ -77,9 +77,9 @@ class _$EventStubCopyWithImpl<$Res, $Val extends EventStub>
     Object? data = null,
   }) {
     return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
+      eventId: null == eventId
+          ? _value.eventId
+          : eventId // ignore: cast_nullable_to_non_nullable
               as String,
       streamId: null == streamId
           ? _value.streamId
@@ -117,7 +117,7 @@ abstract class _$$_EventStubCopyWith<$Res> implements $EventStubCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {String id,
+      {String eventId,
       String streamId,
       String name,
       int pool,
@@ -137,7 +137,7 @@ class __$$_EventStubCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
+    Object? eventId = null,
     Object? streamId = null,
     Object? name = null,
     Object? pool = null,
@@ -146,9 +146,9 @@ class __$$_EventStubCopyWithImpl<$Res>
     Object? data = null,
   }) {
     return _then(_$_EventStub(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
+      eventId: null == eventId
+          ? _value.eventId
+          : eventId // ignore: cast_nullable_to_non_nullable
               as String,
       streamId: null == streamId
           ? _value.streamId
@@ -182,7 +182,7 @@ class __$$_EventStubCopyWithImpl<$Res>
 
 class _$_EventStub implements _EventStub {
   _$_EventStub(
-      {required this.id,
+      {required this.eventId,
       required this.streamId,
       required this.name,
       required this.pool,
@@ -193,7 +193,7 @@ class _$_EventStub implements _EventStub {
 
   /// The local ID of the event.
   @override
-  final String id;
+  final String eventId;
 
   /// The id of the stream being modified
   @override
@@ -226,7 +226,7 @@ class _$_EventStub implements _EventStub {
 
   @override
   String toString() {
-    return 'EventStub(id: $id, streamId: $streamId, name: $name, pool: $pool, version: $version, merged: $merged, data: $data)';
+    return 'EventStub(eventId: $eventId, streamId: $streamId, name: $name, pool: $pool, version: $version, merged: $merged, data: $data)';
   }
 
   @override
@@ -234,7 +234,7 @@ class _$_EventStub implements _EventStub {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_EventStub &&
-            (identical(other.id, id) || other.id == id) &&
+            (identical(other.eventId, eventId) || other.eventId == eventId) &&
             (identical(other.streamId, streamId) ||
                 other.streamId == streamId) &&
             (identical(other.name, name) || other.name == name) &&
@@ -245,7 +245,7 @@ class _$_EventStub implements _EventStub {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, id, streamId, name, pool,
+  int get hashCode => Object.hash(runtimeType, eventId, streamId, name, pool,
       version, merged, const DeepCollectionEquality().hash(_data));
 
   @JsonKey(ignore: true)
@@ -257,7 +257,7 @@ class _$_EventStub implements _EventStub {
 
 abstract class _EventStub implements EventStub {
   factory _EventStub(
-      {required final String id,
+      {required final String eventId,
       required final String streamId,
       required final String name,
       required final int pool,
@@ -268,7 +268,7 @@ abstract class _EventStub implements EventStub {
   @override
 
   /// The local ID of the event.
-  String get id;
+  String get eventId;
   @override
 
   /// The id of the stream being modified

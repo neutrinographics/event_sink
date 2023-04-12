@@ -29,6 +29,7 @@ void main() {
     final tEvent =
         RemoteEventModel.fromJson(json.decode(fixture('remote_event.json')));
     final tNewEvent = RemoteNewEventModel(
+      eventId: 'event-id',
       streamId: tEvent.streamId,
       version: tEvent.version,
       name: tEvent.name,

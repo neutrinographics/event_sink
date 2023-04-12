@@ -6,6 +6,13 @@ abstract class EventLocalDataSource {
   /// Writes an event to the cache.
   Future<void> addEvent(EventModel model);
 
+  /// Checks if an event exists in the cache
+  Future<bool> hasEvent(String eventId);
+
+  /// Returns the event.
+  /// This will raise a CacheException if the event does not exist.
+  Future<EventModel> getEvent(String eventId);
+
   /// Deletes an event from the cache.
   Future<void> removeEvent(String eventId);
 
@@ -30,11 +37,11 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
 
   @override
   Future<void> addEvent(EventModel model) async {
-    await eventCache.write(model.id, model);
+    await eventCache.write(model.eventId, model);
 
     final eventPool = await _readPool(model.pool);
-    if (!eventPool.contains(model.id)) {
-      eventPool.add(model.id);
+    if (!eventPool.contains(model.eventId)) {
+      eventPool.add(model.eventId);
       await poolCache.write(model.pool, eventPool);
     }
   }
@@ -114,4 +121,10 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
       return a.createdAt.compareTo(b.createdAt);
     });
   }
+
+  @override
+  Future<bool> hasEvent(String eventId) => eventCache.exists(eventId);
+
+  @override
+  Future<EventModel> getEvent(String eventId) => eventCache.read(eventId);
 }

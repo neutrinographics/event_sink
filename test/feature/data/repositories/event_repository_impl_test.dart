@@ -27,6 +27,7 @@ class MockEvent extends EventInfo<MockEventData> {
       : super(
           streamId: streamId,
           name: 'add_member',
+          pool: 1,
           data: params,
         );
 }
@@ -73,20 +74,21 @@ void main() {
 
   group('fetch', () {
     const tEventId = 'event-id';
+    const tPool = 1;
     final yesterday = DateTime.now().subtract(const Duration(days: 1));
     final tToday = DateTime.now();
 
     final baseRemoteEvent =
         RemoteEventModel.fromJson(json.decode(fixture('remote_event.json')));
     final baseLocalEvent =
-        EventModel.fromRemote(remoteEvent: baseRemoteEvent, id: 'id')
+        EventModel.fromRemote(remoteEvent: baseRemoteEvent, pool: 1)
             .copyWith(remoteId: null, remoteCreatedAt: null, createdAt: tToday);
     final List<EventModel> tLocalEvents = [
       baseLocalEvent.copyWith(
-          id: 'synced', remoteId: 1, remoteCreatedAt: yesterday),
-      baseLocalEvent.copyWith(id: 'un-synced'),
+          eventId: 'synced', remoteId: 1, remoteCreatedAt: yesterday),
+      baseLocalEvent.copyWith(eventId: 'un-synced'),
       baseLocalEvent.copyWith(
-          id: 'synced',
+          eventId: 'synced',
           remoteId: 9,
           remoteCreatedAt: yesterday,
           streamId: 'a-different-stream'),
@@ -107,7 +109,7 @@ void main() {
                 host: anyNamed('host'), token: anyNamed('token')))
             .thenAnswer((_) async => tRemoteEvents);
         // act
-        final result = await repository.fetch(tHost, tToken);
+        final result = await repository.fetch(tHost, tPool, tToken);
         // assert
         verify(mockEventLocalDataSource.getAllEvents());
         verify(mockEventRemoteDataSource.getEvents(
@@ -115,8 +117,11 @@ void main() {
             token: tTokenConfig.value.toString()));
         // should only cache the new event
         final expectedNewEvent = baseLocalEvent.copyWith(
-            id: tEventId, remoteId: 2, remoteCreatedAt: tToday);
-        verify(mockEventLocalDataSource.cacheEvent(expectedNewEvent));
+          eventId: tEventId,
+          remoteId: 2,
+          remoteCreatedAt: tToday,
+        );
+        verify(mockEventLocalDataSource.addEvent(expectedNewEvent));
         verifyNoMoreInteractions(mockEventLocalDataSource);
         expect(result, equals(const Right(null)));
       },
@@ -130,7 +135,7 @@ void main() {
         when(mockEventLocalDataSource.getAllEvents())
             .thenThrow(CacheException());
         // act
-        final result = await repository.fetch(tHost, tToken);
+        final result = await repository.fetch(tHost, tPool, tToken);
         // assert
         expect(result, equals(const Left(CacheFailure())));
       },
@@ -147,13 +152,13 @@ void main() {
         when(mockEventRemoteDataSource.getEvents(
                 host: anyNamed('host'), token: anyNamed('token')))
             .thenAnswer((_) async => tRemoteEvents);
-        when(mockEventLocalDataSource.cacheEvent(any))
+        when(mockEventLocalDataSource.addEvent(any))
             .thenThrow(CacheException());
         // act
-        final result = await repository.fetch(tHost, tToken);
+        final result = await repository.fetch(tHost, tPool, tToken);
         // assert
         expect(result, equals(const Left(CacheFailure())));
-        verify(mockEventLocalDataSource.cacheEvent(any));
+        verify(mockEventLocalDataSource.addEvent(any));
       },
     );
 
@@ -168,7 +173,7 @@ void main() {
                 host: anyNamed('host'), token: anyNamed('token')))
             .thenThrow(ServerException());
         // act
-        final result = await repository.fetch(tHost, tToken);
+        final result = await repository.fetch(tHost, tPool, tToken);
         // assert
         expect(result, equals(const Left(ServerFailure())));
         verify(mockEventRemoteDataSource.getEvents(
@@ -178,6 +183,7 @@ void main() {
   });
 
   group('push', () {
+    const tPool = 1;
     final tTime = DateTime.now();
     final baseEvent = EventModel.fromJson(json.decode(fixture('event.json')))
         .copyWith(createdAt: tTime);
@@ -188,6 +194,7 @@ void main() {
     final List<RemoteEventModel> tRemoteEvents = [
       RemoteEventModel(
         id: 2,
+        eventId: 'event-id',
         createdAt: tTime,
         streamId: baseEvent.streamId,
         version: baseEvent.version,
@@ -208,7 +215,7 @@ void main() {
                 token: anyNamed('token'), host: anyNamed('host')))
             .thenAnswer((_) async => remoteEvents.removeAt(0));
         // act
-        final result = await repository.push(tHost, tToken);
+        final result = await repository.push(tHost, tPool, tToken);
         // assert
         verify(mockEventLocalDataSource.getAllEvents());
         for (var e in tCachedEvents) {
@@ -227,7 +234,7 @@ void main() {
           }
         }
         // verify events were updated with their remote id
-        verify(mockEventLocalDataSource.cacheEvent(baseEvent.copyWith(
+        verify(mockEventLocalDataSource.addEvent(baseEvent.copyWith(
           remoteId: 2,
           remoteCreatedAt: tTime,
         )));
@@ -242,7 +249,7 @@ void main() {
         when(mockEventLocalDataSource.getAllEvents())
             .thenThrow(CacheException());
         // act
-        final result = await repository.push(tHost, tToken);
+        final result = await repository.push(tHost, tPool, tToken);
         // assert
         expect(result, equals(const Left(CacheFailure())));
       },
@@ -258,7 +265,7 @@ void main() {
                 host: anyNamed('host'), token: anyNamed('token')))
             .thenThrow(ServerException());
         // act
-        final result = await repository.push(tHost, tToken);
+        final result = await repository.push(tHost, tPool, tToken);
         // assert
         expect(result, equals(const Left(ServerFailure())));
       },
@@ -275,11 +282,11 @@ void main() {
         when(mockEventRemoteDataSource.createEvent(any,
                 token: anyNamed('token'), host: anyNamed('host')))
             .thenAnswer((_) async => remoteEvents.removeAt(0));
-        when(mockEventLocalDataSource.cacheEvent(any))
+        when(mockEventLocalDataSource.addEvent(any))
             .thenThrow(CacheException());
 
         // act
-        final result = await repository.push(tHost, tToken);
+        final result = await repository.push(tHost, tPool, tToken);
         // assert
         expect(result, equals(const Left(CacheFailure())));
       },
@@ -295,7 +302,7 @@ void main() {
                 host: anyNamed('host'), token: anyNamed('token')))
             .thenThrow(OutOfSyncException());
         // act
-        final result = await repository.push(tHost, tToken);
+        final result = await repository.push(tHost, tPool, tToken);
         // assert
         expect(result, equals(const Left(OutOfSyncFailure())));
       },
@@ -306,38 +313,38 @@ void main() {
     final baseEvent = EventModel.fromJson(json.decode(fixture('event.json')));
     final List<EventModel> tCachedEventsFirst = [
       // un-synced events
-      baseEvent.copyWith(streamId: 'first', version: 1, id: '1.4'),
-      baseEvent.copyWith(streamId: 'first', version: 2, id: '1.5'),
-      baseEvent.copyWith(streamId: 'first', version: 3, id: '1.6'),
+      baseEvent.copyWith(streamId: 'first', version: 1, eventId: '1.4'),
+      baseEvent.copyWith(streamId: 'first', version: 2, eventId: '1.5'),
+      baseEvent.copyWith(streamId: 'first', version: 3, eventId: '1.6'),
 
       // synced events
       baseEvent.copyWith(
-          streamId: 'first', remoteId: 11, version: 1, id: '1.1'),
+          streamId: 'first', remoteId: 11, version: 1, eventId: '1.1'),
       baseEvent.copyWith(
-          streamId: 'first', remoteId: 12, version: 2, id: '1.2'),
+          streamId: 'first', remoteId: 12, version: 2, eventId: '1.2'),
       baseEvent.copyWith(
-          streamId: 'first', remoteId: 13, version: 3, id: '1.3'),
+          streamId: 'first', remoteId: 13, version: 3, eventId: '1.3'),
     ];
     tCachedEventsFirst.sort((a, b) => a.version - b.version);
 
     final List<EventModel> tCachedEventsSecond = [
       // un-synced events
-      baseEvent.copyWith(streamId: 'second', version: 1, id: '2.4'),
-      baseEvent.copyWith(streamId: 'second', version: 2, id: '2.5'),
-      baseEvent.copyWith(streamId: 'second', version: 3, id: '2.6'),
+      baseEvent.copyWith(streamId: 'second', version: 1, eventId: '2.4'),
+      baseEvent.copyWith(streamId: 'second', version: 2, eventId: '2.5'),
+      baseEvent.copyWith(streamId: 'second', version: 3, eventId: '2.6'),
 
       // synced events
       baseEvent.copyWith(
-          streamId: 'second', remoteId: 21, version: 1, id: '2.1'),
+          streamId: 'second', remoteId: 21, version: 1, eventId: '2.1'),
       baseEvent.copyWith(
-          streamId: 'second', remoteId: 22, version: 2, id: '2.2'),
+          streamId: 'second', remoteId: 22, version: 2, eventId: '2.2'),
       baseEvent.copyWith(
-          streamId: 'second', remoteId: 23, version: 3, id: '2.3'),
+          streamId: 'second', remoteId: 23, version: 3, eventId: '2.3'),
     ];
     tCachedEventsSecond.sort((a, b) => a.version - b.version);
 
     void verifyEvent(EventModel e) =>
-        verify(mockEventLocalDataSource.cacheEvent(e));
+        verify(mockEventLocalDataSource.addEvent(e));
 
     test(
       'should rebase events',
@@ -350,11 +357,11 @@ void main() {
         // assert
         verify(mockEventLocalDataSource.getAllEvents());
         verifyEvent(
-            baseEvent.copyWith(streamId: 'first', version: 4, id: '1.4'));
+            baseEvent.copyWith(streamId: 'first', version: 4, eventId: '1.4'));
         verifyEvent(
-            baseEvent.copyWith(streamId: 'first', version: 5, id: '1.5'));
+            baseEvent.copyWith(streamId: 'first', version: 5, eventId: '1.5'));
         verifyEvent(
-            baseEvent.copyWith(streamId: 'first', version: 6, id: '1.6'));
+            baseEvent.copyWith(streamId: 'first', version: 6, eventId: '1.6'));
         verifyNoMoreInteractions(mockEventLocalDataSource);
         expect(result, equals(const Right(null)));
       },
@@ -373,18 +380,18 @@ void main() {
         final result = await repository.rebase();
         // assert
         verifyEvent(
-            baseEvent.copyWith(streamId: 'first', version: 4, id: '1.4'));
+            baseEvent.copyWith(streamId: 'first', version: 4, eventId: '1.4'));
         verifyEvent(
-            baseEvent.copyWith(streamId: 'first', version: 5, id: '1.5'));
+            baseEvent.copyWith(streamId: 'first', version: 5, eventId: '1.5'));
         verifyEvent(
-            baseEvent.copyWith(streamId: 'first', version: 6, id: '1.6'));
+            baseEvent.copyWith(streamId: 'first', version: 6, eventId: '1.6'));
 
         verifyEvent(
-            baseEvent.copyWith(streamId: 'second', version: 4, id: '2.4'));
+            baseEvent.copyWith(streamId: 'second', version: 4, eventId: '2.4'));
         verifyEvent(
-            baseEvent.copyWith(streamId: 'second', version: 5, id: '2.5'));
+            baseEvent.copyWith(streamId: 'second', version: 5, eventId: '2.5'));
         verifyEvent(
-            baseEvent.copyWith(streamId: 'second', version: 6, id: '2.6'));
+            baseEvent.copyWith(streamId: 'second', version: 6, eventId: '2.6'));
 
         expect(result, equals(const Right(null)));
       },
@@ -408,7 +415,7 @@ void main() {
         final result = await repository.rebase();
         // assert
         verifyNever(mockEventLocalDataSource
-            .cacheEvent(combinedEvents.first.copyWith(version: 33)));
+            .addEvent(combinedEvents.first.copyWith(version: 33)));
         expect(result, equals(const Right(null)));
       },
     );
@@ -431,7 +438,7 @@ void main() {
         final result = await repository.rebase();
         // assert
         verifyNever(mockEventLocalDataSource
-            .cacheEvent(syncedEvents.first.copyWith(version: 33)));
+            .addEvent(syncedEvents.first.copyWith(version: 33)));
         expect(result, equals(const Right(null)));
       },
     );
@@ -457,7 +464,7 @@ void main() {
         // arrange
         when(mockEventLocalDataSource.getAllEvents())
             .thenAnswer((_) async => tCachedEventsFirst);
-        when(mockEventLocalDataSource.cacheEvent(any))
+        when(mockEventLocalDataSource.addEvent(any))
             .thenThrow(CacheException());
         // act
         final result = await repository.rebase();
@@ -471,11 +478,13 @@ void main() {
 
   group('add', () {
     const tEventId = 'eventId';
+    const tPool = 1;
     final tTime = DateTime.now();
     final tEventModel = EventModel(
-      id: tEventId,
+      eventId: tEventId,
       streamId: 'first',
       createdAt: tTime,
+      pool: tPool,
       version: 1,
       name: "add_member",
       data: {},
@@ -504,12 +513,12 @@ void main() {
             .thenAnswer((_) async => []);
         when(mockIdGenerator.generateId()).thenReturn(tEventId);
         // act
-        final result = await repository.add(event);
+        final result = await repository.add(event, tPool);
 
         // assert
         expect(result, equals(const Right(null)));
         verify(mockEventLocalDataSource.getAllEvents());
-        verify(mockEventLocalDataSource.cacheEvent(tEventModel));
+        verify(mockEventLocalDataSource.addEvent(tEventModel));
       },
     );
 
@@ -526,13 +535,13 @@ void main() {
             .thenAnswer((_) async => tEvents);
         when(mockIdGenerator.generateId()).thenReturn(tEventId);
         // act
-        final result = await repository.add(event);
+        final result = await repository.add(event, tPool);
 
         // assert
         expect(result, equals(const Right(null)));
         verify(mockEventLocalDataSource.getAllEvents());
         final newEvent = tEventModel.copyWith(version: 3);
-        verify(mockEventLocalDataSource.cacheEvent(newEvent));
+        verify(mockEventLocalDataSource.addEvent(newEvent));
       },
     );
 
@@ -547,12 +556,12 @@ void main() {
         when(mockEventLocalDataSource.getAllEvents())
             .thenThrow(CacheException());
         // act
-        final result = await repository.add(event);
+        final result = await repository.add(event, tPool);
 
         // assert
         expect(result, equals(const Left(CacheFailure())));
         verify(mockEventLocalDataSource.getAllEvents());
-        verifyNever(mockEventLocalDataSource.cacheEvent(any));
+        verifyNever(mockEventLocalDataSource.addEvent(any));
       },
     );
 
@@ -568,15 +577,15 @@ void main() {
         when(mockEventLocalDataSource.getAllEvents())
             .thenAnswer((_) async => tEvents);
         when(mockIdGenerator.generateId()).thenReturn(tEventId);
-        when(mockEventLocalDataSource.cacheEvent(any))
+        when(mockEventLocalDataSource.addEvent(any))
             .thenThrow(CacheException());
         // act
-        final result = await repository.add(event);
+        final result = await repository.add(event, tPool);
 
         // assert
         expect(result, equals(const Left(CacheFailure())));
         verify(mockEventLocalDataSource.getAllEvents());
-        verify(mockEventLocalDataSource.cacheEvent(any));
+        verify(mockEventLocalDataSource.addEvent(any));
       },
     );
   });
@@ -603,7 +612,7 @@ void main() {
         // assert
         expect(result, equals(const Left(CacheFailure())));
         verify(mockEventLocalDataSource.getAllEvents());
-        verifyNever(mockEventLocalDataSource.cacheEvent(any));
+        verifyNever(mockEventLocalDataSource.addEvent(any));
       },
     );
 
@@ -640,7 +649,7 @@ void main() {
         // assert
         expect(result, equals(const Left(CacheFailure())));
         verify(mockEventLocalDataSource.getAllEvents());
-        verifyNever(mockEventLocalDataSource.cacheEvent(any));
+        verifyNever(mockEventLocalDataSource.addEvent(any));
       },
     );
 
@@ -655,7 +664,7 @@ void main() {
         // assert
         expect(result, equals(const Right(null)));
         final expectedEventModel = tEventModel.copyWith(merged: true);
-        verify(mockEventLocalDataSource.cacheEvent(expectedEventModel));
+        verify(mockEventLocalDataSource.addEvent(expectedEventModel));
       },
     );
 
@@ -665,14 +674,14 @@ void main() {
         // arrange
         when(mockEventLocalDataSource.getAllEvents())
             .thenAnswer((_) async => [tEventModel]);
-        when(mockEventLocalDataSource.cacheEvent(any))
+        when(mockEventLocalDataSource.addEvent(any))
             .thenThrow(CacheException());
         // act
         final result = await repository.markReduced(tEvent);
 
         // assert
         expect(result, equals(const Left(CacheFailure())));
-        verify(mockEventLocalDataSource.cacheEvent(any));
+        verify(mockEventLocalDataSource.addEvent(any));
       },
     );
   });

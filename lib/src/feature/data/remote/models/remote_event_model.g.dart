@@ -12,6 +12,7 @@ _$_RemoteEventModel _$$_RemoteEventModelFromJson(Map<String, dynamic> json) =>
       createdAt: json['created_at'] == null
           ? null
           : DateTime.parse(json['created_at'] as String),
+      eventId: json['event_id'] as String,
       streamId: json['stream_id'] as String,
       version: json['version'] as int,
       name: json['name'] as String,
@@ -22,6 +23,7 @@ Map<String, dynamic> _$$_RemoteEventModelToJson(_$_RemoteEventModel instance) =>
     <String, dynamic>{
       'id': instance.id,
       'created_at': instance.createdAt?.toIso8601String(),
+      'event_id': instance.eventId,
       'stream_id': instance.streamId,
       'version': instance.version,
       'name': instance.name,

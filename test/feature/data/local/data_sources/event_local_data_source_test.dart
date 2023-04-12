@@ -27,7 +27,7 @@ void main() {
     const tEventId = "eventId";
 
     final tEventModel = EventModel(
-      id: tEventId,
+      eventId: tEventId,
       streamId: '175794e2-83a6-4f9a-b873-d43484e2c0b5',
       version: 1,
       name: "create-group",
@@ -60,7 +60,7 @@ void main() {
   group('addEvent', () {
     const tEventId = 'event-1';
     final tModel = EventModel(
-      id: tEventId,
+      eventId: tEventId,
       streamId: '175794e2-83a6-4f9a-b873-d43484e2c0b5',
       version: 1,
       name: "create-group",
@@ -104,7 +104,7 @@ void main() {
   group('removeEvent', () {
     const tEventId = 'event-1';
     final tModel = EventModel(
-      id: tEventId,
+      eventId: tEventId,
       streamId: '175794e2-83a6-4f9a-b873-d43484e2c0b5',
       version: 1,
       name: "create-group",
@@ -120,7 +120,7 @@ void main() {
       () async {
         // arrange
         const tOtherEventId = 'other-event';
-        final tPoolData = [tOtherEventId, tModel.id];
+        final tPoolData = [tOtherEventId, tModel.eventId];
         when(mockEventCache.read(any)).thenAnswer((_) async => tModel);
         when(mockPoolCache.exists(any)).thenAnswer((_) async => true);
         when(mockPoolCache.read(any)).thenAnswer((_) async => tPoolData);
@@ -137,7 +137,7 @@ void main() {
       'should delete the pool if the last event is deleted',
       () async {
         // arrange
-        final tPoolData = [tModel.id];
+        final tPoolData = [tModel.eventId];
         when(mockEventCache.read(any)).thenAnswer((_) async => tModel);
         when(mockPoolCache.exists(any)).thenAnswer((_) async => true);
         when(mockPoolCache.read(any)).thenAnswer((_) async => tPoolData);
@@ -155,7 +155,7 @@ void main() {
     const tPool = 1;
 
     final tEventModel = EventModel(
-      id: tEventId,
+      eventId: tEventId,
       streamId: '175794e2-83a6-4f9a-b873-d43484e2c0b5',
       version: 1,
       name: "create-group",
@@ -181,7 +181,7 @@ void main() {
 
   group('sort', () {
     final tEventModel = EventModel(
-      id: 'event-id',
+      eventId: 'event-id',
       streamId: 'stream-1',
       version: 1,
       name: "create-group",

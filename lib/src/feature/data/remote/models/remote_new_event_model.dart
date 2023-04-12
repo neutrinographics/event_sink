@@ -9,6 +9,9 @@ part 'remote_new_event_model.g.dart';
 @freezed
 class RemoteNewEventModel with _$RemoteNewEventModel {
   factory RemoteNewEventModel({
+    /// The unique ID of this event
+    @JsonKey(name: 'event_id') required String eventId,
+
     /// The ID of the stream affected by this event.
     @JsonKey(name: 'stream_id') required String streamId,
 

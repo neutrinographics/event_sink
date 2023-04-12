@@ -35,8 +35,8 @@ class SinkController {
       _applyEvents(ApplyEventsParams(
           handlers: handlers, paramGenerators: paramGenerators));
 
-  Future<Either<Failure, void>> add(EventInfo<EventData> event) =>
-      _addEvent(AddEventParams(event: event));
+  Future<Either<Failure, void>> add(EventInfo<EventData> event, int pool) =>
+      _addEvent(AddEventParams(event: event, pool: pool));
 
   Future<Either<Failure, void>> setAuth(String token) => _setConfig(
       SetStringConfigParams(option: ConfigOption.authToken, value: token));
