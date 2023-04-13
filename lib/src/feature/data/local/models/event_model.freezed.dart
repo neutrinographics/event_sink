@@ -33,8 +33,8 @@ mixin _$EventModel {
   @JsonKey(name: 'created_at')
   DateTime get createdAt => throw _privateConstructorUsedError;
 
-  /// Flag indicating if the event has been merged into the local state
-  bool get merged => throw _privateConstructorUsedError;
+  /// Indicates the event has already been applied to the aggregate.
+  bool get applied => throw _privateConstructorUsedError;
 
   /// The ID of the stream being manipulated by this event.
   @JsonKey(name: 'stream_id')
@@ -66,7 +66,7 @@ abstract class $EventModelCopyWith<$Res> {
       {@JsonKey(name: 'event_id') String eventId,
       @JsonKey(name: 'remote_id') int? remoteId,
       @JsonKey(name: 'created_at') DateTime createdAt,
-      bool merged,
+      bool applied,
       @JsonKey(name: 'stream_id') String streamId,
       int version,
       String name,
@@ -90,7 +90,7 @@ class _$EventModelCopyWithImpl<$Res, $Val extends EventModel>
     Object? eventId = null,
     Object? remoteId = freezed,
     Object? createdAt = null,
-    Object? merged = null,
+    Object? applied = null,
     Object? streamId = null,
     Object? version = null,
     Object? name = null,
@@ -110,9 +110,9 @@ class _$EventModelCopyWithImpl<$Res, $Val extends EventModel>
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      merged: null == merged
-          ? _value.merged
-          : merged // ignore: cast_nullable_to_non_nullable
+      applied: null == applied
+          ? _value.applied
+          : applied // ignore: cast_nullable_to_non_nullable
               as bool,
       streamId: null == streamId
           ? _value.streamId
@@ -150,7 +150,7 @@ abstract class _$$_EventModelCopyWith<$Res>
       {@JsonKey(name: 'event_id') String eventId,
       @JsonKey(name: 'remote_id') int? remoteId,
       @JsonKey(name: 'created_at') DateTime createdAt,
-      bool merged,
+      bool applied,
       @JsonKey(name: 'stream_id') String streamId,
       int version,
       String name,
@@ -172,7 +172,7 @@ class __$$_EventModelCopyWithImpl<$Res>
     Object? eventId = null,
     Object? remoteId = freezed,
     Object? createdAt = null,
-    Object? merged = null,
+    Object? applied = null,
     Object? streamId = null,
     Object? version = null,
     Object? name = null,
@@ -192,9 +192,9 @@ class __$$_EventModelCopyWithImpl<$Res>
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      merged: null == merged
-          ? _value.merged
-          : merged // ignore: cast_nullable_to_non_nullable
+      applied: null == applied
+          ? _value.applied
+          : applied // ignore: cast_nullable_to_non_nullable
               as bool,
       streamId: null == streamId
           ? _value.streamId
@@ -227,7 +227,7 @@ class _$_EventModel extends _EventModel {
       {@JsonKey(name: 'event_id') required this.eventId,
       @JsonKey(name: 'remote_id') this.remoteId,
       @JsonKey(name: 'created_at') required this.createdAt,
-      this.merged = false,
+      this.applied = false,
       @JsonKey(name: 'stream_id') required this.streamId,
       required this.version,
       required this.name,
@@ -255,10 +255,10 @@ class _$_EventModel extends _EventModel {
   @JsonKey(name: 'created_at')
   final DateTime createdAt;
 
-  /// Flag indicating if the event has been merged into the local state
+  /// Indicates the event has already been applied to the aggregate.
   @override
   @JsonKey()
-  final bool merged;
+  final bool applied;
 
   /// The ID of the stream being manipulated by this event.
   @override
@@ -288,7 +288,7 @@ class _$_EventModel extends _EventModel {
 
   @override
   String toString() {
-    return 'EventModel(eventId: $eventId, remoteId: $remoteId, createdAt: $createdAt, merged: $merged, streamId: $streamId, version: $version, name: $name, pool: $pool, data: $data)';
+    return 'EventModel(eventId: $eventId, remoteId: $remoteId, createdAt: $createdAt, applied: $applied, streamId: $streamId, version: $version, name: $name, pool: $pool, data: $data)';
   }
 
   @override
@@ -301,7 +301,7 @@ class _$_EventModel extends _EventModel {
                 other.remoteId == remoteId) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
-            (identical(other.merged, merged) || other.merged == merged) &&
+            (identical(other.applied, applied) || other.applied == applied) &&
             (identical(other.streamId, streamId) ||
                 other.streamId == streamId) &&
             (identical(other.version, version) || other.version == version) &&
@@ -317,7 +317,7 @@ class _$_EventModel extends _EventModel {
       eventId,
       remoteId,
       createdAt,
-      merged,
+      applied,
       streamId,
       version,
       name,
@@ -343,7 +343,7 @@ abstract class _EventModel extends EventModel {
       {@JsonKey(name: 'event_id') required final String eventId,
       @JsonKey(name: 'remote_id') final int? remoteId,
       @JsonKey(name: 'created_at') required final DateTime createdAt,
-      final bool merged,
+      final bool applied,
       @JsonKey(name: 'stream_id') required final String streamId,
       required final int version,
       required final String name,
@@ -372,8 +372,8 @@ abstract class _EventModel extends EventModel {
   DateTime get createdAt;
   @override
 
-  /// Flag indicating if the event has been merged into the local state
-  bool get merged;
+  /// Indicates the event has already been applied to the aggregate.
+  bool get applied;
   @override
 
   /// The ID of the stream being manipulated by this event.

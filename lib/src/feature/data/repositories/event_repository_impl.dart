@@ -95,7 +95,7 @@ class EventRepositoryImpl extends EventRepository {
         await localDataSource.addEvent(EventModel.fromRemote(
           remoteEvent: syncedEvent,
           pool: pool,
-        ).copyWith(merged: e.merged, createdAt: timeInfo.now()));
+        ).copyWith(applied: e.applied, createdAt: timeInfo.now()));
       } on OutOfSyncException catch (e) {
         return Left(OutOfSyncFailure(message: e.message));
       } on ServerException catch (e) {
@@ -237,7 +237,7 @@ class EventRepositoryImpl extends EventRepository {
   Future<Either<Failure, void>> markApplied(EventStub event) async {
     try {
       final model = await localDataSource.getEvent(event.eventId);
-      await localDataSource.addEvent(model.copyWith(merged: true));
+      await localDataSource.addEvent(model.copyWith(applied: true));
       return const Right(null);
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));

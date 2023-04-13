@@ -72,7 +72,7 @@ void main() {
     name: tEventName,
     pool: tPool,
     version: 1,
-    merged: false,
+    applied: false,
     data: tRawData,
   );
   final List<EventStub> tEvents = [
@@ -83,7 +83,7 @@ void main() {
       name: tEventName,
       pool: 1,
       version: 1,
-      merged: true,
+      applied: true,
       data: {},
     )
   ];

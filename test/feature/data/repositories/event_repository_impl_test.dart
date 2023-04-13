@@ -573,7 +573,7 @@ void main() {
       baseEvent.copyWith(streamId: 'first', version: 8),
       baseEvent.copyWith(streamId: 'first', version: 9),
       baseEvent.copyWith(streamId: 'first', version: 10),
-      baseEvent.copyWith(streamId: 'first', version: 11, merged: true),
+      baseEvent.copyWith(streamId: 'first', version: 11, applied: true),
     ];
 
     test(
@@ -610,7 +610,7 @@ void main() {
 
   group('markReduced', () {
     final tEventModel = EventModel.fromJson(json.decode(fixture('event.json')))
-        .copyWith(merged: false);
+        .copyWith(applied: false);
     final tEvent = tEventModel.toDomain();
 
     test(
@@ -639,7 +639,7 @@ void main() {
         final result = await repository.markApplied(tEvent);
         // assert
         expect(result, equals(const Right(null)));
-        final expectedEventModel = tEventModel.copyWith(merged: true);
+        final expectedEventModel = tEventModel.copyWith(applied: true);
         verify(mockEventLocalDataSource.addEvent(expectedEventModel));
       },
     );

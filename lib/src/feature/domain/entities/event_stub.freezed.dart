@@ -29,9 +29,8 @@ mixin _$EventStub {
   /// The stream version
   int get version => throw _privateConstructorUsedError;
 
-  /// Indicates if the event has been reduced into the aggregate.
-  /// TODO: rename this to "applied"
-  bool get merged => throw _privateConstructorUsedError;
+  /// Indicates the event has already been applied to the aggregate.
+  bool get applied => throw _privateConstructorUsedError;
 
   /// The data needed to perform the action
   Map<String, dynamic> get data => throw _privateConstructorUsedError;
@@ -52,7 +51,7 @@ abstract class $EventStubCopyWith<$Res> {
       String name,
       int pool,
       int version,
-      bool merged,
+      bool applied,
       Map<String, dynamic> data});
 }
 
@@ -74,7 +73,7 @@ class _$EventStubCopyWithImpl<$Res, $Val extends EventStub>
     Object? name = null,
     Object? pool = null,
     Object? version = null,
-    Object? merged = null,
+    Object? applied = null,
     Object? data = null,
   }) {
     return _then(_value.copyWith(
@@ -98,9 +97,9 @@ class _$EventStubCopyWithImpl<$Res, $Val extends EventStub>
           ? _value.version
           : version // ignore: cast_nullable_to_non_nullable
               as int,
-      merged: null == merged
-          ? _value.merged
-          : merged // ignore: cast_nullable_to_non_nullable
+      applied: null == applied
+          ? _value.applied
+          : applied // ignore: cast_nullable_to_non_nullable
               as bool,
       data: null == data
           ? _value.data
@@ -123,7 +122,7 @@ abstract class _$$_EventStubCopyWith<$Res> implements $EventStubCopyWith<$Res> {
       String name,
       int pool,
       int version,
-      bool merged,
+      bool applied,
       Map<String, dynamic> data});
 }
 
@@ -143,7 +142,7 @@ class __$$_EventStubCopyWithImpl<$Res>
     Object? name = null,
     Object? pool = null,
     Object? version = null,
-    Object? merged = null,
+    Object? applied = null,
     Object? data = null,
   }) {
     return _then(_$_EventStub(
@@ -167,9 +166,9 @@ class __$$_EventStubCopyWithImpl<$Res>
           ? _value.version
           : version // ignore: cast_nullable_to_non_nullable
               as int,
-      merged: null == merged
-          ? _value.merged
-          : merged // ignore: cast_nullable_to_non_nullable
+      applied: null == applied
+          ? _value.applied
+          : applied // ignore: cast_nullable_to_non_nullable
               as bool,
       data: null == data
           ? _value._data
@@ -188,7 +187,7 @@ class _$_EventStub implements _EventStub {
       required this.name,
       required this.pool,
       required this.version,
-      required this.merged,
+      required this.applied,
       required final Map<String, dynamic> data})
       : _data = data;
 
@@ -210,9 +209,9 @@ class _$_EventStub implements _EventStub {
   @override
   final int version;
 
-  /// Indicates if the event has been reduced into the aggregate.
+  /// Indicates the event has already been applied to the aggregate.
   @override
-  final bool merged;
+  final bool applied;
 
   /// The data needed to perform the action
   final Map<String, dynamic> _data;
@@ -227,7 +226,7 @@ class _$_EventStub implements _EventStub {
 
   @override
   String toString() {
-    return 'EventStub(eventId: $eventId, streamId: $streamId, name: $name, pool: $pool, version: $version, merged: $merged, data: $data)';
+    return 'EventStub(eventId: $eventId, streamId: $streamId, name: $name, pool: $pool, version: $version, applied: $applied, data: $data)';
   }
 
   @override
@@ -241,13 +240,13 @@ class _$_EventStub implements _EventStub {
             (identical(other.name, name) || other.name == name) &&
             (identical(other.pool, pool) || other.pool == pool) &&
             (identical(other.version, version) || other.version == version) &&
-            (identical(other.merged, merged) || other.merged == merged) &&
+            (identical(other.applied, applied) || other.applied == applied) &&
             const DeepCollectionEquality().equals(other._data, _data));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, eventId, streamId, name, pool,
-      version, merged, const DeepCollectionEquality().hash(_data));
+      version, applied, const DeepCollectionEquality().hash(_data));
 
   @JsonKey(ignore: true)
   @override
@@ -263,7 +262,7 @@ abstract class _EventStub implements EventStub {
       required final String name,
       required final int pool,
       required final int version,
-      required final bool merged,
+      required final bool applied,
       required final Map<String, dynamic> data}) = _$_EventStub;
 
   @override
@@ -286,8 +285,8 @@ abstract class _EventStub implements EventStub {
   int get version;
   @override
 
-  /// Indicates if the event has been reduced into the aggregate.
-  bool get merged;
+  /// Indicates the event has already been applied to the aggregate.
+  bool get applied;
   @override
 
   /// The data needed to perform the action

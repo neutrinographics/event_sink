@@ -23,8 +23,8 @@ class EventModel with _$EventModel {
     /// The time when this event was recorded locally.
     @JsonKey(name: 'created_at') required DateTime createdAt,
 
-    /// Flag indicating if the event has been merged into the local state
-    @Default(false) bool merged,
+    /// Indicates the event has already been applied to the aggregate.
+    @Default(false) bool applied,
 
     /// The ID of the stream being manipulated by this event.
     @JsonKey(name: 'stream_id') required String streamId,
@@ -56,7 +56,7 @@ class EventModel with _$EventModel {
     return EventModel(
       eventId: remoteEvent.eventId,
       remoteId: remoteEvent.id,
-      merged: false,
+      applied: false,
       createdAt: DateTime.now(),
       streamId: remoteEvent.streamId,
       version: remoteEvent.version,
@@ -82,7 +82,7 @@ class EventModel with _$EventModel {
       version: version,
       streamId: streamId,
       data: data,
-      merged: merged,
+      applied: applied,
       name: name,
       pool: pool,
     );

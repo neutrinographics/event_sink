@@ -18,7 +18,7 @@ class ApplyEvents extends UseCase<void, ApplyEventsParams> {
     final failureOrEvents = await eventRepository.list(params.pool);
     return failureOrEvents.fold((failure) => Left(failure), (events) async {
       for (final event in events) {
-        if (event.merged) continue;
+        if (event.applied) continue;
         final eventHandler = params.handlers[event.name];
         if (eventHandler == null) {
           return Left(CacheFailure(

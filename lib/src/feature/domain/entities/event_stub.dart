@@ -20,8 +20,8 @@ class EventStub with _$EventStub {
     /// The stream version
     required int version,
 
-    /// Indicates if the event has been reduced into the aggregate.
-    required bool merged,
+    /// Indicates the event has already been applied to the aggregate.
+    required bool applied,
 
     /// The data needed to perform the action
     required Map<String, dynamic> data,
