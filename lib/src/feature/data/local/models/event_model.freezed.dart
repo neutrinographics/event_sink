@@ -20,35 +20,32 @@ EventModel _$EventModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$EventModel {
-  /// The local ID of the event
-  String get id => throw _privateConstructorUsedError;
+  /// The unique ID of the event
+  @JsonKey(name: 'event_id')
+  String get eventId => throw _privateConstructorUsedError;
 
   /// The remote id of the event.
   /// This will only have a value if this has been downloaded from the server.
   @JsonKey(name: 'remote_id')
   int? get remoteId => throw _privateConstructorUsedError;
 
-  /// The time when this event was created on the remote host.
-  /// This will only have a value if this has been downloaded from the server.
-  @JsonKey(name: 'remote_created_at')
-  DateTime? get remoteCreatedAt => throw _privateConstructorUsedError;
-
   /// The time when this event was recorded locally.
   @JsonKey(name: 'created_at')
   DateTime get createdAt => throw _privateConstructorUsedError;
 
-  /// Flag indicating if the event has been merged into the local state
-  bool get merged => throw _privateConstructorUsedError;
+  /// Indicates the event has already been applied to the aggregate.
+  bool get applied => throw _privateConstructorUsedError;
 
-  /// The ID of the parent stream.
+  /// The ID of the stream being manipulated by this event.
   @JsonKey(name: 'stream_id')
   String get streamId => throw _privateConstructorUsedError;
 
   /// The version of the stream's state.
   int get version => throw _privateConstructorUsedError;
 
-  /// The unique name of the event.
+  /// The name of the event.
   String get name => throw _privateConstructorUsedError;
+  int get pool => throw _privateConstructorUsedError;
 
   /// Custom event data
   Map<String, dynamic> get data => throw _privateConstructorUsedError;
@@ -66,14 +63,14 @@ abstract class $EventModelCopyWith<$Res> {
       _$EventModelCopyWithImpl<$Res, EventModel>;
   @useResult
   $Res call(
-      {String id,
+      {@JsonKey(name: 'event_id') String eventId,
       @JsonKey(name: 'remote_id') int? remoteId,
-      @JsonKey(name: 'remote_created_at') DateTime? remoteCreatedAt,
       @JsonKey(name: 'created_at') DateTime createdAt,
-      bool merged,
+      bool applied,
       @JsonKey(name: 'stream_id') String streamId,
       int version,
       String name,
+      int pool,
       Map<String, dynamic> data});
 }
 
@@ -90,36 +87,32 @@ class _$EventModelCopyWithImpl<$Res, $Val extends EventModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
+    Object? eventId = null,
     Object? remoteId = freezed,
-    Object? remoteCreatedAt = freezed,
     Object? createdAt = null,
-    Object? merged = null,
+    Object? applied = null,
     Object? streamId = null,
     Object? version = null,
     Object? name = null,
+    Object? pool = null,
     Object? data = null,
   }) {
     return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
+      eventId: null == eventId
+          ? _value.eventId
+          : eventId // ignore: cast_nullable_to_non_nullable
               as String,
       remoteId: freezed == remoteId
           ? _value.remoteId
           : remoteId // ignore: cast_nullable_to_non_nullable
               as int?,
-      remoteCreatedAt: freezed == remoteCreatedAt
-          ? _value.remoteCreatedAt
-          : remoteCreatedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      merged: null == merged
-          ? _value.merged
-          : merged // ignore: cast_nullable_to_non_nullable
+      applied: null == applied
+          ? _value.applied
+          : applied // ignore: cast_nullable_to_non_nullable
               as bool,
       streamId: null == streamId
           ? _value.streamId
@@ -133,6 +126,10 @@ class _$EventModelCopyWithImpl<$Res, $Val extends EventModel>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
+      pool: null == pool
+          ? _value.pool
+          : pool // ignore: cast_nullable_to_non_nullable
+              as int,
       data: null == data
           ? _value.data
           : data // ignore: cast_nullable_to_non_nullable
@@ -150,14 +147,14 @@ abstract class _$$_EventModelCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String id,
+      {@JsonKey(name: 'event_id') String eventId,
       @JsonKey(name: 'remote_id') int? remoteId,
-      @JsonKey(name: 'remote_created_at') DateTime? remoteCreatedAt,
       @JsonKey(name: 'created_at') DateTime createdAt,
-      bool merged,
+      bool applied,
       @JsonKey(name: 'stream_id') String streamId,
       int version,
       String name,
+      int pool,
       Map<String, dynamic> data});
 }
 
@@ -172,36 +169,32 @@ class __$$_EventModelCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
+    Object? eventId = null,
     Object? remoteId = freezed,
-    Object? remoteCreatedAt = freezed,
     Object? createdAt = null,
-    Object? merged = null,
+    Object? applied = null,
     Object? streamId = null,
     Object? version = null,
     Object? name = null,
+    Object? pool = null,
     Object? data = null,
   }) {
     return _then(_$_EventModel(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
+      eventId: null == eventId
+          ? _value.eventId
+          : eventId // ignore: cast_nullable_to_non_nullable
               as String,
       remoteId: freezed == remoteId
           ? _value.remoteId
           : remoteId // ignore: cast_nullable_to_non_nullable
               as int?,
-      remoteCreatedAt: freezed == remoteCreatedAt
-          ? _value.remoteCreatedAt
-          : remoteCreatedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      merged: null == merged
-          ? _value.merged
-          : merged // ignore: cast_nullable_to_non_nullable
+      applied: null == applied
+          ? _value.applied
+          : applied // ignore: cast_nullable_to_non_nullable
               as bool,
       streamId: null == streamId
           ? _value.streamId
@@ -215,6 +208,10 @@ class __$$_EventModelCopyWithImpl<$Res>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
+      pool: null == pool
+          ? _value.pool
+          : pool // ignore: cast_nullable_to_non_nullable
+              as int,
       data: null == data
           ? _value._data
           : data // ignore: cast_nullable_to_non_nullable
@@ -227,14 +224,14 @@ class __$$_EventModelCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_EventModel extends _EventModel {
   const _$_EventModel(
-      {required this.id,
+      {@JsonKey(name: 'event_id') required this.eventId,
       @JsonKey(name: 'remote_id') this.remoteId,
-      @JsonKey(name: 'remote_created_at') this.remoteCreatedAt,
       @JsonKey(name: 'created_at') required this.createdAt,
-      this.merged = false,
+      this.applied = false,
       @JsonKey(name: 'stream_id') required this.streamId,
       required this.version,
       required this.name,
+      required this.pool,
       required final Map<String, dynamic> data})
       : _data = data,
         super._();
@@ -242,9 +239,10 @@ class _$_EventModel extends _EventModel {
   factory _$_EventModel.fromJson(Map<String, dynamic> json) =>
       _$$_EventModelFromJson(json);
 
-  /// The local ID of the event
+  /// The unique ID of the event
   @override
-  final String id;
+  @JsonKey(name: 'event_id')
+  final String eventId;
 
   /// The remote id of the event.
   /// This will only have a value if this has been downloaded from the server.
@@ -252,23 +250,17 @@ class _$_EventModel extends _EventModel {
   @JsonKey(name: 'remote_id')
   final int? remoteId;
 
-  /// The time when this event was created on the remote host.
-  /// This will only have a value if this has been downloaded from the server.
-  @override
-  @JsonKey(name: 'remote_created_at')
-  final DateTime? remoteCreatedAt;
-
   /// The time when this event was recorded locally.
   @override
   @JsonKey(name: 'created_at')
   final DateTime createdAt;
 
-  /// Flag indicating if the event has been merged into the local state
+  /// Indicates the event has already been applied to the aggregate.
   @override
   @JsonKey()
-  final bool merged;
+  final bool applied;
 
-  /// The ID of the parent stream.
+  /// The ID of the stream being manipulated by this event.
   @override
   @JsonKey(name: 'stream_id')
   final String streamId;
@@ -277,9 +269,11 @@ class _$_EventModel extends _EventModel {
   @override
   final int version;
 
-  /// The unique name of the event.
+  /// The name of the event.
   @override
   final String name;
+  @override
+  final int pool;
 
   /// Custom event data
   final Map<String, dynamic> _data;
@@ -294,7 +288,7 @@ class _$_EventModel extends _EventModel {
 
   @override
   String toString() {
-    return 'EventModel(id: $id, remoteId: $remoteId, remoteCreatedAt: $remoteCreatedAt, createdAt: $createdAt, merged: $merged, streamId: $streamId, version: $version, name: $name, data: $data)';
+    return 'EventModel(eventId: $eventId, remoteId: $remoteId, createdAt: $createdAt, applied: $applied, streamId: $streamId, version: $version, name: $name, pool: $pool, data: $data)';
   }
 
   @override
@@ -302,18 +296,17 @@ class _$_EventModel extends _EventModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_EventModel &&
-            (identical(other.id, id) || other.id == id) &&
+            (identical(other.eventId, eventId) || other.eventId == eventId) &&
             (identical(other.remoteId, remoteId) ||
                 other.remoteId == remoteId) &&
-            (identical(other.remoteCreatedAt, remoteCreatedAt) ||
-                other.remoteCreatedAt == remoteCreatedAt) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
-            (identical(other.merged, merged) || other.merged == merged) &&
+            (identical(other.applied, applied) || other.applied == applied) &&
             (identical(other.streamId, streamId) ||
                 other.streamId == streamId) &&
             (identical(other.version, version) || other.version == version) &&
             (identical(other.name, name) || other.name == name) &&
+            (identical(other.pool, pool) || other.pool == pool) &&
             const DeepCollectionEquality().equals(other._data, _data));
   }
 
@@ -321,14 +314,14 @@ class _$_EventModel extends _EventModel {
   @override
   int get hashCode => Object.hash(
       runtimeType,
-      id,
+      eventId,
       remoteId,
-      remoteCreatedAt,
       createdAt,
-      merged,
+      applied,
       streamId,
       version,
       name,
+      pool,
       const DeepCollectionEquality().hash(_data));
 
   @JsonKey(ignore: true)
@@ -347,14 +340,14 @@ class _$_EventModel extends _EventModel {
 
 abstract class _EventModel extends EventModel {
   const factory _EventModel(
-      {required final String id,
+      {@JsonKey(name: 'event_id') required final String eventId,
       @JsonKey(name: 'remote_id') final int? remoteId,
-      @JsonKey(name: 'remote_created_at') final DateTime? remoteCreatedAt,
       @JsonKey(name: 'created_at') required final DateTime createdAt,
-      final bool merged,
+      final bool applied,
       @JsonKey(name: 'stream_id') required final String streamId,
       required final int version,
       required final String name,
+      required final int pool,
       required final Map<String, dynamic> data}) = _$_EventModel;
   const _EventModel._() : super._();
 
@@ -363,8 +356,9 @@ abstract class _EventModel extends EventModel {
 
   @override
 
-  /// The local ID of the event
-  String get id;
+  /// The unique ID of the event
+  @JsonKey(name: 'event_id')
+  String get eventId;
   @override
 
   /// The remote id of the event.
@@ -373,22 +367,16 @@ abstract class _EventModel extends EventModel {
   int? get remoteId;
   @override
 
-  /// The time when this event was created on the remote host.
-  /// This will only have a value if this has been downloaded from the server.
-  @JsonKey(name: 'remote_created_at')
-  DateTime? get remoteCreatedAt;
-  @override
-
   /// The time when this event was recorded locally.
   @JsonKey(name: 'created_at')
   DateTime get createdAt;
   @override
 
-  /// Flag indicating if the event has been merged into the local state
-  bool get merged;
+  /// Indicates the event has already been applied to the aggregate.
+  bool get applied;
   @override
 
-  /// The ID of the parent stream.
+  /// The ID of the stream being manipulated by this event.
   @JsonKey(name: 'stream_id')
   String get streamId;
   @override
@@ -397,8 +385,10 @@ abstract class _EventModel extends EventModel {
   int get version;
   @override
 
-  /// The unique name of the event.
+  /// The name of the event.
   String get name;
+  @override
+  int get pool;
   @override
 
   /// Custom event data

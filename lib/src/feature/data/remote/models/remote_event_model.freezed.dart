@@ -23,9 +23,9 @@ mixin _$RemoteEventModel {
   /// The remote ID of the event.
   int get id => throw _privateConstructorUsedError;
 
-  /// The time when the event was recorded on the server.
-  @JsonKey(name: 'created_at')
-  DateTime? get createdAt => throw _privateConstructorUsedError;
+  /// The unique ID of this event
+  @JsonKey(name: 'event_id')
+  String get eventId => throw _privateConstructorUsedError;
 
   /// The ID of the stream affected by this event.
   @JsonKey(name: 'stream_id')
@@ -56,7 +56,7 @@ abstract class $RemoteEventModelCopyWith<$Res> {
   @useResult
   $Res call(
       {int id,
-      @JsonKey(name: 'created_at') DateTime? createdAt,
+      @JsonKey(name: 'event_id') String eventId,
       @JsonKey(name: 'stream_id') String streamId,
       int version,
       String name,
@@ -77,7 +77,7 @@ class _$RemoteEventModelCopyWithImpl<$Res, $Val extends RemoteEventModel>
   @override
   $Res call({
     Object? id = null,
-    Object? createdAt = freezed,
+    Object? eventId = null,
     Object? streamId = null,
     Object? version = null,
     Object? name = null,
@@ -88,10 +88,10 @@ class _$RemoteEventModelCopyWithImpl<$Res, $Val extends RemoteEventModel>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
-      createdAt: freezed == createdAt
-          ? _value.createdAt
-          : createdAt // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
+      eventId: null == eventId
+          ? _value.eventId
+          : eventId // ignore: cast_nullable_to_non_nullable
+              as String,
       streamId: null == streamId
           ? _value.streamId
           : streamId // ignore: cast_nullable_to_non_nullable
@@ -122,7 +122,7 @@ abstract class _$$_RemoteEventModelCopyWith<$Res>
   @useResult
   $Res call(
       {int id,
-      @JsonKey(name: 'created_at') DateTime? createdAt,
+      @JsonKey(name: 'event_id') String eventId,
       @JsonKey(name: 'stream_id') String streamId,
       int version,
       String name,
@@ -141,7 +141,7 @@ class __$$_RemoteEventModelCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
-    Object? createdAt = freezed,
+    Object? eventId = null,
     Object? streamId = null,
     Object? version = null,
     Object? name = null,
@@ -152,10 +152,10 @@ class __$$_RemoteEventModelCopyWithImpl<$Res>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
-      createdAt: freezed == createdAt
-          ? _value.createdAt
-          : createdAt // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
+      eventId: null == eventId
+          ? _value.eventId
+          : eventId // ignore: cast_nullable_to_non_nullable
+              as String,
       streamId: null == streamId
           ? _value.streamId
           : streamId // ignore: cast_nullable_to_non_nullable
@@ -181,7 +181,7 @@ class __$$_RemoteEventModelCopyWithImpl<$Res>
 class _$_RemoteEventModel implements _RemoteEventModel {
   _$_RemoteEventModel(
       {required this.id,
-      @JsonKey(name: 'created_at') this.createdAt,
+      @JsonKey(name: 'event_id') required this.eventId,
       @JsonKey(name: 'stream_id') required this.streamId,
       required this.version,
       required this.name,
@@ -195,10 +195,10 @@ class _$_RemoteEventModel implements _RemoteEventModel {
   @override
   final int id;
 
-  /// The time when the event was recorded on the server.
+  /// The unique ID of this event
   @override
-  @JsonKey(name: 'created_at')
-  final DateTime? createdAt;
+  @JsonKey(name: 'event_id')
+  final String eventId;
 
   /// The ID of the stream affected by this event.
   @override
@@ -228,7 +228,7 @@ class _$_RemoteEventModel implements _RemoteEventModel {
 
   @override
   String toString() {
-    return 'RemoteEventModel(id: $id, createdAt: $createdAt, streamId: $streamId, version: $version, name: $name, data: $data)';
+    return 'RemoteEventModel(id: $id, eventId: $eventId, streamId: $streamId, version: $version, name: $name, data: $data)';
   }
 
   @override
@@ -237,8 +237,7 @@ class _$_RemoteEventModel implements _RemoteEventModel {
         (other.runtimeType == runtimeType &&
             other is _$_RemoteEventModel &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt) &&
+            (identical(other.eventId, eventId) || other.eventId == eventId) &&
             (identical(other.streamId, streamId) ||
                 other.streamId == streamId) &&
             (identical(other.version, version) || other.version == version) &&
@@ -248,7 +247,7 @@ class _$_RemoteEventModel implements _RemoteEventModel {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, createdAt, streamId, version,
+  int get hashCode => Object.hash(runtimeType, id, eventId, streamId, version,
       name, const DeepCollectionEquality().hash(_data));
 
   @JsonKey(ignore: true)
@@ -268,7 +267,7 @@ class _$_RemoteEventModel implements _RemoteEventModel {
 abstract class _RemoteEventModel implements RemoteEventModel {
   factory _RemoteEventModel(
       {required final int id,
-      @JsonKey(name: 'created_at') final DateTime? createdAt,
+      @JsonKey(name: 'event_id') required final String eventId,
       @JsonKey(name: 'stream_id') required final String streamId,
       required final int version,
       required final String name,
@@ -283,9 +282,9 @@ abstract class _RemoteEventModel implements RemoteEventModel {
   int get id;
   @override
 
-  /// The time when the event was recorded on the server.
-  @JsonKey(name: 'created_at')
-  DateTime? get createdAt;
+  /// The unique ID of this event
+  @JsonKey(name: 'event_id')
+  String get eventId;
   @override
 
   /// The ID of the stream affected by this event.

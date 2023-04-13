@@ -17,19 +17,20 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$EventStub {
   /// The local ID of the event.
-  String get id => throw _privateConstructorUsedError;
+  String get eventId => throw _privateConstructorUsedError;
 
   /// The id of the stream being modified
   String get streamId => throw _privateConstructorUsedError;
 
   /// The name of the event
   String get name => throw _privateConstructorUsedError;
+  int get pool => throw _privateConstructorUsedError;
 
   /// The stream version
   int get version => throw _privateConstructorUsedError;
 
-  /// Indicates if the event has been reduced into the aggregate.
-  bool get merged => throw _privateConstructorUsedError;
+  /// Indicates the event has already been applied to the aggregate.
+  bool get applied => throw _privateConstructorUsedError;
 
   /// The data needed to perform the action
   Map<String, dynamic> get data => throw _privateConstructorUsedError;
@@ -45,11 +46,12 @@ abstract class $EventStubCopyWith<$Res> {
       _$EventStubCopyWithImpl<$Res, EventStub>;
   @useResult
   $Res call(
-      {String id,
+      {String eventId,
       String streamId,
       String name,
+      int pool,
       int version,
-      bool merged,
+      bool applied,
       Map<String, dynamic> data});
 }
 
@@ -66,17 +68,18 @@ class _$EventStubCopyWithImpl<$Res, $Val extends EventStub>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
+    Object? eventId = null,
     Object? streamId = null,
     Object? name = null,
+    Object? pool = null,
     Object? version = null,
-    Object? merged = null,
+    Object? applied = null,
     Object? data = null,
   }) {
     return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
+      eventId: null == eventId
+          ? _value.eventId
+          : eventId // ignore: cast_nullable_to_non_nullable
               as String,
       streamId: null == streamId
           ? _value.streamId
@@ -86,13 +89,17 @@ class _$EventStubCopyWithImpl<$Res, $Val extends EventStub>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
+      pool: null == pool
+          ? _value.pool
+          : pool // ignore: cast_nullable_to_non_nullable
+              as int,
       version: null == version
           ? _value.version
           : version // ignore: cast_nullable_to_non_nullable
               as int,
-      merged: null == merged
-          ? _value.merged
-          : merged // ignore: cast_nullable_to_non_nullable
+      applied: null == applied
+          ? _value.applied
+          : applied // ignore: cast_nullable_to_non_nullable
               as bool,
       data: null == data
           ? _value.data
@@ -110,11 +117,12 @@ abstract class _$$_EventStubCopyWith<$Res> implements $EventStubCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {String id,
+      {String eventId,
       String streamId,
       String name,
+      int pool,
       int version,
-      bool merged,
+      bool applied,
       Map<String, dynamic> data});
 }
 
@@ -129,17 +137,18 @@ class __$$_EventStubCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
+    Object? eventId = null,
     Object? streamId = null,
     Object? name = null,
+    Object? pool = null,
     Object? version = null,
-    Object? merged = null,
+    Object? applied = null,
     Object? data = null,
   }) {
     return _then(_$_EventStub(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
+      eventId: null == eventId
+          ? _value.eventId
+          : eventId // ignore: cast_nullable_to_non_nullable
               as String,
       streamId: null == streamId
           ? _value.streamId
@@ -149,13 +158,17 @@ class __$$_EventStubCopyWithImpl<$Res>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
+      pool: null == pool
+          ? _value.pool
+          : pool // ignore: cast_nullable_to_non_nullable
+              as int,
       version: null == version
           ? _value.version
           : version // ignore: cast_nullable_to_non_nullable
               as int,
-      merged: null == merged
-          ? _value.merged
-          : merged // ignore: cast_nullable_to_non_nullable
+      applied: null == applied
+          ? _value.applied
+          : applied // ignore: cast_nullable_to_non_nullable
               as bool,
       data: null == data
           ? _value._data
@@ -169,17 +182,18 @@ class __$$_EventStubCopyWithImpl<$Res>
 
 class _$_EventStub implements _EventStub {
   _$_EventStub(
-      {required this.id,
+      {required this.eventId,
       required this.streamId,
       required this.name,
+      required this.pool,
       required this.version,
-      required this.merged,
+      required this.applied,
       required final Map<String, dynamic> data})
       : _data = data;
 
   /// The local ID of the event.
   @override
-  final String id;
+  final String eventId;
 
   /// The id of the stream being modified
   @override
@@ -188,14 +202,16 @@ class _$_EventStub implements _EventStub {
   /// The name of the event
   @override
   final String name;
+  @override
+  final int pool;
 
   /// The stream version
   @override
   final int version;
 
-  /// Indicates if the event has been reduced into the aggregate.
+  /// Indicates the event has already been applied to the aggregate.
   @override
-  final bool merged;
+  final bool applied;
 
   /// The data needed to perform the action
   final Map<String, dynamic> _data;
@@ -210,7 +226,7 @@ class _$_EventStub implements _EventStub {
 
   @override
   String toString() {
-    return 'EventStub(id: $id, streamId: $streamId, name: $name, version: $version, merged: $merged, data: $data)';
+    return 'EventStub(eventId: $eventId, streamId: $streamId, name: $name, pool: $pool, version: $version, applied: $applied, data: $data)';
   }
 
   @override
@@ -218,18 +234,19 @@ class _$_EventStub implements _EventStub {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_EventStub &&
-            (identical(other.id, id) || other.id == id) &&
+            (identical(other.eventId, eventId) || other.eventId == eventId) &&
             (identical(other.streamId, streamId) ||
                 other.streamId == streamId) &&
             (identical(other.name, name) || other.name == name) &&
+            (identical(other.pool, pool) || other.pool == pool) &&
             (identical(other.version, version) || other.version == version) &&
-            (identical(other.merged, merged) || other.merged == merged) &&
+            (identical(other.applied, applied) || other.applied == applied) &&
             const DeepCollectionEquality().equals(other._data, _data));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, id, streamId, name, version,
-      merged, const DeepCollectionEquality().hash(_data));
+  int get hashCode => Object.hash(runtimeType, eventId, streamId, name, pool,
+      version, applied, const DeepCollectionEquality().hash(_data));
 
   @JsonKey(ignore: true)
   @override
@@ -240,17 +257,18 @@ class _$_EventStub implements _EventStub {
 
 abstract class _EventStub implements EventStub {
   factory _EventStub(
-      {required final String id,
+      {required final String eventId,
       required final String streamId,
       required final String name,
+      required final int pool,
       required final int version,
-      required final bool merged,
+      required final bool applied,
       required final Map<String, dynamic> data}) = _$_EventStub;
 
   @override
 
   /// The local ID of the event.
-  String get id;
+  String get eventId;
   @override
 
   /// The id of the stream being modified
@@ -260,13 +278,15 @@ abstract class _EventStub implements EventStub {
   /// The name of the event
   String get name;
   @override
+  int get pool;
+  @override
 
   /// The stream version
   int get version;
   @override
 
-  /// Indicates if the event has been reduced into the aggregate.
-  bool get merged;
+  /// Indicates the event has already been applied to the aggregate.
+  bool get applied;
   @override
 
   /// The data needed to perform the action

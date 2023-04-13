@@ -27,46 +27,15 @@ class EventRepositoryImpl extends EventRepository {
   });
 
   @override
-  Future<Either<Failure, void>> fetch(String host, String authToken) async {
-    List<EventModel> localEvents;
-    try {
-      localEvents = await localDataSource.getAllEvents();
-    } on CacheException catch (e) {
-      return Left(CacheFailure(message: e.message));
-    }
-
-    // TRICKY: This will increase performance when there are many events.
-    // Reducing an O(n^2) operation to an almost O(n*2) operation.
-    // This will miss events that have the same creation time. See below for the solution.
-    DateTime lastEventSyncTime = DateTime.utc(0);
-    for (var e in localEvents) {
-      DateTime? remoteDate = e.remoteCreatedAt;
-      // Identify the most recently synced remote event.
-      if (e.synced &&
-          remoteDate != null &&
-          remoteDate.isAfter(lastEventSyncTime)) {
-        lastEventSyncTime = remoteDate;
-      }
-    }
-
-    // TRICKY: it's not safe to completely trust time comparisons because records
-    // could theoretically have the same time. Therefore, we collect these theoretical events
-    // for a final filtering.
-    final List<EventModel> localSyncedEvents = [];
-    for (var e in localEvents) {
-      DateTime? remoteDate = e.remoteCreatedAt;
-      // TRICKY: Notice the ! prefix to the date comparison.
-      if (e.synced &&
-          remoteDate != null &&
-          !remoteDate.isAfter(lastEventSyncTime)) {
-        localSyncedEvents.add(e);
-      }
-    }
-
+  Future<Either<Failure, void>> fetch(
+    Uri host,
+    int pool, {
+    String? authToken,
+  }) async {
     List<RemoteEventModel> remoteEvents;
     try {
       remoteEvents = await remoteDataSource.getEvents(
-        host: Uri.parse(host),
+        host: host,
         token: authToken,
       );
     } on ServerException catch (e) {
@@ -74,38 +43,42 @@ class EventRepositoryImpl extends EventRepository {
     }
 
     for (var e in remoteEvents) {
-      final DateTime? remoteDate = e.createdAt;
-      // skip already synced events
-      if (remoteDate != null && remoteDate.isBefore(lastEventSyncTime)) {
-        continue;
-      }
-
-      // TRICKY: because date comparisons like the one above are imprecise,
-      // we brute-force check over a theoretical remaining subset.
-      final int index = localSyncedEvents.indexWhere((element) {
-        return element.remoteId != null && element.remoteId == e.id;
-      });
-      if (index >= 0) continue;
-
-      // add new events
-      try {
-        await localDataSource.cacheEvent(EventModel.fromRemote(
-          remoteEvent: e,
-          id: idGenerator.generateId(),
-        ).copyWith(createdAt: timeInfo.now()));
-      } on CacheException catch (e) {
-        return Left(CacheFailure(message: e.message));
+      if (!(await _hasSyncedEvent(e.eventId))) {
+        try {
+          await localDataSource.addEvent(
+            EventModel.fromRemote(
+              remoteEvent: e,
+              pool: pool,
+            ).copyWith(createdAt: timeInfo.now()),
+          );
+        } on CacheException catch (e) {
+          return Left(CacheFailure(message: e.message));
+        }
       }
     }
     return const Right(null);
   }
 
+  /// Checks if an event has been synced
+  Future<bool> _hasSyncedEvent(String eventId) async {
+    if (await localDataSource.hasEvent(eventId)) {
+      final event = await localDataSource.getEvent(eventId);
+      return event.synced;
+    } else {
+      return false;
+    }
+  }
+
   @override
-  Future<Either<Failure, void>> push(String host, String authToken) async {
+  Future<Either<Failure, void>> push(
+    Uri host,
+    int pool, {
+    String? authToken,
+  }) async {
     List<EventModel> events;
 
     try {
-      events = await localDataSource.getAllEvents();
+      events = await localDataSource.getPooledEvents(pool);
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));
     }
@@ -115,14 +88,14 @@ class EventRepositoryImpl extends EventRepository {
       try {
         final syncedEvent = await remoteDataSource.createEvent(
           e.toNewRemote(),
-          host: Uri.parse(host),
+          host: host,
           token: authToken,
         );
 
-        await localDataSource.cacheEvent(EventModel.fromRemote(
+        await localDataSource.addEvent(EventModel.fromRemote(
           remoteEvent: syncedEvent,
-          id: e.id,
-        ).copyWith(merged: e.merged, createdAt: timeInfo.now()));
+          pool: pool,
+        ).copyWith(applied: e.applied, createdAt: timeInfo.now()));
       } on OutOfSyncException catch (e) {
         return Left(OutOfSyncFailure(message: e.message));
       } on ServerException catch (e) {
@@ -135,10 +108,10 @@ class EventRepositoryImpl extends EventRepository {
   }
 
   @override
-  Future<Either<Failure, void>> rebase() async {
+  Future<Either<Failure, void>> rebase(int pool) async {
     List<EventModel> events;
     try {
-      events = await localDataSource.getAllEvents();
+      events = await localDataSource.getPooledEvents(pool);
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));
     }
@@ -194,32 +167,34 @@ class EventRepositoryImpl extends EventRepository {
         version: lastVersion + 1,
       );
 
-      await localDataSource.cacheEvent(updatedEvent);
+      await localDataSource.addEvent(updatedEvent);
       lastVersion = updatedEvent.version;
     }
   }
 
   @override
-  Future<Either<Failure, void>> add(EventInfo<EventData> event) async {
+  Future<Either<Failure, void>> add(
+      EventInfo<EventData> event, int pool) async {
     // get stream version
     final int streamVersion;
     try {
-      streamVersion = await _getStreamVersion(event.streamId);
+      streamVersion = await _getStreamVersion(event.streamId, pool);
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));
     }
 
     try {
       final eventModel = EventModel(
-        id: idGenerator.generateId(),
+        eventId: idGenerator.generateId(),
         version: streamVersion + 1,
         createdAt: timeInfo.now(),
         streamId: event.streamId,
         data: event.data?.toJson() ?? {},
         name: event.name,
+        pool: event.pool,
       );
 
-      await localDataSource.cacheEvent(eventModel);
+      await localDataSource.addEvent(eventModel);
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));
     }
@@ -228,10 +203,10 @@ class EventRepositoryImpl extends EventRepository {
 
   /// Returns the latest version of the event stream.
   /// This will throw a [CacheException] if the stream cannot be loaded.
-  Future<int> _getStreamVersion(String streamId) async {
+  Future<int> _getStreamVersion(String streamId, int pool) async {
     List<EventModel> streamEvents;
 
-    streamEvents = await localDataSource.getAllEvents();
+    streamEvents = await localDataSource.getPooledEvents(pool);
     streamEvents.removeWhere((element) => element.streamId != streamId);
 
     int lastEventVersion = 0;
@@ -242,10 +217,10 @@ class EventRepositoryImpl extends EventRepository {
   }
 
   @override
-  Future<Either<Failure, List<EventStub>>> list() async {
+  Future<Either<Failure, List<EventStub>>> list(int pool) async {
     List<EventModel> models;
     try {
-      models = await localDataSource.getAllEvents();
+      models = await localDataSource.getPooledEvents(pool);
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));
     }
@@ -259,25 +234,14 @@ class EventRepositoryImpl extends EventRepository {
   }
 
   @override
-  Future<Either<Failure, void>> markReduced(EventStub event) async {
-    List<EventModel> models;
+  Future<Either<Failure, void>> markApplied(EventStub event) async {
     try {
-      models = await localDataSource.getAllEvents();
+      final model = await localDataSource.getEvent(event.eventId);
+      await localDataSource.addEvent(model.copyWith(applied: true));
+      return const Right(null);
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));
     }
-
-    for (var m in models) {
-      if (m.id == event.id) {
-        try {
-          await localDataSource.cacheEvent(m.copyWith(merged: true));
-          return const Right(null);
-        } on CacheException catch (e) {
-          return Left(CacheFailure(message: e.message));
-        }
-      }
-    }
-    return const Left(CacheFailure(message: 'Event does not exist'));
   }
 
   @override

@@ -1,5 +1,4 @@
 import 'package:dartz/dartz.dart';
-import 'package:event_sink/src/core/domain/config_options.dart';
 import 'package:event_sink/src/core/error/failure.dart';
 import 'package:event_sink/src/event_data.dart';
 import 'package:event_sink/src/event_handler.dart';
@@ -16,7 +15,6 @@ class SinkController {
   final SyncEvents _syncEvents;
   final ApplyEvents _applyEvents;
   final AddEvent _addEvent;
-  final SetStringConfig _setConfig;
 
   SinkController({
     required SyncEvents syncEvents,
@@ -25,23 +23,34 @@ class SinkController {
     required SetStringConfig setConfig,
   })  : _syncEvents = syncEvents,
         _applyEvents = applyEvents,
-        _addEvent = addEvent,
-        _setConfig = setConfig;
+        _addEvent = addEvent;
 
-  Future<Either<Failure, void>> sync() => _syncEvents(const SyncEventsParams());
+  /// Synchronizes events with the server
+  Future<Either<Failure, void>> sync(
+    Uri host,
+    int pool, {
+    String? authToken,
+    int retryCount = 4,
+  }) =>
+      _syncEvents(SyncEventsParams(
+        host: host,
+        authToken: authToken,
+        pool: pool,
+        retryCount: retryCount,
+      ));
 
-  Future<Either<Failure, void>> apply(Map<String, EventHandler> handlers,
-          Map<String, EventParamsGenerator> paramGenerators) =>
+  /// Processes events
+  Future<Either<Failure, void>> apply(
+          int pool,
+          Map<String, EventHandler> handlers,
+          Map<String, EventDataGenerator> paramGenerators) =>
       _applyEvents(ApplyEventsParams(
-          handlers: handlers, paramGenerators: paramGenerators));
+        pool: pool,
+        handlers: handlers,
+        dataGenerators: paramGenerators,
+      ));
 
-  Future<Either<Failure, void>> add(EventInfo<EventData> event) =>
-      _addEvent(AddEventParams(event: event));
-
-  Future<Either<Failure, void>> setAuth(String token) => _setConfig(
-      SetStringConfigParams(option: ConfigOption.authToken, value: token));
-
-  Future<Either<Failure, void>> setHost(Uri host) =>
-      _setConfig(SetStringConfigParams(
-          option: ConfigOption.serverHost, value: host.toString()));
+  /// Adds an event
+  Future<Either<Failure, void>> add(EventInfo<EventData> event, int pool) =>
+      _addEvent(AddEventParams(event: event, pool: pool));
 }

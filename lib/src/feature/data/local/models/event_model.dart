@@ -10,36 +10,31 @@ part 'event_model.g.dart';
 /// Represents a event
 @freezed
 class EventModel with _$EventModel {
-  // Needed to allow for toDomain()
-  // See https://pub.dev/packages/freezed#custom-getters-and-methods
   const EventModel._();
 
   const factory EventModel({
-    /// The local ID of the event
-    required String id,
+    /// The unique ID of the event
+    @JsonKey(name: 'event_id') required String eventId,
 
     /// The remote id of the event.
     /// This will only have a value if this has been downloaded from the server.
     @JsonKey(name: 'remote_id') int? remoteId,
 
-    /// The time when this event was created on the remote host.
-    /// This will only have a value if this has been downloaded from the server.
-    @JsonKey(name: 'remote_created_at') DateTime? remoteCreatedAt,
-
     /// The time when this event was recorded locally.
     @JsonKey(name: 'created_at') required DateTime createdAt,
 
-    /// Flag indicating if the event has been merged into the local state
-    @Default(false) bool merged,
+    /// Indicates the event has already been applied to the aggregate.
+    @Default(false) bool applied,
 
-    /// The ID of the parent stream.
+    /// The ID of the stream being manipulated by this event.
     @JsonKey(name: 'stream_id') required String streamId,
 
     /// The version of the stream's state.
     required int version,
 
-    /// The unique name of the event.
+    /// The name of the event.
     required String name,
+    required int pool,
 
     /// Custom event data
     required Map<String, dynamic> data,
@@ -56,23 +51,24 @@ class EventModel with _$EventModel {
 
   factory EventModel.fromRemote({
     required RemoteEventModel remoteEvent,
-    required String id,
+    required int pool,
   }) {
     return EventModel(
-      id: id,
+      eventId: remoteEvent.eventId,
       remoteId: remoteEvent.id,
-      remoteCreatedAt: remoteEvent.createdAt,
-      merged: false,
+      applied: false,
       createdAt: DateTime.now(),
       streamId: remoteEvent.streamId,
       version: remoteEvent.version,
       data: remoteEvent.data,
       name: remoteEvent.name,
+      pool: pool,
     );
   }
 
   RemoteNewEventModel toNewRemote() {
     return RemoteNewEventModel(
+      eventId: eventId,
       streamId: streamId,
       version: version,
       name: name,
@@ -82,12 +78,13 @@ class EventModel with _$EventModel {
 
   EventStub toDomain() {
     return EventStub(
-      id: id,
+      eventId: eventId,
       version: version,
       streamId: streamId,
       data: data,
-      merged: merged,
+      applied: applied,
       name: name,
+      pool: pool,
     );
   }
 }

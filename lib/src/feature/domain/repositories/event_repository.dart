@@ -17,24 +17,24 @@ import 'package:event_sink/src/feature/domain/entities/event_stub.dart';
 abstract class EventRepository {
   /// Downloads events from the [host] and stores it in the device
   /// event cache.
-  Future<Either<Failure, void>> fetch(String host, String authToken);
+  Future<Either<Failure, void>> fetch(Uri host, int pool, {String? authToken});
 
   /// Uploads events to the server that have been generated on this device.
-  Future<Either<Failure, void>> push(String host, String authToken);
+  Future<Either<Failure, void>> push(Uri host, int pool, {String? authToken});
 
   /// Re-applies any un-synced events on top of the event from the server.
   /// This is akin to a git rebase.
-  Future<Either<Failure, void>> rebase();
+  Future<Either<Failure, void>> rebase(int pool);
 
   /// Adds an event to the cache, which can then later be applied to the graph
   /// or synced to the server.
-  Future<Either<Failure, void>> add(EventInfo<EventData> event);
+  Future<Either<Failure, void>> add(EventInfo<EventData> event, int pool);
 
-  /// Returns a sorted list of events in the active graph
-  Future<Either<Failure, List<EventStub>>> list();
+  /// Returns a sorted list of events
+  Future<Either<Failure, List<EventStub>>> list(int pool);
 
   /// Marks an event as having been reduced into the graph.
-  Future<Either<Failure, void>> markReduced(EventStub event);
+  Future<Either<Failure, void>> markApplied(EventStub event);
 
   /// Clear the local cache of [Event].
   Future<Either<Failure, void>> clearCache();

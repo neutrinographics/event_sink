@@ -15,15 +15,16 @@ class AddEvent extends UseCase<void, AddEventParams> {
 
   @override
   Future<Either<Failure, void>> call(AddEventParams params) {
-    return eventRepository.add(params.event);
+    return eventRepository.add(params.event, params.pool);
   }
 }
 
 class AddEventParams extends Equatable {
   final EventInfo<EventData> event;
+  final int pool;
 
-  const AddEventParams({required this.event});
+  const AddEventParams({required this.event, required this.pool});
 
   @override
-  List<Object?> get props => [event];
+  List<Object?> get props => [event, pool];
 }

@@ -12,8 +12,8 @@ class RemoteEventModel with _$RemoteEventModel {
     /// The remote ID of the event.
     required int id,
 
-    /// The time when the event was recorded on the server.
-    @JsonKey(name: 'created_at') DateTime? createdAt,
+    /// The unique ID of this event
+    @JsonKey(name: 'event_id') required String eventId,
 
     /// The ID of the stream affected by this event.
     @JsonKey(name: 'stream_id') required String streamId,

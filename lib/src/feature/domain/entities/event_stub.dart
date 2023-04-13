@@ -8,19 +8,20 @@ part 'event_stub.freezed.dart';
 class EventStub with _$EventStub {
   factory EventStub({
     /// The local ID of the event.
-    required String id,
+    required String eventId,
 
     /// The id of the stream being modified
     required String streamId,
 
     /// The name of the event
     required String name,
+    required int pool,
 
     /// The stream version
     required int version,
 
-    /// Indicates if the event has been reduced into the aggregate.
-    required bool merged,
+    /// Indicates the event has already been applied to the aggregate.
+    required bool applied,
 
     /// The data needed to perform the action
     required Map<String, dynamic> data,

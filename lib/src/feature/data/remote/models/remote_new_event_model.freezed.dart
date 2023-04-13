@@ -20,6 +20,10 @@ RemoteNewEventModel _$RemoteNewEventModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$RemoteNewEventModel {
+  /// The unique ID of this event
+  @JsonKey(name: 'event_id')
+  String get eventId => throw _privateConstructorUsedError;
+
   /// The ID of the stream affected by this event.
   @JsonKey(name: 'stream_id')
   String get streamId => throw _privateConstructorUsedError;
@@ -48,7 +52,8 @@ abstract class $RemoteNewEventModelCopyWith<$Res> {
       _$RemoteNewEventModelCopyWithImpl<$Res, RemoteNewEventModel>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'stream_id') String streamId,
+      {@JsonKey(name: 'event_id') String eventId,
+      @JsonKey(name: 'stream_id') String streamId,
       int version,
       String name,
       Map<String, dynamic> data});
@@ -67,12 +72,17 @@ class _$RemoteNewEventModelCopyWithImpl<$Res, $Val extends RemoteNewEventModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? eventId = null,
     Object? streamId = null,
     Object? version = null,
     Object? name = null,
     Object? data = null,
   }) {
     return _then(_value.copyWith(
+      eventId: null == eventId
+          ? _value.eventId
+          : eventId // ignore: cast_nullable_to_non_nullable
+              as String,
       streamId: null == streamId
           ? _value.streamId
           : streamId // ignore: cast_nullable_to_non_nullable
@@ -102,7 +112,8 @@ abstract class _$$_RemoteNewEventModelCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'stream_id') String streamId,
+      {@JsonKey(name: 'event_id') String eventId,
+      @JsonKey(name: 'stream_id') String streamId,
       int version,
       String name,
       Map<String, dynamic> data});
@@ -119,12 +130,17 @@ class __$$_RemoteNewEventModelCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? eventId = null,
     Object? streamId = null,
     Object? version = null,
     Object? name = null,
     Object? data = null,
   }) {
     return _then(_$_RemoteNewEventModel(
+      eventId: null == eventId
+          ? _value.eventId
+          : eventId // ignore: cast_nullable_to_non_nullable
+              as String,
       streamId: null == streamId
           ? _value.streamId
           : streamId // ignore: cast_nullable_to_non_nullable
@@ -149,7 +165,8 @@ class __$$_RemoteNewEventModelCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_RemoteNewEventModel implements _RemoteNewEventModel {
   _$_RemoteNewEventModel(
-      {@JsonKey(name: 'stream_id') required this.streamId,
+      {@JsonKey(name: 'event_id') required this.eventId,
+      @JsonKey(name: 'stream_id') required this.streamId,
       required this.version,
       required this.name,
       required final Map<String, dynamic> data})
@@ -157,6 +174,11 @@ class _$_RemoteNewEventModel implements _RemoteNewEventModel {
 
   factory _$_RemoteNewEventModel.fromJson(Map<String, dynamic> json) =>
       _$$_RemoteNewEventModelFromJson(json);
+
+  /// The unique ID of this event
+  @override
+  @JsonKey(name: 'event_id')
+  final String eventId;
 
   /// The ID of the stream affected by this event.
   @override
@@ -186,7 +208,7 @@ class _$_RemoteNewEventModel implements _RemoteNewEventModel {
 
   @override
   String toString() {
-    return 'RemoteNewEventModel(streamId: $streamId, version: $version, name: $name, data: $data)';
+    return 'RemoteNewEventModel(eventId: $eventId, streamId: $streamId, version: $version, name: $name, data: $data)';
   }
 
   @override
@@ -194,6 +216,7 @@ class _$_RemoteNewEventModel implements _RemoteNewEventModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_RemoteNewEventModel &&
+            (identical(other.eventId, eventId) || other.eventId == eventId) &&
             (identical(other.streamId, streamId) ||
                 other.streamId == streamId) &&
             (identical(other.version, version) || other.version == version) &&
@@ -203,7 +226,7 @@ class _$_RemoteNewEventModel implements _RemoteNewEventModel {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, streamId, version, name,
+  int get hashCode => Object.hash(runtimeType, eventId, streamId, version, name,
       const DeepCollectionEquality().hash(_data));
 
   @JsonKey(ignore: true)
@@ -223,7 +246,8 @@ class _$_RemoteNewEventModel implements _RemoteNewEventModel {
 
 abstract class _RemoteNewEventModel implements RemoteNewEventModel {
   factory _RemoteNewEventModel(
-      {@JsonKey(name: 'stream_id') required final String streamId,
+      {@JsonKey(name: 'event_id') required final String eventId,
+      @JsonKey(name: 'stream_id') required final String streamId,
       required final int version,
       required final String name,
       required final Map<String, dynamic> data}) = _$_RemoteNewEventModel;
@@ -231,6 +255,11 @@ abstract class _RemoteNewEventModel implements RemoteNewEventModel {
   factory _RemoteNewEventModel.fromJson(Map<String, dynamic> json) =
       _$_RemoteNewEventModel.fromJson;
 
+  @override
+
+  /// The unique ID of this event
+  @JsonKey(name: 'event_id')
+  String get eventId;
   @override
 
   /// The ID of the stream affected by this event.
