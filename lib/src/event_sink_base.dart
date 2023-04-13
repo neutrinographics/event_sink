@@ -4,13 +4,13 @@ import 'package:event_sink/src/core/error/failure.dart';
 import 'package:event_sink/src/sink_controller.dart';
 import 'injection_container.dart' as ic;
 
-typedef EventParamsGenerator = EventData Function(Map<String, dynamic>);
+typedef EventDataGenerator = EventData Function(Map<String, dynamic>);
 
 /// Defines the logic for interacting with the event controller.
 abstract class EventSinkBase {
   Map<String, EventHandler> get _eventHandlersMap;
 
-  Map<String, EventParamsGenerator> get _eventParamsGeneratorMap;
+  Map<String, EventDataGenerator> get _eventDataGeneratorMap;
 
   late SinkController _controller;
 
@@ -39,5 +39,5 @@ abstract class EventSinkBase {
 
   /// Applies any un-processed events.
   Future<Either<Failure, void>> apply(int pool) =>
-      _controller.apply(pool, _eventHandlersMap, _eventParamsGeneratorMap);
+      _controller.apply(pool, _eventHandlersMap, _eventDataGeneratorMap);
 }

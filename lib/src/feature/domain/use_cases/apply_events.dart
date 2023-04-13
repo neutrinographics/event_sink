@@ -24,7 +24,7 @@ class ApplyEvents extends UseCase<void, ApplyEventsParams> {
               message:
                   'No handler was found for ${event.name}. This is likely a bug in the code generator.'));
         }
-        final paramGenerator = params.paramGenerators[event.name];
+        final paramGenerator = params.dataGenerators[event.name];
         if (paramGenerator == null) {
           return Left(CacheFailure(
               message:
@@ -32,9 +32,9 @@ class ApplyEvents extends UseCase<void, ApplyEventsParams> {
         }
 
         try {
-          final eventParams = paramGenerator(event.data);
+          final eventData = paramGenerator(event.data);
           // TODO: allow returning a failure from the event handler
-          await eventHandler(event.streamId, event.pool, eventParams);
+          await eventHandler(event.streamId, event.pool, eventData);
           // TODO: handle failures
           await eventRepository.markApplied(event);
         } catch (e, stack) {
@@ -49,11 +49,11 @@ class ApplyEvents extends UseCase<void, ApplyEventsParams> {
 class ApplyEventsParams {
   final int pool;
   final Map<String, EventHandler> handlers;
-  final Map<String, EventParamsGenerator> paramGenerators;
+  final Map<String, EventDataGenerator> dataGenerators;
 
   ApplyEventsParams({
     required this.handlers,
-    required this.paramGenerators,
+    required this.dataGenerators,
     required this.pool,
   });
 }

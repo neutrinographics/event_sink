@@ -43,11 +43,11 @@ class SinkController {
   Future<Either<Failure, void>> apply(
           int pool,
           Map<String, EventHandler> handlers,
-          Map<String, EventParamsGenerator> paramGenerators) =>
+          Map<String, EventDataGenerator> paramGenerators) =>
       _applyEvents(ApplyEventsParams(
         pool: pool,
         handlers: handlers,
-        paramGenerators: paramGenerators,
+        dataGenerators: paramGenerators,
       ));
 
   /// Adds an event
