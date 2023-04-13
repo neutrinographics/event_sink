@@ -102,8 +102,6 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
   }
 
   /// Sorts a list of events.
-  /// TODO: this probably needs more work. Events synced to the server
-  /// should probably be sorted by date, and the version only.
   static void sort(List<EventModel> models) {
     models.sort((a, b) {
       if (a.streamId == b.streamId) {

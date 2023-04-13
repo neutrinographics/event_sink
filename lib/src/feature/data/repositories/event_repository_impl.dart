@@ -69,10 +69,6 @@ class EventRepositoryImpl extends EventRepository {
     }
   }
 
-  /// pass in a Pool instead of the host.
-  /// The pool will contain the url, and a storage key.
-  /// Maybe the host, and then the pool suffix.
-  /// Perhaps the pool should contain the auth token as well.
   @override
   Future<Either<Failure, void>> push(
     Uri host,

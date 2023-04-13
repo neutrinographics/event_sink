@@ -1,6 +1,8 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:event_sink/event_sink.dart';
+import 'package:event_sink/src/core/error/exception.dart';
+import 'package:event_sink/src/core/error/failure.dart';
 import 'package:event_sink/src/feature/domain/entities/event_stub.dart';
 import 'package:event_sink/src/feature/domain/repositories/event_repository.dart';
 import 'package:event_sink/src/feature/domain/use_cases/apply_events.dart';
@@ -58,37 +60,38 @@ void main() {
     pool: 1,
   );
 
+  const tStream = 'stream';
+  const tPool = 1;
+  const Map<String, dynamic> tRawData = {
+    'hello': 'world',
+  };
+  final tData = TestEventData.fromJson(tRawData);
+  final tEvent = EventStub(
+    eventId: 'eventId',
+    streamId: tStream,
+    name: tEventName,
+    pool: tPool,
+    version: 1,
+    merged: false,
+    data: tRawData,
+  );
+  final List<EventStub> tEvents = [
+    tEvent,
+    EventStub(
+      eventId: 'eventId-merged',
+      streamId: 'something',
+      name: tEventName,
+      pool: 1,
+      version: 1,
+      merged: true,
+      data: {},
+    )
+  ];
+
   test(
     'should apply an event',
     () async {
       // arrange
-      const tStream = 'stream';
-      const tPool = 1;
-      const Map<String, dynamic> tRawData = {
-        'hello': 'world',
-      };
-      final tData = TestEventData.fromJson(tRawData);
-      final tEvent = EventStub(
-        eventId: 'eventId',
-        streamId: tStream,
-        name: tEventName,
-        pool: tPool,
-        version: 1,
-        merged: false,
-        data: tRawData,
-      );
-      final List<EventStub> tEvents = [
-        tEvent,
-        EventStub(
-          eventId: 'eventId-merged',
-          streamId: 'something',
-          name: tEventName,
-          pool: 1,
-          version: 1,
-          merged: true,
-          data: {},
-        )
-      ];
       when(mockEventRepository.list(any))
           .thenAnswer((_) async => Right(tEvents));
       when(mockEventRepository.markApplied(any))
@@ -100,6 +103,39 @@ void main() {
       verify(mockEventRepository.markApplied(tEvent));
       verify(mockTestEventHandler(tStream, tPool, tData));
       verifyNoMoreInteractions(mockTestEventHandler);
+    },
+  );
+
+  test(
+    'should return failure if event cannot be marked as applied',
+    () async {
+      // arrange
+      when(mockEventRepository.list(any))
+          .thenAnswer((_) async => Right(tEvents));
+      when(mockEventRepository.markApplied(any))
+          .thenAnswer((_) async => const Left(CacheFailure()));
+      // act
+      final result = await useCase(tParams);
+      // assert
+      expect(result, const Left(CacheFailure()));
+      verify(mockEventRepository.markApplied(tEvent));
+    },
+  );
+
+  test(
+    'should return failure if the event handler raises and exception',
+    () async {
+      // arrange
+
+      when(mockEventRepository.list(any))
+          .thenAnswer((_) async => Right(tEvents));
+      when(mockTestEventHandler(any, any, any)).thenThrow(CacheException());
+      // act
+      final result = await useCase(tParams);
+      // assert
+      expect(result, const Left(CacheFailure()));
+      verify(mockTestEventHandler(tStream, tPool, tData));
+      verifyNever(mockEventRepository.markApplied(tEvent));
     },
   );
 }

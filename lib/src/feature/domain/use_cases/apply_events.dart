@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:event_sink/src/core/domain/usecase.dart';
+import 'package:event_sink/src/core/error/exception.dart';
 import 'package:event_sink/src/core/error/failure.dart';
 import 'package:event_sink/src/event_handler.dart';
 import 'package:event_sink/src/event_sink_base.dart';
@@ -35,10 +36,16 @@ class ApplyEvents extends UseCase<void, ApplyEventsParams> {
           final eventData = paramGenerator(event.data);
           // TODO: allow returning a failure from the event handler
           await eventHandler(event.streamId, event.pool, eventData);
-          // TODO: handle failures
-          await eventRepository.markApplied(event);
+          final failureOrApplied = await eventRepository.markApplied(event);
+          if (failureOrApplied.isLeft()) {
+            return failureOrApplied;
+          }
         } catch (e, stack) {
-          return Left(CacheFailure(message: '$e\n\n$stack'));
+          if (e is CacheException) {
+            return Left(CacheFailure(message: e.message));
+          } else {
+            return Left(CacheFailure(message: '$e\n\n$stack'));
+          }
         }
       }
       return const Right(null);
