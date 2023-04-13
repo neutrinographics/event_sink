@@ -103,7 +103,7 @@ void main() {
         when(mockEventLocalDataSource.getEvent('synced'))
             .thenAnswer((_) async => tSyncedLocalEvent);
         // act
-        final result = await repository.fetch(tHost, tPool, tToken);
+        final result = await repository.fetch(tHost, tPool, authToken: tToken);
         // assert
         verify(mockEventRemoteDataSource.getEvents(
             host: anyNamed('host'), token: anyNamed('token')));
@@ -134,7 +134,7 @@ void main() {
             .thenThrow(CacheException());
 
         // act
-        final result = await repository.fetch(tHost, tPool, tToken);
+        final result = await repository.fetch(tHost, tPool, authToken: tToken);
         // assert
         expect(result, equals(const Left(CacheFailure())));
         verify(mockEventLocalDataSource.addEvent(any));
@@ -152,7 +152,7 @@ void main() {
                 host: anyNamed('host'), token: anyNamed('token')))
             .thenThrow(ServerException());
         // act
-        final result = await repository.fetch(tHost, tPool, tToken);
+        final result = await repository.fetch(tHost, tPool, authToken: tToken);
         // assert
         expect(result, equals(const Left(ServerFailure())));
         verify(mockEventRemoteDataSource.getEvents(host: tHost, token: tToken));
@@ -192,7 +192,7 @@ void main() {
                 token: anyNamed('token'), host: anyNamed('host')))
             .thenAnswer((_) async => remoteEvents.removeAt(0));
         // act
-        final result = await repository.push(tHost, tPool, tToken);
+        final result = await repository.push(tHost, tPool, authToken: tToken);
         // assert
         for (var e in tCachedEvents) {
           if (e.synced == true) {
@@ -224,7 +224,7 @@ void main() {
         when(mockEventLocalDataSource.getPooledEvents(any))
             .thenThrow(CacheException());
         // act
-        final result = await repository.push(tHost, tPool, tToken);
+        final result = await repository.push(tHost, tPool, authToken: tToken);
         // assert
         expect(result, equals(const Left(CacheFailure())));
       },
@@ -240,7 +240,7 @@ void main() {
                 host: anyNamed('host'), token: anyNamed('token')))
             .thenThrow(ServerException());
         // act
-        final result = await repository.push(tHost, tPool, tToken);
+        final result = await repository.push(tHost, tPool, authToken: tToken);
         // assert
         expect(result, equals(const Left(ServerFailure())));
       },
@@ -261,7 +261,7 @@ void main() {
             .thenThrow(CacheException());
 
         // act
-        final result = await repository.push(tHost, tPool, tToken);
+        final result = await repository.push(tHost, tPool, authToken: tToken);
         // assert
         expect(result, equals(const Left(CacheFailure())));
       },
@@ -277,7 +277,7 @@ void main() {
                 host: anyNamed('host'), token: anyNamed('token')))
             .thenThrow(OutOfSyncException());
         // act
-        final result = await repository.push(tHost, tPool, tToken);
+        final result = await repository.push(tHost, tPool, authToken: tToken);
         // assert
         expect(result, equals(const Left(OutOfSyncFailure())));
       },

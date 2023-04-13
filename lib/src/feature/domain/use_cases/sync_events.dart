@@ -2,30 +2,29 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:event_sink/src/core/domain/usecase.dart';
 import 'package:event_sink/src/core/error/failure.dart';
-import 'package:event_sink/src/feature/domain/repositories/config_repository.dart';
+import 'package:event_sink/src/core/network/network_info.dart';
 import 'package:event_sink/src/feature/domain/repositories/event_repository.dart';
 
 class SyncEvents extends UseCase<void, SyncEventsParams> {
-  EventRepository eventRepository;
-  ConfigRepository configRepository;
+  final EventRepository eventRepository;
+  final NetworkInfo networkInfo;
 
   Failure? _lastPushFailure;
 
   SyncEvents({
     required this.eventRepository,
-    required this.configRepository,
+    required this.networkInfo,
   });
 
   @override
   Future<Either<Failure, void>> call(SyncEventsParams params) async {
-    final rebaseFailureOrSuccess = await _recursiveRebase(
-      host: params.host,
-      authToken: params.authToken,
-      allowedRetries: params.maxRetryCount,
-      pool: params.pool,
-    );
-    if (rebaseFailureOrSuccess.isLeft()) {
-      return rebaseFailureOrSuccess;
+    if (await networkInfo.isConnected()) {
+      return await _recursiveRebase(
+        host: params.host,
+        authToken: params.authToken,
+        allowedRetries: params.maxRetryCount,
+        pool: params.pool,
+      );
     }
     return const Right(null);
   }
@@ -49,7 +48,7 @@ class SyncEvents extends UseCase<void, SyncEventsParams> {
 
     // download events
     final failureOrDownload =
-        await eventRepository.fetch(host, pool, authToken);
+        await eventRepository.fetch(host, pool, authToken: authToken);
 
     // rebase events
     final failureOrRebase = await failureOrDownload.fold(
@@ -58,10 +57,9 @@ class SyncEvents extends UseCase<void, SyncEventsParams> {
     );
 
     // push events
-    // TODO: push events from all pools
     final failureOrPush = await failureOrRebase.fold(
       (l) async => Left(l),
-      (_) => eventRepository.push(host, pool, authToken),
+      (_) => eventRepository.push(host, pool, authToken: authToken),
     );
 
     // if push is successful then we can return
@@ -103,7 +101,7 @@ class SyncEventsParams extends Equatable {
 
   const SyncEventsParams({
     int retryCount = 4,
-    required this.authToken,
+    this.authToken,
     required this.pool,
     required this.host,
   }) : maxRetryCount = retryCount;

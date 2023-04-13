@@ -39,7 +39,7 @@ void init() {
   sl.registerLazySingleton(() => ApplyEvents(eventRepository: sl()));
   sl.registerLazySingleton(() => SyncEvents(
         eventRepository: sl(),
-        configRepository: sl(),
+        networkInfo: sl(),
       ));
   sl.registerLazySingleton(() => AddEvent(eventRepository: sl()));
   sl.registerLazySingleton(() => SetStringConfig(configRepository: sl()));
