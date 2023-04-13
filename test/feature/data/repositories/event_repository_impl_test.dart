@@ -566,6 +566,7 @@ void main() {
   });
 
   group('list', () {
+    const int tPool = 1;
     final baseEvent = EventModel.fromJson(json.decode(fixture('event.json')));
 
     final tEvents = [
@@ -579,14 +580,14 @@ void main() {
       "Should return CacheFailure if events cannot be read from cache",
       () async {
         // arrange
-        when(mockEventLocalDataSource.getAllEvents())
+        when(mockEventLocalDataSource.getPooledEvents(tPool))
             .thenThrow(CacheException());
         // act
-        final result = await repository.list();
+        final result = await repository.list(tPool);
 
         // assert
         expect(result, equals(const Left(CacheFailure())));
-        verify(mockEventLocalDataSource.getAllEvents());
+        verify(mockEventLocalDataSource.getPooledEvents(any));
         verifyNever(mockEventLocalDataSource.addEvent(any));
       },
     );
@@ -595,14 +596,14 @@ void main() {
       'Should return a list of events',
       () async {
         // arrange
-        when(mockEventLocalDataSource.getAllEvents())
+        when(mockEventLocalDataSource.getPooledEvents(tPool))
             .thenAnswer((_) async => tEvents);
         // act
-        final result = await repository.list();
+        final result = await repository.list(tPool);
         // assert
         expectEitherEqualsList(
             result, tEvents.map((e) => e.toDomain()).toList());
-        verify(mockEventLocalDataSource.getAllEvents());
+        verify(mockEventLocalDataSource.getPooledEvents(any));
       },
     );
   });
@@ -619,7 +620,7 @@ void main() {
         when(mockEventLocalDataSource.getEvent(any))
             .thenThrow(CacheException());
         // act
-        final result = await repository.markReduced(tEvent);
+        final result = await repository.markApplied(tEvent);
 
         // assert
         expect(result, equals(const Left(CacheFailure())));
@@ -635,7 +636,7 @@ void main() {
         when(mockEventLocalDataSource.getEvent(any))
             .thenAnswer((_) async => tEventModel);
         // act
-        final result = await repository.markReduced(tEvent);
+        final result = await repository.markApplied(tEvent);
         // assert
         expect(result, equals(const Right(null)));
         final expectedEventModel = tEventModel.copyWith(merged: true);
@@ -652,7 +653,7 @@ void main() {
         when(mockEventLocalDataSource.addEvent(any))
             .thenThrow(CacheException());
         // act
-        final result = await repository.markReduced(tEvent);
+        final result = await repository.markApplied(tEvent);
 
         // assert
         expect(result, equals(const Left(CacheFailure())));

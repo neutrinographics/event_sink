@@ -14,11 +14,10 @@ class ApplyEvents extends UseCase<void, ApplyEventsParams> {
 
   @override
   Future<Either<Failure, void>> call(ApplyEventsParams params) async {
-    // TODO: just get the events that haven't been applied yet.
-    final failureOrEvents = await eventRepository.list();
+    final failureOrEvents = await eventRepository.list(params.pool);
     return failureOrEvents.fold((failure) => Left(failure), (events) async {
       for (final event in events) {
-        // TODO: skip if the event has already been merged.
+        if (event.merged) continue;
         final eventHandler = params.handlers[event.name];
         if (eventHandler == null) {
           return Left(CacheFailure(
@@ -37,7 +36,7 @@ class ApplyEvents extends UseCase<void, ApplyEventsParams> {
           // TODO: allow returning a failure from the event handler
           await eventHandler(event.streamId, event.pool, eventParams);
           // TODO: handle failures
-          await eventRepository.markReduced(event);
+          await eventRepository.markApplied(event);
         } catch (e, stack) {
           return Left(CacheFailure(message: '$e\n\n$stack'));
         }
@@ -48,8 +47,13 @@ class ApplyEvents extends UseCase<void, ApplyEventsParams> {
 }
 
 class ApplyEventsParams {
+  final int pool;
   final Map<String, EventHandler> handlers;
   final Map<String, EventParamsGenerator> paramGenerators;
 
-  ApplyEventsParams({required this.handlers, required this.paramGenerators});
+  ApplyEventsParams({
+    required this.handlers,
+    required this.paramGenerators,
+    required this.pool,
+  });
 }

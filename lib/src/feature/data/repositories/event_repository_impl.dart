@@ -215,10 +215,10 @@ class EventRepositoryImpl extends EventRepository {
   }
 
   @override
-  Future<Either<Failure, List<EventStub>>> list() async {
+  Future<Either<Failure, List<EventStub>>> list(int pool) async {
     List<EventModel> models;
     try {
-      models = await localDataSource.getAllEvents();
+      models = await localDataSource.getPooledEvents(pool);
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));
     }
@@ -232,7 +232,7 @@ class EventRepositoryImpl extends EventRepository {
   }
 
   @override
-  Future<Either<Failure, void>> markReduced(EventStub event) async {
+  Future<Either<Failure, void>> markApplied(EventStub event) async {
     try {
       final model = await localDataSource.getEvent(event.eventId);
       await localDataSource.addEvent(model.copyWith(merged: true));

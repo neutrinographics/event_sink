@@ -8,18 +8,13 @@ typedef EventParamsGenerator = EventData Function(Map<String, dynamic>);
 
 /// Defines the logic for interacting with the event controller.
 abstract class EventSinkBase {
-  Map<String, EventHandler> eventHandlersMap();
+  Map<String, EventHandler> get _eventHandlersMap;
 
-  Map<String, EventParamsGenerator> get eventParamsGeneratorMap;
-
-  /// Returns the correct url path to which a pool of events will be synced.
-  String remotePoolPath(int pool);
+  Map<String, EventParamsGenerator> get _eventParamsGeneratorMap;
 
   late SinkController _controller;
 
-  List<EventInfo> events = [];
-
-  EventSinkBase({String? host}) {
+  EventSinkBase() {
     ic.init();
     _controller = ic.sl<SinkController>();
   }
@@ -38,20 +33,11 @@ abstract class EventSinkBase {
         retryCount: retryCount,
       );
 
-  /// Adds an event to the queue.
+  /// Adds an event to the pool.
   Future<Either<Failure, void>> add(EventInfo<EventData> event, int pool) =>
       _controller.add(event, pool);
 
   /// Applies any un-processed events.
-  /// This executes the event command.
-  Future<Either<Failure, void>> apply() =>
-      _controller.apply(eventHandlersMap(), eventParamsGeneratorMap);
-
-  /// Compacts all of the event streams.
-  /// This will attempt to combine and deduplicate events
-  /// within individual streams.
-  Future<Either<Failure, void>> compact() async {
-    // TODO: implement this
-    throw UnimplementedError();
-  }
+  Future<Either<Failure, void>> apply(int pool) =>
+      _controller.apply(pool, _eventHandlersMap, _eventParamsGeneratorMap);
 }

@@ -140,11 +140,11 @@ class MockEventRepository extends _i1.Mock implements _i3.EventRepository {
         )),
       ) as _i4.Future<_i2.Either<_i5.Failure, void>>);
   @override
-  _i4.Future<_i2.Either<_i5.Failure, List<_i7.EventStub>>> list() =>
+  _i4.Future<_i2.Either<_i5.Failure, List<_i7.EventStub>>> list(int? pool) =>
       (super.noSuchMethod(
         Invocation.method(
           #list,
-          [],
+          [pool],
         ),
         returnValue:
             _i4.Future<_i2.Either<_i5.Failure, List<_i7.EventStub>>>.value(
@@ -152,22 +152,22 @@ class MockEventRepository extends _i1.Mock implements _i3.EventRepository {
           this,
           Invocation.method(
             #list,
-            [],
+            [pool],
           ),
         )),
       ) as _i4.Future<_i2.Either<_i5.Failure, List<_i7.EventStub>>>);
   @override
-  _i4.Future<_i2.Either<_i5.Failure, void>> markReduced(_i7.EventStub? event) =>
+  _i4.Future<_i2.Either<_i5.Failure, void>> markApplied(_i7.EventStub? event) =>
       (super.noSuchMethod(
         Invocation.method(
-          #markReduced,
+          #markApplied,
           [event],
         ),
         returnValue: _i4.Future<_i2.Either<_i5.Failure, void>>.value(
             _FakeEither_0<_i5.Failure, void>(
           this,
           Invocation.method(
-            #markReduced,
+            #markApplied,
             [event],
           ),
         )),

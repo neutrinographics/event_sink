@@ -30,6 +30,7 @@ mixin _$EventStub {
   int get version => throw _privateConstructorUsedError;
 
   /// Indicates if the event has been reduced into the aggregate.
+  /// TODO: rename this to "applied"
   bool get merged => throw _privateConstructorUsedError;
 
   /// The data needed to perform the action
