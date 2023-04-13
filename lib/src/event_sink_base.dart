@@ -24,15 +24,19 @@ abstract class EventSinkBase {
     _controller = ic.sl<SinkController>();
   }
 
-  /// Configures the auth token used for API requests.
-  Future<Either<Failure, void>> setAuth(String token) =>
-      _controller.setAuth(token);
-
-  /// Configures the remote host for API requests.
-  Future<Either<Failure, void>> setHost(Uri host) => _controller.setHost(host);
-
   /// Uploads events to the server that have been generated on this device.
-  Future<Either<Failure, void>> sync() => _controller.sync();
+  Future<Either<Failure, void>> sync(
+    Uri host,
+    int pool, {
+    String? authToken,
+    int retryCount = 4,
+  }) =>
+      _controller.sync(
+        host,
+        pool,
+        authToken: authToken,
+        retryCount: retryCount,
+      );
 
   /// Adds an event to the queue.
   Future<Either<Failure, void>> add(EventInfo<EventData> event, int pool) =>

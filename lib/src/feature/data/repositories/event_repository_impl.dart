@@ -28,11 +28,11 @@ class EventRepositoryImpl extends EventRepository {
 
   @override
   Future<Either<Failure, void>> fetch(
-      String host, int pool, String authToken) async {
+      Uri host, int pool, String? authToken) async {
     List<RemoteEventModel> remoteEvents;
     try {
       remoteEvents = await remoteDataSource.getEvents(
-        host: Uri.parse(host),
+        host: host,
         token: authToken,
       );
     } on ServerException catch (e) {
@@ -72,7 +72,7 @@ class EventRepositoryImpl extends EventRepository {
   /// Perhaps the pool should contain the auth token as well.
   @override
   Future<Either<Failure, void>> push(
-      String host, int pool, String authToken) async {
+      Uri host, int pool, String? authToken) async {
     List<EventModel> events;
 
     try {
@@ -86,7 +86,7 @@ class EventRepositoryImpl extends EventRepository {
       try {
         final syncedEvent = await remoteDataSource.createEvent(
           e.toNewRemote(),
-          host: Uri.parse(host),
+          host: host,
           token: authToken,
         );
 

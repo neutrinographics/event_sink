@@ -1,6 +1,5 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
-import 'package:event_sink/src/core/domain/config_options.dart';
 import 'package:event_sink/src/core/domain/usecase.dart';
 import 'package:event_sink/src/core/error/failure.dart';
 import 'package:event_sink/src/feature/domain/repositories/config_repository.dart';
@@ -19,16 +18,24 @@ class SyncEvents extends UseCase<void, SyncEventsParams> {
 
   @override
   Future<Either<Failure, void>> call(SyncEventsParams params) async {
-    final rebaseFailureOrSuccess = await _recursiveRebase(params.maxRetryCount);
+    final rebaseFailureOrSuccess = await _recursiveRebase(
+      host: params.host,
+      authToken: params.authToken,
+      allowedRetries: params.maxRetryCount,
+      pool: params.pool,
+    );
     if (rebaseFailureOrSuccess.isLeft()) {
       return rebaseFailureOrSuccess;
     }
     return const Right(null);
   }
 
-  Future<Either<Failure, void>> _recursiveRebase(
-    int allowedRetries, {
+  Future<Either<Failure, void>> _recursiveRebase({
     int retryCount = 0,
+    required Uri host,
+    required String? authToken,
+    required int allowedRetries,
+    required int pool,
   }) async {
     if (retryCount >= allowedRetries) {
       // TRICKY: respond with the last push failure so we can report the proper error
@@ -39,19 +46,10 @@ class SyncEvents extends UseCase<void, SyncEventsParams> {
         return const Left(ServerFailure());
       }
     }
-    // fetch the server config
-    final failureOrConfig = await _getServerConfig();
-    if (failureOrConfig.isLeft()) {
-      return failureOrConfig;
-    }
-    late _ServerConfig config;
-    failureOrConfig.fold((_) => null, (c) => config = c);
 
     // download events
-    // TODO: download events from all pools
-    int pool = 1;
     final failureOrDownload =
-        await eventRepository.fetch(config.host, pool, config.token);
+        await eventRepository.fetch(host, pool, authToken);
 
     // rebase events
     final failureOrRebase = await failureOrDownload.fold(
@@ -63,7 +61,7 @@ class SyncEvents extends UseCase<void, SyncEventsParams> {
     // TODO: push events from all pools
     final failureOrPush = await failureOrRebase.fold(
       (l) async => Left(l),
-      (_) => eventRepository.push(config.host, pool, config.token),
+      (_) => eventRepository.push(host, pool, authToken),
     );
 
     // if push is successful then we can return
@@ -80,43 +78,36 @@ class SyncEvents extends UseCase<void, SyncEventsParams> {
     }
     _lastPushFailure = pushFailure;
 
-    return _recursiveRebase(allowedRetries, retryCount: retryCount + 1);
-  }
-
-  /// Loads the server settings and combines them into a convenient object.
-  Future<Either<Failure, _ServerConfig>> _getServerConfig() async {
-    final failureOrHost =
-        await configRepository.require<String>(ConfigOption.serverHost);
-
-    return failureOrHost.fold(
-      (l) => Left(l),
-      (host) async {
-        final failureOrToken = await configRepository.require<String>(
-          ConfigOption.authToken,
-        );
-        return failureOrToken.fold(
-          (l) => Left(l),
-          (token) => Right(_ServerConfig(host: host, token: token)),
-        );
-      },
+    return _recursiveRebase(
+      host: host,
+      authToken: authToken,
+      allowedRetries: allowedRetries,
+      pool: pool,
+      retryCount: retryCount + 1,
     );
   }
 }
 
-class _ServerConfig {
-  final String host;
-  final String token;
-
-  _ServerConfig({required this.host, required this.token});
-}
-
 class SyncEventsParams extends Equatable {
+  /// The maximum number of times to retry syncing before giving up.
   final int maxRetryCount;
+
+  /// The pool of events that will be synced
+  final int pool;
+
+  /// The remote host where the pool of events will be synced.
+  final Uri host;
+
+  /// The authentication token used to authenticate requests to the remote [host].
+  final String? authToken;
 
   const SyncEventsParams({
     int retryCount = 4,
+    required this.authToken,
+    required this.pool,
+    required this.host,
   }) : maxRetryCount = retryCount;
 
   @override
-  List<Object?> get props => [maxRetryCount];
+  List<Object?> get props => [maxRetryCount, pool, host, authToken];
 }

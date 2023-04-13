@@ -44,7 +44,7 @@ class MockEventRepository extends _i1.Mock implements _i3.EventRepository {
 
   @override
   _i4.Future<_i2.Either<_i5.Failure, void>> fetch(
-    String? host,
+    Uri? host,
     int? pool,
     String? authToken,
   ) =>
@@ -72,7 +72,7 @@ class MockEventRepository extends _i1.Mock implements _i3.EventRepository {
       ) as _i4.Future<_i2.Either<_i5.Failure, void>>);
   @override
   _i4.Future<_i2.Either<_i5.Failure, void>> push(
-    String? host,
+    Uri? host,
     int? pool,
     String? authToken,
   ) =>

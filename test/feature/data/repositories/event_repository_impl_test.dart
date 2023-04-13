@@ -63,7 +63,7 @@ void main() {
     );
   });
 
-  const tHost = 'https://example.com';
+  final tHost = Uri.parse('https://example.com');
   const tToken = 'token';
 
   group('fetch', () {
@@ -155,8 +155,7 @@ void main() {
         final result = await repository.fetch(tHost, tPool, tToken);
         // assert
         expect(result, equals(const Left(ServerFailure())));
-        verify(mockEventRemoteDataSource.getEvents(
-            host: Uri.parse(tHost), token: tToken));
+        verify(mockEventRemoteDataSource.getEvents(host: tHost, token: tToken));
       },
     );
   });
@@ -199,13 +198,13 @@ void main() {
           if (e.synced == true) {
             verifyNever(mockEventRemoteDataSource.createEvent(
               e.toNewRemote(),
-              host: Uri.parse(tHost),
+              host: tHost,
               token: tToken,
             ));
           } else {
             verify(mockEventRemoteDataSource.createEvent(
               e.toNewRemote(),
-              host: Uri.parse(tHost),
+              host: tHost,
               token: tToken,
             ));
           }

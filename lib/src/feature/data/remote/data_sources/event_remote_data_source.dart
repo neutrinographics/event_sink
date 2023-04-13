@@ -13,7 +13,7 @@ abstract class EventRemoteDataSource {
   /// Throws a [ServerException] if the download fails.
   Future<List<RemoteEventModel>> getEvents({
     required Uri host,
-    required String token,
+    required String? token,
   });
 
   /// Uploads a [RemoteNewEventModel] to the server.
@@ -23,7 +23,7 @@ abstract class EventRemoteDataSource {
   Future<RemoteEventModel> createEvent(
     RemoteNewEventModel event, {
     required Uri host,
-    required String token,
+    required String? token,
   });
 }
 
@@ -38,7 +38,7 @@ class EventRemoteDataSourceImpl implements EventRemoteDataSource {
   Future<RemoteEventModel> createEvent(
     RemoteNewEventModel event, {
     required Uri host,
-    required String token,
+    required String? token,
   }) async {
     try {
       Uri path = Uri.parse("$host/events").normalizePath();
@@ -74,7 +74,7 @@ class EventRemoteDataSourceImpl implements EventRemoteDataSource {
   @override
   Future<List<RemoteEventModel>> getEvents({
     required Uri host,
-    required String token,
+    required String? token,
   }) async {
     try {
       Uri path = Uri.parse("$host/events").normalizePath();
