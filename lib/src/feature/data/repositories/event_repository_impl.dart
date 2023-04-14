@@ -191,7 +191,7 @@ class EventRepositoryImpl extends EventRepository {
         streamId: event.streamId,
         data: event.data?.toJson() ?? {},
         name: event.name,
-        pool: event.pool,
+        pool: pool,
       );
 
       await localDataSource.addEvent(eventModel);

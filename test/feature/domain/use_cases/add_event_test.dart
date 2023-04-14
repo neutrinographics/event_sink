@@ -13,7 +13,6 @@ class MockEvent extends EventInfo<MockEventData> {
     required super.streamId,
     required super.data,
     required super.name,
-    required super.pool,
   });
 }
 
@@ -46,7 +45,6 @@ void main() {
   final tEvent = MockEvent(
     streamId: 'streamId',
     data: const MockEventData(),
-    pool: tPool,
     name: 'name',
   );
 

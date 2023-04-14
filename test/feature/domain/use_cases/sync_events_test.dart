@@ -47,21 +47,6 @@ void main() {
       // assert
       expect(result, const Right(null));
       verify(mockEventRepository.push(tHost, tPool));
-      verify(mockNetworkInfo.isConnected());
-    },
-  );
-
-  test(
-    'should not sync the events if the device is offline',
-    () async {
-      // arrange
-      when(mockNetworkInfo.isConnected()).thenAnswer((_) async => false);
-      // act
-      final result = await useCase(tParams);
-      // assert
-      expect(result, const Right(null));
-      verify(mockNetworkInfo.isConnected());
-      verifyNoMoreInteractions(mockEventRepository);
     },
   );
 
@@ -77,7 +62,6 @@ void main() {
       // assert
       expect(result, const Left(ServerFailure()));
       verify(mockEventRepository.fetch(tHost, tPool));
-      verify(mockNetworkInfo.isConnected());
       verifyNoMoreInteractions(mockEventRepository);
     },
   );
@@ -94,7 +78,6 @@ void main() {
       // assert
       expect(result, const Left(CacheFailure()));
       verify(mockEventRepository.fetch(tHost, tPool));
-      verify(mockNetworkInfo.isConnected());
       verifyNoMoreInteractions(mockEventRepository);
     },
   );
@@ -114,7 +97,6 @@ void main() {
       expect(result, const Left(CacheFailure()));
       verify(mockEventRepository.fetch(tHost, tPool));
       verify(mockEventRepository.rebase(tPool));
-      verify(mockNetworkInfo.isConnected());
       verifyNoMoreInteractions(mockEventRepository);
     },
   );
@@ -134,7 +116,6 @@ void main() {
       final result = await useCase(tParams);
       // assert
       expect(result, const Left(ServerFailure()));
-      verify(mockNetworkInfo.isConnected());
     },
   );
 
@@ -153,7 +134,6 @@ void main() {
       final result = await useCase(tParams);
       // assert
       expect(result, const Left(CacheFailure()));
-      verify(mockNetworkInfo.isConnected());
     },
   );
 
@@ -182,7 +162,6 @@ void main() {
       verify(mockEventRepository.fetch(tHost, tPool)).called(2);
       verify(mockEventRepository.rebase(tPool)).called(2);
       verify(mockEventRepository.push(tHost, tPool)).called(2);
-      verify(mockNetworkInfo.isConnected());
     },
   );
 
@@ -206,7 +185,6 @@ void main() {
       verify(mockEventRepository.fetch(tHost, tPool))
           .called(tParams.maxRetryCount);
       verify(mockEventRepository.rebase(tPool)).called(tParams.maxRetryCount);
-      verify(mockNetworkInfo.isConnected());
     },
   );
 }

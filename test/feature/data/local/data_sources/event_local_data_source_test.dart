@@ -15,8 +15,8 @@ void main() {
   late MockLocalCache<int, List<String>> mockPoolCache;
 
   setUp(() {
-    mockEventCache = MockLocalCache();
-    mockPoolCache = MockLocalCache();
+    mockEventCache = MockLocalCache<String, EventModel>();
+    mockPoolCache = MockLocalCache<int, List<String>>();
     dataSource = EventLocalDataSourceImpl(
       eventCache: mockEventCache,
       poolCache: mockPoolCache,
@@ -75,6 +75,7 @@ void main() {
       'should add an event',
       () async {
         // nothing to arrange
+        when(mockPoolCache.exists(any)).thenAnswer((_) async => false);
         await dataSource.addEvent(tModel);
         // assert
         verify(mockEventCache.write(tEventId, any));
@@ -88,9 +89,9 @@ void main() {
       () async {
         // arrange
         const tExistingEventId = 'event-2';
+        const List<String> tExistingEvents = [tExistingEventId];
         when(mockPoolCache.exists(any)).thenAnswer((_) async => true);
-        when(mockPoolCache.read(any))
-            .thenAnswer((_) async => [tExistingEventId]);
+        when(mockPoolCache.read(1)).thenAnswer((_) async => tExistingEvents);
         // act
         await dataSource.addEvent(tModel);
         // assert

@@ -25,7 +25,6 @@ class MockEvent extends EventInfo<MockEventData> {
       : super(
           streamId: streamId,
           name: 'add_member',
-          pool: 1,
           data: params,
         );
 }

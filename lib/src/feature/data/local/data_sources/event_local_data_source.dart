@@ -95,7 +95,7 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
   /// Returns the pool data or an empty list if the pool is empty.
   Future<List<String>> _readPool(int pool) async {
     if (await poolCache.exists(pool)) {
-      return await poolCache.read(pool);
+      return List.from(await poolCache.read(pool));
     } else {
       return [];
     }
