@@ -17,7 +17,7 @@ import 'package:event_sink/src/feature/domain/use_cases/add_event.dart';
 import 'package:event_sink/src/feature/domain/use_cases/apply_events.dart';
 import 'package:event_sink/src/feature/domain/use_cases/set_string_config.dart';
 import 'package:event_sink/src/feature/domain/use_cases/sync_events.dart';
-import 'package:event_sink/src/sink_controller.dart';
+import 'package:event_sink/src/event_controller.dart';
 import 'package:get_it/get_it.dart';
 import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
@@ -28,7 +28,7 @@ final sl = GetIt.instance;
 
 void init() {
   // Controllers
-  sl.registerFactory(() => SinkController(
+  sl.registerFactory(() => EventController(
         syncEvents: sl(),
         applyEvents: sl(),
         addEvent: sl(),

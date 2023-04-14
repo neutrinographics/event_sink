@@ -11,12 +11,12 @@ import 'package:event_sink/src/feature/domain/use_cases/sync_events.dart';
 
 // this is sort of in the position of a bloc.
 // So this should only interact directly with the use-cases.
-class SinkController {
+class EventController {
   final SyncEvents _syncEvents;
   final ApplyEvents _applyEvents;
   final AddEvent _addEvent;
 
-  SinkController({
+  EventController({
     required SyncEvents syncEvents,
     required ApplyEvents applyEvents,
     required AddEvent addEvent,
