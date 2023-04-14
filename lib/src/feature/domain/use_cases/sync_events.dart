@@ -2,31 +2,28 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:event_sink/src/core/domain/usecase.dart';
 import 'package:event_sink/src/core/error/failure.dart';
-import 'package:event_sink/src/core/network/network_info.dart';
 import 'package:event_sink/src/feature/domain/repositories/event_repository.dart';
 
 class SyncEvents extends UseCase<void, SyncEventsParams> {
   final EventRepository eventRepository;
-  final NetworkInfo networkInfo;
 
   Failure? _lastPushFailure;
 
   SyncEvents({
     required this.eventRepository,
-    required this.networkInfo,
   });
 
   @override
   Future<Either<Failure, void>> call(SyncEventsParams params) async {
-    if (await networkInfo.isConnected()) {
-      return await _recursiveRebase(
-        host: params.host,
-        authToken: params.authToken,
-        allowedRetries: params.maxRetryCount,
-        pool: params.pool,
-      );
-    }
-    return const Right(null);
+    // TODO: it would be good to check if we have a network connection first,
+    // but using connectivity_plus breaks the generator because dart:ui cannot
+    // be used on the platform.
+    return await _recursiveRebase(
+      host: params.host,
+      authToken: params.authToken,
+      allowedRetries: params.maxRetryCount,
+      pool: params.pool,
+    );
   }
 
   Future<Either<Failure, void>> _recursiveRebase({

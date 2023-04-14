@@ -21,7 +21,6 @@ void main() {
     mockNetworkInfo = MockNetworkInfo();
     useCase = SyncEvents(
       eventRepository: mockEventRepository,
-      networkInfo: mockNetworkInfo,
     );
   });
 
