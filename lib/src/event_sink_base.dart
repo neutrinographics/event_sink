@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:event_sink/event_sink.dart';
 import 'package:event_sink/src/core/error/failure.dart';
-import 'package:event_sink/src/sink_controller.dart';
+import 'package:event_sink/src/event_controller.dart';
 import 'injection_container.dart' as ic;
 
 typedef EventDataGenerator = EventData Function(Map<String, dynamic>);
@@ -12,11 +12,11 @@ abstract class EventSinkBase {
 
   Map<String, EventDataGenerator> get _eventDataGeneratorMap;
 
-  late SinkController _controller;
+  late EventController _controller;
 
   EventSinkBase() {
     ic.init();
-    _controller = ic.sl<SinkController>();
+    _controller = ic.sl<EventController>();
   }
 
   /// Uploads events to the server that have been generated on this device.
