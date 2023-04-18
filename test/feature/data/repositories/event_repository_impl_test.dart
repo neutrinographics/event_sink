@@ -1,16 +1,17 @@
 import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
-import 'package:event_sink/event_sink.dart';
 import 'package:event_sink/src/core/data/id_generator.dart';
 import 'package:event_sink/src/core/error/exception.dart';
 import 'package:event_sink/src/core/error/failure.dart';
 import 'package:event_sink/src/core/time/time_info.dart';
+import 'package:event_sink/src/event_data.dart';
 import 'package:event_sink/src/feature/data/local/data_sources/event_local_data_source.dart';
 import 'package:event_sink/src/feature/data/local/models/event_model.dart';
 import 'package:event_sink/src/feature/data/remote/data_sources/event_remote_data_source.dart';
 import 'package:event_sink/src/feature/data/remote/models/remote_event_model.dart';
 import 'package:event_sink/src/feature/data/repositories/event_repository_impl.dart';
+import 'package:event_sink/src/feature/domain/entities/event_info.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:mockito/annotations.dart';
@@ -21,12 +22,15 @@ import '../../../test_utils.dart';
 import 'event_repository_impl_test.mocks.dart';
 
 class MockEvent extends EventInfo<MockEventData> {
-  MockEvent({required String streamId, required MockEventData params})
+  const MockEvent({required String streamId, required MockEventData params})
       : super(
           streamId: streamId,
           name: 'add_member',
           data: params,
         );
+
+  @override
+  List<Object?> get props => [streamId, name, data];
 }
 
 class MockEventData implements EventData {

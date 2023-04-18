@@ -1,5 +1,7 @@
+import 'package:equatable/equatable.dart';
+
 /// Defines an event instance.
-abstract class EventInfo<T> {
+abstract class EventInfo<T> extends Equatable {
   /// The id of this event stream.
   /// This should be a UUID.
   final String streamId;

@@ -1,6 +1,5 @@
 import 'package:dartz/dartz.dart';
 import 'package:event_sink/event_sink.dart';
-import 'package:event_sink/src/core/error/failure.dart';
 import 'package:event_sink/src/event_controller.dart';
 import 'injection_container.dart' as ic;
 

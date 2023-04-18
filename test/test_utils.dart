@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
-import 'package:event_sink/event_sink.dart';
 import 'package:event_sink/src/core/error/failure.dart';
+import 'package:event_sink/src/feature/domain/entities/event_info.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';

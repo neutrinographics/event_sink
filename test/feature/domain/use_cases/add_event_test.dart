@@ -9,11 +9,14 @@ import 'package:mockito/mockito.dart';
 import 'add_event_test.mocks.dart';
 
 class MockEvent extends EventInfo<MockEventData> {
-  MockEvent({
+  const MockEvent({
     required super.streamId,
     required super.data,
     required super.name,
   });
+
+  @override
+  List<Object?> get props => [streamId, name, data];
 }
 
 class MockEventData implements EventData {
@@ -42,9 +45,9 @@ void main() {
   });
 
   const tPool = 1;
-  final tEvent = MockEvent(
+  const tEvent = MockEvent(
     streamId: 'streamId',
-    data: const MockEventData(),
+    data: MockEventData(),
     name: 'name',
   );
 
@@ -55,7 +58,8 @@ void main() {
       when(mockEventRepository.add(any, any))
           .thenAnswer((_) async => const Right(null));
       // act
-      final result = await useCase(AddEventParams(event: tEvent, pool: tPool));
+      final result =
+          await useCase(const AddEventParams(event: tEvent, pool: tPool));
       // assert
       expect(result, const Right(null));
       verify(mockEventRepository.add(tEvent, tPool));

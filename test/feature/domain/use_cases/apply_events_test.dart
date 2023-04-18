@@ -1,8 +1,9 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
-import 'package:event_sink/event_sink.dart';
 import 'package:event_sink/src/core/error/exception.dart';
 import 'package:event_sink/src/core/error/failure.dart';
+import 'package:event_sink/src/event_data.dart';
+import 'package:event_sink/src/event_handler.dart';
 import 'package:event_sink/src/feature/domain/entities/event_stub.dart';
 import 'package:event_sink/src/feature/domain/repositories/event_repository.dart';
 import 'package:event_sink/src/feature/domain/use_cases/apply_events.dart';

@@ -9,3 +9,4 @@ export 'src/feature/domain/entities/event_info.dart';
 export 'src/event_sink_base.dart';
 export 'src/event_params.dart';
 export 'src/event_data.dart';
+export 'src/core/error/failure.dart';

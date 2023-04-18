@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
-import 'package:event_sink/event_sink.dart';
 import 'package:event_sink/src/core/error/failure.dart';
+import 'package:event_sink/src/event_data.dart';
+import 'package:event_sink/src/feature/domain/entities/event_info.dart';
 import 'package:event_sink/src/feature/domain/entities/event_stub.dart';
 
 /// This is the contract for reading and writing [Event]s to the repository.
