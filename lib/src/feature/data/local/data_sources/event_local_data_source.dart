@@ -114,7 +114,7 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
         return 1;
       }
       if (a.synced && b.synced) {
-        return a.remoteId! - b.remoteId!;
+        return a.remoteCreatedAt!.compareTo(b.remoteCreatedAt!);
       }
       return a.createdAt.compareTo(b.createdAt);
     });

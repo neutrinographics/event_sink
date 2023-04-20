@@ -9,9 +9,6 @@ part 'remote_event_model.g.dart';
 @freezed
 class RemoteEventModel with _$RemoteEventModel {
   factory RemoteEventModel({
-    /// The remote ID of the event.
-    required int id,
-
     /// The unique ID of this event
     @JsonKey(name: 'event_id') required String eventId,
 
@@ -24,10 +21,13 @@ class RemoteEventModel with _$RemoteEventModel {
     required int version,
 
     /// The name of the event
-    required String name,
+    @JsonKey(name: 'action_type') required String name,
 
     /// Custom event data
     required Map<String, dynamic> data,
+
+    /// The time when the event was created on the server
+    @JsonKey(name: 'created_at') required DateTime createdAt,
   }) = _RemoteEventModel;
 
   factory RemoteEventModel.fromJson(Map<String, dynamic> json) =>

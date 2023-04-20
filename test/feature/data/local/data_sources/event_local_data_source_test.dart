@@ -202,14 +202,12 @@ void main() {
           tEventModel.copyWith(streamId: 'stream-2'),
           tEventModel.copyWith(version: 3),
           tEventModel.copyWith(version: 2),
-          tEventModel.copyWith(remoteId: 1),
         ];
         // act
         EventLocalDataSourceImpl.sort(tModels);
         // assert
         final expectedModels = [
           tEventModel,
-          tEventModel.copyWith(remoteId: 1),
           tEventModel.copyWith(streamId: 'stream-2'),
           tEventModel.copyWith(version: 2),
           tEventModel.copyWith(version: 3),
