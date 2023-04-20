@@ -7,9 +7,9 @@ typedef EventDataGenerator = EventData Function(Map<String, dynamic>);
 
 /// Defines the logic for interacting with the event controller.
 abstract class EventSinkBase {
-  Map<String, EventHandler> get _eventHandlersMap;
+  Map<String, EventHandler> eventHandlersMap();
 
-  Map<String, EventDataGenerator> get _eventDataGeneratorMap;
+  Map<String, EventDataGenerator> get eventDataGeneratorMap;
 
   late EventController _controller;
 
@@ -38,5 +38,5 @@ abstract class EventSinkBase {
 
   /// Applies any un-processed events.
   Future<Either<Failure, void>> apply(int pool) =>
-      _controller.apply(pool, _eventHandlersMap, _eventDataGeneratorMap);
+      _controller.apply(pool, eventHandlersMap(), eventDataGeneratorMap);
 }
