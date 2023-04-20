@@ -19,8 +19,11 @@ class EventModel with _$EventModel {
     /// The time when this event was recorded locally.
     @JsonKey(name: 'created_at') required DateTime createdAt,
 
-    /// The time when this event was recorded locally.
-    @JsonKey(name: 'remote_created_at') DateTime? remoteCreatedAt,
+    /// The order in which the event should be applied.
+    @JsonKey(name: 'sort_order') required int order,
+
+    /// Indicates if the event has been synced to the server.
+    @Default(false) bool synced,
 
     /// Indicates the event has already been applied to the aggregate.
     @Default(false) bool applied,
@@ -39,11 +42,6 @@ class EventModel with _$EventModel {
     required Map<String, dynamic> data,
   }) = _EventModel;
 
-  /// A convenience method to check if this event has been synced with the server.
-  bool get synced {
-    return remoteCreatedAt != null;
-  }
-
   factory EventModel.fromJson(Map<String, dynamic> json) =>
       _$EventModelFromJson(json);
 
@@ -55,9 +53,10 @@ class EventModel with _$EventModel {
       eventId: remoteEvent.eventId,
       applied: false,
       createdAt: DateTime.now(),
-      remoteCreatedAt: remoteEvent.createdAt,
       streamId: remoteEvent.streamId,
       version: remoteEvent.version,
+      synced: true,
+      order: remoteEvent.order,
       data: remoteEvent.data,
       name: remoteEvent.name,
       pool: pool,

@@ -175,17 +175,12 @@ class EventRepositoryImpl extends EventRepository {
   @override
   Future<Either<Failure, void>> add(
       EventInfo<EventData> event, int pool) async {
-    // get stream version
-    final int streamVersion;
     try {
-      streamVersion = await _getStreamVersion(event.streamId, pool);
-    } on CacheException catch (e) {
-      return Left(CacheFailure(message: e.message));
-    }
-
-    try {
+      final streamVersion = await _getStreamVersion(event.streamId, pool);
+      final poolSize = await localDataSource.getPoolSize(pool);
       final eventModel = EventModel(
         eventId: idGenerator.generateId(),
+        order: poolSize + 1,
         version: streamVersion + 1,
         createdAt: timeInfo.now(),
         streamId: event.streamId,
@@ -203,6 +198,7 @@ class EventRepositoryImpl extends EventRepository {
 
   /// Returns the latest version of the event stream.
   /// This will throw a [CacheException] if the stream cannot be loaded.
+  /// TODO: this should be updated to be more performant.
   Future<int> _getStreamVersion(String streamId, int pool) async {
     List<EventModel> streamEvents;
 
