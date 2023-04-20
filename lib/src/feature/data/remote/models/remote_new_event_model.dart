@@ -21,7 +21,7 @@ class RemoteNewEventModel with _$RemoteNewEventModel {
     required int version,
 
     /// The name of the event
-    required String name,
+    @JsonKey(name: 'action_type') required String name,
 
     /// Custom event data
     required Map<String, dynamic> data,

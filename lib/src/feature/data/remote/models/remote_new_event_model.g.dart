@@ -12,7 +12,7 @@ _$_RemoteNewEventModel _$$_RemoteNewEventModelFromJson(
       eventId: json['event_id'] as String,
       streamId: json['stream_id'] as String,
       version: json['version'] as int,
-      name: json['name'] as String,
+      name: json['action_type'] as String,
       data: json['data'] as Map<String, dynamic>,
     );
 
@@ -22,6 +22,6 @@ Map<String, dynamic> _$$_RemoteNewEventModelToJson(
       'event_id': instance.eventId,
       'stream_id': instance.streamId,
       'version': instance.version,
-      'name': instance.name,
+      'action_type': instance.name,
       'data': instance.data,
     };

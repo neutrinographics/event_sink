@@ -35,7 +35,7 @@ void main() {
       name: tEvent.name,
       data: tEvent.data,
     );
-    final tBody = fixture('remote_event.json');
+    final tBody = fixture('remote_events.json');
     final tHeaders = {
       "Content-Type": "application/json",
       "Authorization": "Bearer $tToken",
@@ -59,10 +59,11 @@ void main() {
         );
         // assert
         final tExpectedBody = json.encode({
-          "event": tNewEvent.toJson(),
+          "events": [tNewEvent.toJson()],
         });
         verify(mockNetwork.post(tHost, headers: tHeaders, body: tExpectedBody));
-        expect(result, RemoteEventModel.fromJson(json.decode(tBody)));
+        expect(
+            result, RemoteEventModel.fromJson(json.decode(tBody)["events"][0]));
       },
     );
 

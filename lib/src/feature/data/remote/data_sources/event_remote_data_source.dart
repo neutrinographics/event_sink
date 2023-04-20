@@ -48,7 +48,10 @@ class EventRemoteDataSourceImpl implements EventRemoteDataSource {
           "Authorization": "Bearer $token",
         },
         body: json.encode(
-          {'event': event.toJson()},
+          {
+            // TODO: support syncing multiple events at a time.
+            'events': [event.toJson()]
+          },
         ),
       );
       if (response.statusCode != 201) {
@@ -62,7 +65,8 @@ class EventRemoteDataSourceImpl implements EventRemoteDataSource {
                   "${response.statusCode} Error. ${responseMessage(response)}");
         }
       }
-      return RemoteEventModel.fromJson(json.decode(response.body));
+      // TRICKY: since we send a single event, we only get one back
+      return RemoteEventModel.fromJson(json.decode(response.body)["events"][0]);
     } on ServerException {
       rethrow;
     } catch (e, trace) {
