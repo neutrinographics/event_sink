@@ -1,5 +1,6 @@
 {
-  "graph_": 1,
+  "graph_id": 1,
+  "sort_order": 1,
   "stream_id": "stream-id",
   "event_id": "event-id",
   "action_type": "create_group",

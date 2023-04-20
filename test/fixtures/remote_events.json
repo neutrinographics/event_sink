@@ -2,7 +2,8 @@
   "graph_stream_id": "graph_stream_id",
   "events": [
     {
-      "graph": 1,
+      "graph_id": 1,
+      "sort_order": 1,
       "stream_id": "175794e2-83a6-4f9a-b873-d43484e2c0b5",
       "event_id": "845794e2-83a6-4f9a-b873-d43484e2c0u8",
       "action_type": "create_group",

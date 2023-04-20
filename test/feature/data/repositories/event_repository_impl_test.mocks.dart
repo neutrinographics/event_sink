@@ -175,6 +175,14 @@ class MockEventLocalDataSource extends _i1.Mock
         returnValue: _i5.Future<List<_i3.EventModel>>.value(<_i3.EventModel>[]),
       ) as _i5.Future<List<_i3.EventModel>>);
   @override
+  _i5.Future<int> getPoolSize(int? pool) => (super.noSuchMethod(
+        Invocation.method(
+          #getPoolSize,
+          [pool],
+        ),
+        returnValue: _i5.Future<int>.value(0),
+      ) as _i5.Future<int>);
+  @override
   _i5.Future<List<_i3.EventModel>> getPooledEvents(int? pool) =>
       (super.noSuchMethod(
         Invocation.method(

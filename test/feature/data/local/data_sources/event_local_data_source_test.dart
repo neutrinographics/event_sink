@@ -29,6 +29,7 @@ void main() {
     final tEventModel = EventModel(
       eventId: tEventId,
       streamId: '175794e2-83a6-4f9a-b873-d43484e2c0b5',
+      order: 1,
       version: 1,
       name: "create-group",
       createdAt: DateTime.now(),
@@ -42,9 +43,9 @@ void main() {
         () async {
       // arrange
       final tEventModels = [
-        tEventModel.copyWith(version: 2),
+        tEventModel.copyWith(version: 2, order: 2),
         tEventModel,
-        tEventModel.copyWith(version: 3),
+        tEventModel.copyWith(version: 3, order: 3),
       ];
       when(mockEventCache.values()).thenAnswer((_) async => tEventModels);
 
@@ -63,6 +64,7 @@ void main() {
       eventId: tEventId,
       streamId: '175794e2-83a6-4f9a-b873-d43484e2c0b5',
       version: 1,
+      order: 1,
       name: "create-group",
       createdAt: DateTime.now(),
       data: {
@@ -108,6 +110,7 @@ void main() {
       eventId: tEventId,
       streamId: '175794e2-83a6-4f9a-b873-d43484e2c0b5',
       version: 1,
+      order: 1,
       name: "create-group",
       createdAt: DateTime.now(),
       data: {
@@ -159,6 +162,7 @@ void main() {
       eventId: tEventId,
       streamId: '175794e2-83a6-4f9a-b873-d43484e2c0b5',
       version: 1,
+      order: 1,
       name: "create-group",
       createdAt: DateTime.now(),
       data: {
@@ -185,6 +189,7 @@ void main() {
       eventId: 'event-id',
       streamId: 'stream-1',
       version: 1,
+      order: 1,
       name: "create-group",
       createdAt: DateTime.now(),
       data: {
@@ -200,8 +205,8 @@ void main() {
         final tModels = [
           tEventModel,
           tEventModel.copyWith(streamId: 'stream-2'),
-          tEventModel.copyWith(version: 3),
-          tEventModel.copyWith(version: 2),
+          tEventModel.copyWith(version: 3, order: 3),
+          tEventModel.copyWith(version: 2, order: 2),
         ];
         // act
         EventLocalDataSourceImpl.sort(tModels);
@@ -209,8 +214,8 @@ void main() {
         final expectedModels = [
           tEventModel,
           tEventModel.copyWith(streamId: 'stream-2'),
-          tEventModel.copyWith(version: 2),
-          tEventModel.copyWith(version: 3),
+          tEventModel.copyWith(version: 2, order: 2),
+          tEventModel.copyWith(version: 3, order: 3),
         ];
         expect(tModels, expectedModels);
       },
