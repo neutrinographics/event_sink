@@ -41,9 +41,8 @@ class EventRemoteDataSourceImpl implements EventRemoteDataSource {
     required String? token,
   }) async {
     try {
-      Uri path = Uri.parse("$host/events").normalizePath();
       Response response = await network.post(
-        path,
+        host,
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer $token",
@@ -77,9 +76,8 @@ class EventRemoteDataSourceImpl implements EventRemoteDataSource {
     required String? token,
   }) async {
     try {
-      Uri path = Uri.parse("$host/events").normalizePath();
       Response response = await network.get(
-        path,
+        host,
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer $token",
