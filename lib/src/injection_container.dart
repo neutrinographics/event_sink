@@ -24,7 +24,9 @@ import 'package:http/http.dart' as http;
 
 /// Service Locator (sl)
 
-final sl = GetIt.instance;
+// TRICKY: register a new instance so that it does not conflict with the global
+// instance of any calling code that also uses GetIt.
+final sl = GetIt.asNewInstance();
 
 void init() {
   // Controllers

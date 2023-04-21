@@ -78,18 +78,23 @@ void main() {
         RemoteEventModel.fromJson(json.decode(fixture('remote_event.json')));
     final baseLocalEvent =
         EventModel.fromRemote(remoteEvent: baseRemoteEvent, pool: 1)
-            .copyWith(remoteId: null, createdAt: tToday);
-    final tSyncedLocalEvent =
-        baseLocalEvent.copyWith(eventId: 'synced', remoteId: 1);
+            .copyWith(remoteCreatedAt: null, createdAt: tToday);
+    final tSyncedLocalEvent = baseLocalEvent.copyWith(
+        eventId: 'synced',
+        remoteCreatedAt: tToday.add(const Duration(seconds: 1)));
     final List<EventModel> tLocalEvents = [
       tSyncedLocalEvent,
       baseLocalEvent.copyWith(eventId: 'un-synced'),
       baseLocalEvent.copyWith(
-          eventId: 'synced', remoteId: 9, streamId: 'a-different-stream'),
+          eventId: 'synced',
+          remoteCreatedAt: tToday.add(const Duration(seconds: 9)),
+          streamId: 'a-different-stream'),
     ];
     final List<RemoteEventModel> tRemoteEvents = [
-      baseRemoteEvent.copyWith(id: 1, eventId: 'synced'),
-      baseRemoteEvent.copyWith(id: 2, eventId: '2'),
+      baseRemoteEvent.copyWith(
+          createdAt: tToday.add(const Duration(seconds: 1)), eventId: 'synced'),
+      baseRemoteEvent.copyWith(
+          createdAt: tToday.add(const Duration(seconds: 2)), eventId: '2'),
     ];
     test(
       'should download events from the server',
@@ -113,7 +118,7 @@ void main() {
         // should only cache the new event
         final expectedNewEvent = baseLocalEvent.copyWith(
           eventId: '2',
-          remoteId: 2,
+          remoteCreatedAt: tToday.add(const Duration(seconds: 2)),
         );
         verify(mockEventLocalDataSource.addEvent(expectedNewEvent));
         verify(mockEventLocalDataSource.hasEvent(any));
@@ -170,11 +175,13 @@ void main() {
         .copyWith(createdAt: tTime);
     final List<EventModel> tCachedEvents = [
       baseEvent,
-      baseEvent.copyWith(remoteId: 1, streamId: "synced-stream"),
+      baseEvent.copyWith(
+          remoteCreatedAt: tTime.add(const Duration(seconds: 1)),
+          streamId: "synced-stream"),
     ];
     final List<RemoteEventModel> tRemoteEvents = [
       RemoteEventModel(
-        id: 2,
+        createdAt: tTime.add(const Duration(seconds: 2)),
         eventId: 'event-id',
         streamId: baseEvent.streamId,
         version: baseEvent.version,
@@ -214,8 +221,7 @@ void main() {
         }
         // verify events were updated with their remote id
         verify(mockEventLocalDataSource.addEvent(baseEvent.copyWith(
-          remoteId: 2,
-        )));
+            remoteCreatedAt: tTime.add(const Duration(seconds: 2)))));
         expect(result, equals(const Right(null)));
       },
     );
@@ -289,6 +295,7 @@ void main() {
 
   group('rebase', () {
     const tPool = 1;
+    final tTime = DateTime.now();
     final baseEvent = EventModel.fromJson(json.decode(fixture('event.json')));
     final List<EventModel> tCachedEventsFirst = [
       // un-synced events
@@ -298,11 +305,20 @@ void main() {
 
       // synced events
       baseEvent.copyWith(
-          streamId: 'first', remoteId: 11, version: 1, eventId: '1.1'),
+          streamId: 'first',
+          remoteCreatedAt: tTime.add(const Duration(seconds: 11)),
+          version: 1,
+          eventId: '1.1'),
       baseEvent.copyWith(
-          streamId: 'first', remoteId: 12, version: 2, eventId: '1.2'),
+          streamId: 'first',
+          remoteCreatedAt: tTime.add(const Duration(seconds: 12)),
+          version: 2,
+          eventId: '1.2'),
       baseEvent.copyWith(
-          streamId: 'first', remoteId: 13, version: 3, eventId: '1.3'),
+          streamId: 'first',
+          remoteCreatedAt: tTime.add(const Duration(seconds: 13)),
+          version: 3,
+          eventId: '1.3'),
     ];
     tCachedEventsFirst.sort((a, b) => a.version - b.version);
 
@@ -314,11 +330,20 @@ void main() {
 
       // synced events
       baseEvent.copyWith(
-          streamId: 'second', remoteId: 21, version: 1, eventId: '2.1'),
+          streamId: 'second',
+          remoteCreatedAt: tTime.add(const Duration(seconds: 21)),
+          version: 1,
+          eventId: '2.1'),
       baseEvent.copyWith(
-          streamId: 'second', remoteId: 22, version: 2, eventId: '2.2'),
+          streamId: 'second',
+          remoteCreatedAt: tTime.add(const Duration(seconds: 22)),
+          version: 2,
+          eventId: '2.2'),
       baseEvent.copyWith(
-          streamId: 'second', remoteId: 23, version: 3, eventId: '2.3'),
+          streamId: 'second',
+          remoteCreatedAt: tTime.add(const Duration(seconds: 23)),
+          version: 3,
+          eventId: '2.3'),
     ];
     tCachedEventsSecond.sort((a, b) => a.version - b.version);
 
@@ -407,7 +432,7 @@ void main() {
         final syncedEvents = [
           baseEvent.copyWith(
             version: 32,
-            remoteId: 1,
+            remoteCreatedAt: tTime.add(const Duration(seconds: 1)),
           )
         ];
         when(mockEventLocalDataSource.getPooledEvents(any)).thenAnswer(

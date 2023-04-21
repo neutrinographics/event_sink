@@ -41,9 +41,8 @@ class EventRemoteDataSourceImpl implements EventRemoteDataSource {
     required String? token,
   }) async {
     try {
-      Uri path = Uri.parse("$host/events").normalizePath();
       Response response = await network.post(
-        path,
+        host,
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer $token",
@@ -77,9 +76,8 @@ class EventRemoteDataSourceImpl implements EventRemoteDataSource {
     required String? token,
   }) async {
     try {
-      Uri path = Uri.parse("$host/events").normalizePath();
       Response response = await network.get(
-        path,
+        host,
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer $token",
@@ -94,7 +92,12 @@ class EventRemoteDataSourceImpl implements EventRemoteDataSource {
       final List<dynamic> events = responseJson['events'] as List<dynamic>;
       final remoteEvents =
           events.map((e) => RemoteEventModel.fromJson(e)).toList();
-      remoteEvents.sort((a, b) => a.id - b.id);
+      remoteEvents.sort((a, b) {
+        if (a.streamId == b.streamId) {
+          return a.version - b.version;
+        }
+        return a.createdAt.compareTo(b.createdAt);
+      });
       return remoteEvents;
     } on ServerException {
       rethrow;

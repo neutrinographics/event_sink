@@ -16,12 +16,11 @@ class EventModel with _$EventModel {
     /// The unique ID of the event
     @JsonKey(name: 'event_id') required String eventId,
 
-    /// The remote id of the event.
-    /// This will only have a value if this has been downloaded from the server.
-    @JsonKey(name: 'remote_id') int? remoteId,
-
     /// The time when this event was recorded locally.
     @JsonKey(name: 'created_at') required DateTime createdAt,
+
+    /// The time when this event was recorded locally.
+    @JsonKey(name: 'remote_created_at') DateTime? remoteCreatedAt,
 
     /// Indicates the event has already been applied to the aggregate.
     @Default(false) bool applied,
@@ -41,9 +40,8 @@ class EventModel with _$EventModel {
   }) = _EventModel;
 
   /// A convenience method to check if this event has been synced with the server.
-  /// This is more readable than checking if the remote id is not null.
   bool get synced {
-    return remoteId != null;
+    return remoteCreatedAt != null;
   }
 
   factory EventModel.fromJson(Map<String, dynamic> json) =>
@@ -55,9 +53,9 @@ class EventModel with _$EventModel {
   }) {
     return EventModel(
       eventId: remoteEvent.eventId,
-      remoteId: remoteEvent.id,
       applied: false,
       createdAt: DateTime.now(),
+      remoteCreatedAt: remoteEvent.createdAt,
       streamId: remoteEvent.streamId,
       version: remoteEvent.version,
       data: remoteEvent.data,

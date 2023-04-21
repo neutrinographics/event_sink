@@ -46,7 +46,6 @@ void main() {
       'should create an event on the server',
       () async {
         // arrange
-        final tCreateEventHost = Uri.parse('$tHost/events').normalizePath();
         when(mockNetwork.post(
           any,
           headers: anyNamed('headers'),
@@ -62,8 +61,7 @@ void main() {
         final tExpectedBody = json.encode({
           "event": tNewEvent.toJson(),
         });
-        verify(mockNetwork.post(tCreateEventHost,
-            headers: tHeaders, body: tExpectedBody));
+        verify(mockNetwork.post(tHost, headers: tHeaders, body: tExpectedBody));
         expect(result, RemoteEventModel.fromJson(json.decode(tBody)));
       },
     );
@@ -112,7 +110,6 @@ void main() {
       'should get list of events from the server',
       () async {
         // arrange
-        final tGetEventsHost = Uri.parse('$tHost/events').normalizePath();
         when(mockNetwork.get(
           any,
           headers: anyNamed('headers'),
@@ -120,7 +117,7 @@ void main() {
         // act
         final result = await dataSource.getEvents(host: tHost, token: tToken);
         // assert
-        verify(mockNetwork.get(tGetEventsHost, headers: tHeaders));
+        verify(mockNetwork.get(tHost, headers: tHeaders));
         final expectedEvents = tJsonEvents['events'].map((e) {
           return RemoteEventModel.fromJson(e);
         }).toList();
