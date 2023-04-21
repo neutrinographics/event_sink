@@ -47,17 +47,25 @@ class EventRepositoryImpl extends EventRepository {
       if (!hasEvent) {
         // record new event
         try {
-          await _recordRemoteEvent(e, pool);
+          await localDataSource.addEvent(
+            EventModel.fromRemote(
+              remoteEvent: e,
+              pool: pool,
+            ).copyWith(createdAt: timeInfo.now()),
+          );
         } on CacheException catch (e) {
           return Left(CacheFailure(message: e.message));
         }
       } else {
-        // update the current event
         final existingEvent = await localDataSource.getEvent(e.eventId);
         if (!existingEvent.synced) {
-          // Replace local event with remote version
+          // Mark the event as synced.
           try {
-            await _recordRemoteEvent(e, pool);
+            await localDataSource.addEvent(existingEvent.copyWith(
+              synced: true,
+              // TRICKY: the remote event order may be different from the local order.
+              order: e.order,
+            ));
           } on CacheException catch (e) {
             return Left(CacheFailure(message: e.message));
           }
@@ -66,14 +74,6 @@ class EventRepositoryImpl extends EventRepository {
     }
     return const Right(null);
   }
-
-  Future<void> _recordRemoteEvent(RemoteEventModel event, int pool) =>
-      localDataSource.addEvent(
-        EventModel.fromRemote(
-          remoteEvent: event,
-          pool: pool,
-        ).copyWith(createdAt: timeInfo.now()),
-      );
 
   @override
   Future<Either<Failure, void>> push(

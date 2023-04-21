@@ -81,8 +81,8 @@ void main() {
             .copyWith(synced: false, createdAt: tToday);
     final tSyncedLocalEvent =
         baseLocalEvent.copyWith(eventId: 'synced', order: 1, synced: true);
-    final tUnSyncedLocalEvent =
-        baseLocalEvent.copyWith(eventId: 'un-synced', order: 1, synced: false);
+    final tUnSyncedLocalEvent = baseLocalEvent.copyWith(
+        eventId: 'un-synced', order: 1, synced: false, applied: true);
     final List<EventModel> tLocalEvents = [
       tSyncedLocalEvent,
       baseLocalEvent.copyWith(eventId: 'un-synced'),
@@ -132,6 +132,7 @@ void main() {
           eventId: 'un-synced',
           order: 3,
           synced: true,
+          applied: tUnSyncedLocalEvent.applied,
         );
         verify(mockEventLocalDataSource.addEvent(expectedUpdatedEvent));
         verify(mockEventLocalDataSource.hasEvent(any));
