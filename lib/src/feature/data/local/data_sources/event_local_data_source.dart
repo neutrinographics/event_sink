@@ -28,8 +28,11 @@ abstract class EventLocalDataSource {
   /// Returns a list of all cached pools.
   Future<List<int>> getPools();
 
-  /// Clears the cache.
+  /// Clears the cache in all pools.
   Future<void> clear();
+
+  /// Clears the cache in a single pool.
+  Future<void> clearPool(int pool);
 }
 
 class EventLocalDataSourceImpl extends EventLocalDataSource {
@@ -93,7 +96,10 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
   }
 
   @override
-  Future<void> clear() => eventCache.clear();
+  Future<void> clear() async {
+    await eventCache.clear();
+    await poolCache.clear();
+  }
 
   /// Returns the pool data or an empty list if the pool is empty.
   Future<List<String>> _readPool(int pool) async {
@@ -144,5 +150,14 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
   @override
   Future<int> getPoolSize(int pool) async {
     return (await poolCache.keys()).length;
+  }
+
+  @override
+  Future<void> clearPool(int pool) async {
+    final events = await poolCache.read(pool);
+    for (final id in events) {
+      await eventCache.delete(id);
+    }
+    await poolCache.delete(pool);
   }
 }

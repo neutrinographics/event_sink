@@ -37,6 +37,9 @@ abstract class EventRepository {
   /// Marks an event as having been reduced into the graph.
   Future<Either<Failure, void>> markApplied(EventStub event);
 
-  /// Clear the local cache of [Event].
+  /// Clear the local cache for all pools.
   Future<Either<Failure, void>> clearCache();
+
+  /// Clear the local cache of the pool.
+  Future<Either<Failure, void>> clearPoolCache(int pool);
 }

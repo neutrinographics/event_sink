@@ -184,6 +184,45 @@ void main() {
     });
   });
 
+  group('clear', () {
+    test(
+      'should clear the events in all pools',
+      () async {
+        // nothing to arrange
+        // act
+        await dataSource.clear();
+        // assert
+        verify(mockPoolCache.clear());
+        verify(mockEventCache.clear());
+      },
+    );
+  });
+
+  group('clearPool', () {
+    test(
+      'should clear the events in a single pool',
+      () async {
+        // arrange
+        const tPoolEvents = [
+          'one',
+          'two',
+        ];
+        const tPool = 1;
+        when(mockPoolCache.read(any)).thenAnswer((_) async => tPoolEvents);
+        // act
+        await dataSource.clearPool(tPool);
+        // assert
+        verify(mockPoolCache.read(tPool));
+        verify(mockPoolCache.delete(tPool));
+        for (final id in tPoolEvents) {
+          verify(mockEventCache.delete(id));
+        }
+        verifyNoMoreInteractions(mockPoolCache);
+        verifyNoMoreInteractions(mockEventCache);
+      },
+    );
+  });
+
   group('sort', () {
     final tEventModel = EventModel(
       eventId: 'event-id',

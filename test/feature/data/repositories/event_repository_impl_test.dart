@@ -718,6 +718,38 @@ void main() {
     );
   });
 
+  group('clearPoolCache', () {
+    test(
+      'should clear cache',
+      () async {
+        // arrange
+        const tPool = 1;
+        // act
+        final result = await repository.clearPoolCache(tPool);
+        // assert
+        expect(result, const Right(null));
+        verify(mockEventLocalDataSource.clearPool(tPool));
+        verifyNoMoreInteractions(mockEventLocalDataSource);
+      },
+    );
+
+    test(
+      'should return CacheFailure if clearing cache fails',
+      () async {
+        // arrange
+        const tPool = 1;
+        when(mockEventLocalDataSource.clearPool(tPool))
+            .thenThrow(CacheException());
+        // act
+        final result = await repository.clearPoolCache(tPool);
+        // assert
+        expect(result, const Left(CacheFailure()));
+        verify(mockEventLocalDataSource.clearPool(tPool));
+        verifyNoMoreInteractions(mockEventLocalDataSource);
+      },
+    );
+  });
+
   group('clearCache', () {
     test(
       'should clear cache',

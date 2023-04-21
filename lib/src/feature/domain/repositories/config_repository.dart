@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:event_sink/src/core/domain/config_options.dart';
 import 'package:event_sink/src/core/error/failure.dart';
 
+// TODO: this isn't being used
 abstract class ConfigRepository {
   /// Writes a typed config value to the repository.
   Future<Either<Failure, void>> write<T>(ConfigOption option, T value);

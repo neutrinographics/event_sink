@@ -255,4 +255,14 @@ class EventRepositoryImpl extends EventRepository {
       return Left(CacheFailure(message: e.message));
     }
   }
+
+  @override
+  Future<Either<Failure, void>> clearPoolCache(int pool) async {
+    try {
+      await localDataSource.clearPool(pool);
+      return const Right(null);
+    } on CacheException catch (e) {
+      return Left(CacheFailure(message: e.message));
+    }
+  }
 }
