@@ -28,9 +28,12 @@ mixin _$EventModel {
   @JsonKey(name: 'created_at')
   DateTime get createdAt => throw _privateConstructorUsedError;
 
-  /// The time when this event was recorded locally.
-  @JsonKey(name: 'remote_created_at')
-  DateTime? get remoteCreatedAt => throw _privateConstructorUsedError;
+  /// The order in which the event should be applied.
+  @JsonKey(name: 'sort_order')
+  int get order => throw _privateConstructorUsedError;
+
+  /// Indicates if the event has been synced to the server.
+  bool get synced => throw _privateConstructorUsedError;
 
   /// Indicates the event has already been applied to the aggregate.
   bool get applied => throw _privateConstructorUsedError;
@@ -64,7 +67,8 @@ abstract class $EventModelCopyWith<$Res> {
   $Res call(
       {@JsonKey(name: 'event_id') String eventId,
       @JsonKey(name: 'created_at') DateTime createdAt,
-      @JsonKey(name: 'remote_created_at') DateTime? remoteCreatedAt,
+      @JsonKey(name: 'sort_order') int order,
+      bool synced,
       bool applied,
       @JsonKey(name: 'stream_id') String streamId,
       int version,
@@ -88,7 +92,8 @@ class _$EventModelCopyWithImpl<$Res, $Val extends EventModel>
   $Res call({
     Object? eventId = null,
     Object? createdAt = null,
-    Object? remoteCreatedAt = freezed,
+    Object? order = null,
+    Object? synced = null,
     Object? applied = null,
     Object? streamId = null,
     Object? version = null,
@@ -105,10 +110,14 @@ class _$EventModelCopyWithImpl<$Res, $Val extends EventModel>
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      remoteCreatedAt: freezed == remoteCreatedAt
-          ? _value.remoteCreatedAt
-          : remoteCreatedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
+      order: null == order
+          ? _value.order
+          : order // ignore: cast_nullable_to_non_nullable
+              as int,
+      synced: null == synced
+          ? _value.synced
+          : synced // ignore: cast_nullable_to_non_nullable
+              as bool,
       applied: null == applied
           ? _value.applied
           : applied // ignore: cast_nullable_to_non_nullable
@@ -148,7 +157,8 @@ abstract class _$$_EventModelCopyWith<$Res>
   $Res call(
       {@JsonKey(name: 'event_id') String eventId,
       @JsonKey(name: 'created_at') DateTime createdAt,
-      @JsonKey(name: 'remote_created_at') DateTime? remoteCreatedAt,
+      @JsonKey(name: 'sort_order') int order,
+      bool synced,
       bool applied,
       @JsonKey(name: 'stream_id') String streamId,
       int version,
@@ -170,7 +180,8 @@ class __$$_EventModelCopyWithImpl<$Res>
   $Res call({
     Object? eventId = null,
     Object? createdAt = null,
-    Object? remoteCreatedAt = freezed,
+    Object? order = null,
+    Object? synced = null,
     Object? applied = null,
     Object? streamId = null,
     Object? version = null,
@@ -187,10 +198,14 @@ class __$$_EventModelCopyWithImpl<$Res>
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      remoteCreatedAt: freezed == remoteCreatedAt
-          ? _value.remoteCreatedAt
-          : remoteCreatedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
+      order: null == order
+          ? _value.order
+          : order // ignore: cast_nullable_to_non_nullable
+              as int,
+      synced: null == synced
+          ? _value.synced
+          : synced // ignore: cast_nullable_to_non_nullable
+              as bool,
       applied: null == applied
           ? _value.applied
           : applied // ignore: cast_nullable_to_non_nullable
@@ -225,7 +240,8 @@ class _$_EventModel extends _EventModel {
   const _$_EventModel(
       {@JsonKey(name: 'event_id') required this.eventId,
       @JsonKey(name: 'created_at') required this.createdAt,
-      @JsonKey(name: 'remote_created_at') this.remoteCreatedAt,
+      @JsonKey(name: 'sort_order') required this.order,
+      this.synced = false,
       this.applied = false,
       @JsonKey(name: 'stream_id') required this.streamId,
       required this.version,
@@ -248,10 +264,15 @@ class _$_EventModel extends _EventModel {
   @JsonKey(name: 'created_at')
   final DateTime createdAt;
 
-  /// The time when this event was recorded locally.
+  /// The order in which the event should be applied.
   @override
-  @JsonKey(name: 'remote_created_at')
-  final DateTime? remoteCreatedAt;
+  @JsonKey(name: 'sort_order')
+  final int order;
+
+  /// Indicates if the event has been synced to the server.
+  @override
+  @JsonKey()
+  final bool synced;
 
   /// Indicates the event has already been applied to the aggregate.
   @override
@@ -286,7 +307,7 @@ class _$_EventModel extends _EventModel {
 
   @override
   String toString() {
-    return 'EventModel(eventId: $eventId, createdAt: $createdAt, remoteCreatedAt: $remoteCreatedAt, applied: $applied, streamId: $streamId, version: $version, name: $name, pool: $pool, data: $data)';
+    return 'EventModel(eventId: $eventId, createdAt: $createdAt, order: $order, synced: $synced, applied: $applied, streamId: $streamId, version: $version, name: $name, pool: $pool, data: $data)';
   }
 
   @override
@@ -297,8 +318,8 @@ class _$_EventModel extends _EventModel {
             (identical(other.eventId, eventId) || other.eventId == eventId) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
-            (identical(other.remoteCreatedAt, remoteCreatedAt) ||
-                other.remoteCreatedAt == remoteCreatedAt) &&
+            (identical(other.order, order) || other.order == order) &&
+            (identical(other.synced, synced) || other.synced == synced) &&
             (identical(other.applied, applied) || other.applied == applied) &&
             (identical(other.streamId, streamId) ||
                 other.streamId == streamId) &&
@@ -314,7 +335,8 @@ class _$_EventModel extends _EventModel {
       runtimeType,
       eventId,
       createdAt,
-      remoteCreatedAt,
+      order,
+      synced,
       applied,
       streamId,
       version,
@@ -340,7 +362,8 @@ abstract class _EventModel extends EventModel {
   const factory _EventModel(
       {@JsonKey(name: 'event_id') required final String eventId,
       @JsonKey(name: 'created_at') required final DateTime createdAt,
-      @JsonKey(name: 'remote_created_at') final DateTime? remoteCreatedAt,
+      @JsonKey(name: 'sort_order') required final int order,
+      final bool synced,
       final bool applied,
       @JsonKey(name: 'stream_id') required final String streamId,
       required final int version,
@@ -364,9 +387,13 @@ abstract class _EventModel extends EventModel {
   DateTime get createdAt;
   @override
 
-  /// The time when this event was recorded locally.
-  @JsonKey(name: 'remote_created_at')
-  DateTime? get remoteCreatedAt;
+  /// The order in which the event should be applied.
+  @JsonKey(name: 'sort_order')
+  int get order;
+  @override
+
+  /// Indicates if the event has been synced to the server.
+  bool get synced;
   @override
 
   /// Indicates the event has already been applied to the aggregate.

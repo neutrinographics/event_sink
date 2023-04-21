@@ -28,6 +28,10 @@ mixin _$RemoteEventModel {
   @JsonKey(name: 'stream_id')
   String get streamId => throw _privateConstructorUsedError;
 
+  /// The order in which the event should be applied
+  @JsonKey(name: 'sort_order')
+  int get order => throw _privateConstructorUsedError;
+
   /// The version of the stream's state.
   /// This is effectively the number of events that have been added to the
   /// stream indicated by the [streamId].
@@ -59,6 +63,7 @@ abstract class $RemoteEventModelCopyWith<$Res> {
   $Res call(
       {@JsonKey(name: 'event_id') String eventId,
       @JsonKey(name: 'stream_id') String streamId,
+      @JsonKey(name: 'sort_order') int order,
       int version,
       @JsonKey(name: 'action_type') String name,
       Map<String, dynamic> data,
@@ -80,6 +85,7 @@ class _$RemoteEventModelCopyWithImpl<$Res, $Val extends RemoteEventModel>
   $Res call({
     Object? eventId = null,
     Object? streamId = null,
+    Object? order = null,
     Object? version = null,
     Object? name = null,
     Object? data = null,
@@ -94,6 +100,10 @@ class _$RemoteEventModelCopyWithImpl<$Res, $Val extends RemoteEventModel>
           ? _value.streamId
           : streamId // ignore: cast_nullable_to_non_nullable
               as String,
+      order: null == order
+          ? _value.order
+          : order // ignore: cast_nullable_to_non_nullable
+              as int,
       version: null == version
           ? _value.version
           : version // ignore: cast_nullable_to_non_nullable
@@ -125,6 +135,7 @@ abstract class _$$_RemoteEventModelCopyWith<$Res>
   $Res call(
       {@JsonKey(name: 'event_id') String eventId,
       @JsonKey(name: 'stream_id') String streamId,
+      @JsonKey(name: 'sort_order') int order,
       int version,
       @JsonKey(name: 'action_type') String name,
       Map<String, dynamic> data,
@@ -144,6 +155,7 @@ class __$$_RemoteEventModelCopyWithImpl<$Res>
   $Res call({
     Object? eventId = null,
     Object? streamId = null,
+    Object? order = null,
     Object? version = null,
     Object? name = null,
     Object? data = null,
@@ -158,6 +170,10 @@ class __$$_RemoteEventModelCopyWithImpl<$Res>
           ? _value.streamId
           : streamId // ignore: cast_nullable_to_non_nullable
               as String,
+      order: null == order
+          ? _value.order
+          : order // ignore: cast_nullable_to_non_nullable
+              as int,
       version: null == version
           ? _value.version
           : version // ignore: cast_nullable_to_non_nullable
@@ -184,6 +200,7 @@ class _$_RemoteEventModel implements _RemoteEventModel {
   _$_RemoteEventModel(
       {@JsonKey(name: 'event_id') required this.eventId,
       @JsonKey(name: 'stream_id') required this.streamId,
+      @JsonKey(name: 'sort_order') required this.order,
       required this.version,
       @JsonKey(name: 'action_type') required this.name,
       required final Map<String, dynamic> data,
@@ -202,6 +219,11 @@ class _$_RemoteEventModel implements _RemoteEventModel {
   @override
   @JsonKey(name: 'stream_id')
   final String streamId;
+
+  /// The order in which the event should be applied
+  @override
+  @JsonKey(name: 'sort_order')
+  final int order;
 
   /// The version of the stream's state.
   /// This is effectively the number of events that have been added to the
@@ -232,7 +254,7 @@ class _$_RemoteEventModel implements _RemoteEventModel {
 
   @override
   String toString() {
-    return 'RemoteEventModel(eventId: $eventId, streamId: $streamId, version: $version, name: $name, data: $data, createdAt: $createdAt)';
+    return 'RemoteEventModel(eventId: $eventId, streamId: $streamId, order: $order, version: $version, name: $name, data: $data, createdAt: $createdAt)';
   }
 
   @override
@@ -243,6 +265,7 @@ class _$_RemoteEventModel implements _RemoteEventModel {
             (identical(other.eventId, eventId) || other.eventId == eventId) &&
             (identical(other.streamId, streamId) ||
                 other.streamId == streamId) &&
+            (identical(other.order, order) || other.order == order) &&
             (identical(other.version, version) || other.version == version) &&
             (identical(other.name, name) || other.name == name) &&
             const DeepCollectionEquality().equals(other._data, _data) &&
@@ -252,8 +275,8 @@ class _$_RemoteEventModel implements _RemoteEventModel {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, eventId, streamId, version, name,
-      const DeepCollectionEquality().hash(_data), createdAt);
+  int get hashCode => Object.hash(runtimeType, eventId, streamId, order,
+      version, name, const DeepCollectionEquality().hash(_data), createdAt);
 
   @JsonKey(ignore: true)
   @override
@@ -273,6 +296,7 @@ abstract class _RemoteEventModel implements RemoteEventModel {
   factory _RemoteEventModel(
           {@JsonKey(name: 'event_id') required final String eventId,
           @JsonKey(name: 'stream_id') required final String streamId,
+          @JsonKey(name: 'sort_order') required final int order,
           required final int version,
           @JsonKey(name: 'action_type') required final String name,
           required final Map<String, dynamic> data,
@@ -292,6 +316,11 @@ abstract class _RemoteEventModel implements RemoteEventModel {
   /// The ID of the stream affected by this event.
   @JsonKey(name: 'stream_id')
   String get streamId;
+  @override
+
+  /// The order in which the event should be applied
+  @JsonKey(name: 'sort_order')
+  int get order;
   @override
 
   /// The version of the stream's state.

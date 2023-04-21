@@ -43,7 +43,9 @@ class EventRepositoryImpl extends EventRepository {
     }
 
     for (var e in remoteEvents) {
-      if (!(await _hasSyncedEvent(e.eventId))) {
+      final bool hasEvent = await localDataSource.hasEvent(e.eventId);
+      if (!hasEvent) {
+        // record new event
         try {
           await localDataSource.addEvent(
             EventModel.fromRemote(
@@ -54,19 +56,23 @@ class EventRepositoryImpl extends EventRepository {
         } on CacheException catch (e) {
           return Left(CacheFailure(message: e.message));
         }
+      } else {
+        final existingEvent = await localDataSource.getEvent(e.eventId);
+        if (!existingEvent.synced) {
+          // Mark the event as synced.
+          try {
+            await localDataSource.addEvent(existingEvent.copyWith(
+              synced: true,
+              // TRICKY: the remote event order may be different from the local order.
+              order: e.order,
+            ));
+          } on CacheException catch (e) {
+            return Left(CacheFailure(message: e.message));
+          }
+        }
       }
     }
     return const Right(null);
-  }
-
-  /// Checks if an event has been synced
-  Future<bool> _hasSyncedEvent(String eventId) async {
-    if (await localDataSource.hasEvent(eventId)) {
-      final event = await localDataSource.getEvent(eventId);
-      return event.synced;
-    } else {
-      return false;
-    }
   }
 
   @override
@@ -175,17 +181,12 @@ class EventRepositoryImpl extends EventRepository {
   @override
   Future<Either<Failure, void>> add(
       EventInfo<EventData> event, int pool) async {
-    // get stream version
-    final int streamVersion;
     try {
-      streamVersion = await _getStreamVersion(event.streamId, pool);
-    } on CacheException catch (e) {
-      return Left(CacheFailure(message: e.message));
-    }
-
-    try {
+      final streamVersion = await _getStreamVersion(event.streamId, pool);
+      final poolSize = await localDataSource.getPoolSize(pool);
       final eventModel = EventModel(
         eventId: idGenerator.generateId(),
+        order: poolSize + 1,
         version: streamVersion + 1,
         createdAt: timeInfo.now(),
         streamId: event.streamId,
@@ -203,6 +204,7 @@ class EventRepositoryImpl extends EventRepository {
 
   /// Returns the latest version of the event stream.
   /// This will throw a [CacheException] if the stream cannot be loaded.
+  /// TODO: this should be updated to be more performant.
   Future<int> _getStreamVersion(String streamId, int pool) async {
     List<EventModel> streamEvents;
 
@@ -248,6 +250,16 @@ class EventRepositoryImpl extends EventRepository {
   Future<Either<Failure, void>> clearCache() async {
     try {
       await localDataSource.clear();
+      return const Right(null);
+    } on CacheException catch (e) {
+      return Left(CacheFailure(message: e.message));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> clearPoolCache(int pool) async {
+    try {
+      await localDataSource.clearPool(pool);
       return const Right(null);
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));

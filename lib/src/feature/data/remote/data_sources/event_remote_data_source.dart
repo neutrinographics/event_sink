@@ -8,7 +8,7 @@ import 'package:event_sink/src/feature/data/remote/models/remote_event_model.dar
 import 'package:event_sink/src/feature/data/remote/models/remote_new_event_model.dart';
 
 abstract class EventRemoteDataSource {
-  /// Fetches a list of events from the server.
+  /// Returns a sorted list of events from the server.
   ///
   /// Throws a [ServerException] if the download fails.
   Future<List<RemoteEventModel>> getEvents({
@@ -48,7 +48,10 @@ class EventRemoteDataSourceImpl implements EventRemoteDataSource {
           "Authorization": "Bearer $token",
         },
         body: json.encode(
-          {'event': event.toJson()},
+          {
+            // TODO: support syncing multiple events at a time.
+            'events': [event.toJson()]
+          },
         ),
       );
       if (response.statusCode != 201) {
@@ -62,7 +65,8 @@ class EventRemoteDataSourceImpl implements EventRemoteDataSource {
                   "${response.statusCode} Error. ${responseMessage(response)}");
         }
       }
-      return RemoteEventModel.fromJson(json.decode(response.body));
+      // TRICKY: since we send a single event, we only get one back
+      return RemoteEventModel.fromJson(json.decode(response.body)["events"][0]);
     } on ServerException {
       rethrow;
     } catch (e, trace) {
@@ -92,12 +96,7 @@ class EventRemoteDataSourceImpl implements EventRemoteDataSource {
       final List<dynamic> events = responseJson['events'] as List<dynamic>;
       final remoteEvents =
           events.map((e) => RemoteEventModel.fromJson(e)).toList();
-      remoteEvents.sort((a, b) {
-        if (a.streamId == b.streamId) {
-          return a.version - b.version;
-        }
-        return a.createdAt.compareTo(b.createdAt);
-      });
+      remoteEvents.sort((a, b) => a.order.compareTo(b.order));
       return remoteEvents;
     } on ServerException {
       rethrow;

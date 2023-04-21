@@ -35,7 +35,7 @@ void main() {
       name: tEvent.name,
       data: tEvent.data,
     );
-    final tBody = fixture('remote_event.json');
+    final tBody = fixture('remote_events.json');
     final tHeaders = {
       "Content-Type": "application/json",
       "Authorization": "Bearer $tToken",
@@ -59,10 +59,11 @@ void main() {
         );
         // assert
         final tExpectedBody = json.encode({
-          "event": tNewEvent.toJson(),
+          "events": [tNewEvent.toJson()],
         });
         verify(mockNetwork.post(tHost, headers: tHeaders, body: tExpectedBody));
-        expect(result, RemoteEventModel.fromJson(json.decode(tBody)));
+        expect(
+            result, RemoteEventModel.fromJson(json.decode(tBody)["events"][0]));
       },
     );
 
@@ -118,9 +119,11 @@ void main() {
         final result = await dataSource.getEvents(host: tHost, token: tToken);
         // assert
         verify(mockNetwork.get(tHost, headers: tHeaders));
-        final expectedEvents = tJsonEvents['events'].map((e) {
-          return RemoteEventModel.fromJson(e);
-        }).toList();
+        final List<RemoteEventModel> expectedEvents = [];
+        for (final e in tJsonEvents['events']) {
+          expectedEvents.add(RemoteEventModel.fromJson(e));
+        }
+        expectedEvents.sort((a, b) => a.order - b.order);
         expect(result, expectedEvents);
       },
     );

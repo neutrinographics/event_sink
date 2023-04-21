@@ -34,6 +34,7 @@ mixin _$RemoteNewEventModel {
   int get version => throw _privateConstructorUsedError;
 
   /// The name of the event
+  @JsonKey(name: 'action_type')
   String get name => throw _privateConstructorUsedError;
 
   /// Custom event data
@@ -55,7 +56,7 @@ abstract class $RemoteNewEventModelCopyWith<$Res> {
       {@JsonKey(name: 'event_id') String eventId,
       @JsonKey(name: 'stream_id') String streamId,
       int version,
-      String name,
+      @JsonKey(name: 'action_type') String name,
       Map<String, dynamic> data});
 }
 
@@ -115,7 +116,7 @@ abstract class _$$_RemoteNewEventModelCopyWith<$Res>
       {@JsonKey(name: 'event_id') String eventId,
       @JsonKey(name: 'stream_id') String streamId,
       int version,
-      String name,
+      @JsonKey(name: 'action_type') String name,
       Map<String, dynamic> data});
 }
 
@@ -168,7 +169,7 @@ class _$_RemoteNewEventModel implements _RemoteNewEventModel {
       {@JsonKey(name: 'event_id') required this.eventId,
       @JsonKey(name: 'stream_id') required this.streamId,
       required this.version,
-      required this.name,
+      @JsonKey(name: 'action_type') required this.name,
       required final Map<String, dynamic> data})
       : _data = data;
 
@@ -193,6 +194,7 @@ class _$_RemoteNewEventModel implements _RemoteNewEventModel {
 
   /// The name of the event
   @override
+  @JsonKey(name: 'action_type')
   final String name;
 
   /// Custom event data
@@ -249,7 +251,7 @@ abstract class _RemoteNewEventModel implements RemoteNewEventModel {
       {@JsonKey(name: 'event_id') required final String eventId,
       @JsonKey(name: 'stream_id') required final String streamId,
       required final int version,
-      required final String name,
+      @JsonKey(name: 'action_type') required final String name,
       required final Map<String, dynamic> data}) = _$_RemoteNewEventModel;
 
   factory _RemoteNewEventModel.fromJson(Map<String, dynamic> json) =
@@ -274,6 +276,7 @@ abstract class _RemoteNewEventModel implements RemoteNewEventModel {
   @override
 
   /// The name of the event
+  @JsonKey(name: 'action_type')
   String get name;
   @override
 

@@ -39,4 +39,11 @@ abstract class EventSinkBase {
   /// Applies any un-processed events.
   Future<Either<Failure, void>> apply(int pool) =>
       _controller.apply(pool, eventHandlersMap(), eventDataGeneratorMap);
+
+  /// Deletes all of the locally cached data.
+  Future<Either<Failure, void>> drain() => _controller.drain();
+
+  /// Deletes all of the locally cached data in the pool
+  Future<Either<Failure, void>> drainPool(int pool) =>
+      _controller.drainPool(pool);
 }

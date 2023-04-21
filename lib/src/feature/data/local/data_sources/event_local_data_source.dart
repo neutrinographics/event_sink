@@ -19,14 +19,20 @@ abstract class EventLocalDataSource {
   /// Returns a sorted list of [EventModel]
   Future<List<EventModel>> getAllEvents();
 
+  /// Returns the number of events in the pool.
+  Future<int> getPoolSize(int pool);
+
   /// Returns a sorted list of events from the pool.
   Future<List<EventModel>> getPooledEvents(int pool);
 
   /// Returns a list of all cached pools.
   Future<List<int>> getPools();
 
-  /// Clears the cache.
+  /// Clears the cache in all pools.
   Future<void> clear();
+
+  /// Clears the cache in a single pool.
+  Future<void> clearPool(int pool);
 }
 
 class EventLocalDataSourceImpl extends EventLocalDataSource {
@@ -90,7 +96,10 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
   }
 
   @override
-  Future<void> clear() => eventCache.clear();
+  Future<void> clear() async {
+    await eventCache.clear();
+    await poolCache.clear();
+  }
 
   /// Returns the pool data or an empty list if the pool is empty.
   Future<List<String>> _readPool(int pool) async {
@@ -104,18 +113,30 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
   /// Sorts a list of events.
   static void sort(List<EventModel> models) {
     models.sort((a, b) {
-      if (a.streamId == b.streamId) {
-        return a.version - b.version;
-      }
+      // place synced events in front
       if (a.synced && !b.synced) {
         return -1;
       }
       if (!a.synced && b.synced) {
         return 1;
       }
+      // sort synced events by order
       if (a.synced && b.synced) {
-        return a.remoteCreatedAt!.compareTo(b.remoteCreatedAt!);
+        return a.order - b.order;
       }
+      // sort un-synced events by order
+      if (!a.synced && !b.synced) {
+        return a.order - b.order;
+      }
+
+      // The below sorting rules aren't actually needed.
+      // They are just a sanity check.
+
+      // sort streams by version
+      if (a.streamId == b.streamId) {
+        return a.version - b.version;
+      }
+
       return a.createdAt.compareTo(b.createdAt);
     });
   }
@@ -125,4 +146,18 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
 
   @override
   Future<EventModel> getEvent(String eventId) => eventCache.read(eventId);
+
+  @override
+  Future<int> getPoolSize(int pool) async {
+    return (await poolCache.keys()).length;
+  }
+
+  @override
+  Future<void> clearPool(int pool) async {
+    final events = await poolCache.read(pool);
+    for (final id in events) {
+      await eventCache.delete(id);
+    }
+    await poolCache.delete(pool);
+  }
 }

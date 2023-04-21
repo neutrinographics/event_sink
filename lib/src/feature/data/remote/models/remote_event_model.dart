@@ -15,6 +15,9 @@ class RemoteEventModel with _$RemoteEventModel {
     /// The ID of the stream affected by this event.
     @JsonKey(name: 'stream_id') required String streamId,
 
+    /// The order in which the event should be applied
+    @JsonKey(name: 'sort_order') required int order,
+
     /// The version of the stream's state.
     /// This is effectively the number of events that have been added to the
     /// stream indicated by the [streamId].
