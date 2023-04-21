@@ -119,9 +119,11 @@ void main() {
         final result = await dataSource.getEvents(host: tHost, token: tToken);
         // assert
         verify(mockNetwork.get(tHost, headers: tHeaders));
-        final expectedEvents = tJsonEvents['events'].map((e) {
-          return RemoteEventModel.fromJson(e);
-        }).toList();
+        final List<RemoteEventModel> expectedEvents = [];
+        for (final e in tJsonEvents['events']) {
+          expectedEvents.add(RemoteEventModel.fromJson(e));
+        }
+        expectedEvents.sort((a, b) => a.order - b.order);
         expect(result, expectedEvents);
       },
     );

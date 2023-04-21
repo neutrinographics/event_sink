@@ -96,7 +96,7 @@ class EventRemoteDataSourceImpl implements EventRemoteDataSource {
       final List<dynamic> events = responseJson['events'] as List<dynamic>;
       final remoteEvents =
           events.map((e) => RemoteEventModel.fromJson(e)).toList();
-      remoteEvents.sort((a, b) => a.order - b.order);
+      remoteEvents.sort((a, b) => a.order.compareTo(b.order));
       return remoteEvents;
     } on ServerException {
       rethrow;
