@@ -8,7 +8,7 @@ import 'package:event_sink/src/feature/data/remote/models/remote_event_model.dar
 import 'package:event_sink/src/feature/data/remote/models/remote_new_event_model.dart';
 
 abstract class EventRemoteDataSource {
-  /// Fetches a list of events from the server.
+  /// Returns a sorted list of events from the server.
   ///
   /// Throws a [ServerException] if the download fails.
   Future<List<RemoteEventModel>> getEvents({

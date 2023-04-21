@@ -43,31 +43,37 @@ class EventRepositoryImpl extends EventRepository {
     }
 
     for (var e in remoteEvents) {
-      if (!(await _hasSyncedEvent(e.eventId))) {
+      final bool hasEvent = await localDataSource.hasEvent(e.eventId);
+      if (!hasEvent) {
+        // record new event
         try {
-          await localDataSource.addEvent(
-            EventModel.fromRemote(
-              remoteEvent: e,
-              pool: pool,
-            ).copyWith(createdAt: timeInfo.now()),
-          );
+          await _recordRemoteEvent(e, pool);
         } on CacheException catch (e) {
           return Left(CacheFailure(message: e.message));
+        }
+      } else {
+        // update the current event
+        final existingEvent = await localDataSource.getEvent(e.eventId);
+        if (!existingEvent.synced) {
+          // Replace local event with remote version
+          try {
+            await _recordRemoteEvent(e, pool);
+          } on CacheException catch (e) {
+            return Left(CacheFailure(message: e.message));
+          }
         }
       }
     }
     return const Right(null);
   }
 
-  /// Checks if an event has been synced
-  Future<bool> _hasSyncedEvent(String eventId) async {
-    if (await localDataSource.hasEvent(eventId)) {
-      final event = await localDataSource.getEvent(eventId);
-      return event.synced;
-    } else {
-      return false;
-    }
-  }
+  Future<void> _recordRemoteEvent(RemoteEventModel event, int pool) =>
+      localDataSource.addEvent(
+        EventModel.fromRemote(
+          remoteEvent: event,
+          pool: pool,
+        ).copyWith(createdAt: timeInfo.now()),
+      );
 
   @override
   Future<Either<Failure, void>> push(

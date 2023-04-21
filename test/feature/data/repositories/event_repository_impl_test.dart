@@ -81,6 +81,8 @@ void main() {
             .copyWith(synced: false, createdAt: tToday);
     final tSyncedLocalEvent =
         baseLocalEvent.copyWith(eventId: 'synced', order: 1, synced: true);
+    final tUnSyncedLocalEvent =
+        baseLocalEvent.copyWith(eventId: 'un-synced', order: 1, synced: false);
     final List<EventModel> tLocalEvents = [
       tSyncedLocalEvent,
       baseLocalEvent.copyWith(eventId: 'un-synced'),
@@ -93,6 +95,7 @@ void main() {
     final List<RemoteEventModel> tRemoteEvents = [
       baseRemoteEvent.copyWith(order: 1, eventId: 'synced'),
       baseRemoteEvent.copyWith(order: 2, eventId: '2'),
+      baseRemoteEvent.copyWith(order: 3, eventId: 'un-synced'),
     ];
 
     test(
@@ -106,9 +109,13 @@ void main() {
             .thenAnswer((_) async => true);
         when(mockEventLocalDataSource.hasEvent('2'))
             .thenAnswer((_) async => false);
+        when(mockEventLocalDataSource.hasEvent('un-synced'))
+            .thenAnswer((_) async => true);
         when(mockTimeInfo.now()).thenReturn(tToday);
         when(mockEventLocalDataSource.getEvent('synced'))
             .thenAnswer((_) async => tSyncedLocalEvent);
+        when(mockEventLocalDataSource.getEvent('un-synced'))
+            .thenAnswer((_) async => tUnSyncedLocalEvent);
         // act
         final result = await repository.fetch(tHost, tPool, authToken: tToken);
         // assert
@@ -121,8 +128,15 @@ void main() {
           synced: true,
         );
         verify(mockEventLocalDataSource.addEvent(expectedNewEvent));
+        final expectedUpdatedEvent = baseLocalEvent.copyWith(
+          eventId: 'un-synced',
+          order: 3,
+          synced: true,
+        );
+        verify(mockEventLocalDataSource.addEvent(expectedUpdatedEvent));
         verify(mockEventLocalDataSource.hasEvent(any));
         verify(mockEventLocalDataSource.getEvent('synced'));
+        verify(mockEventLocalDataSource.getEvent('un-synced'));
         verifyNoMoreInteractions(mockEventLocalDataSource);
         expect(result, equals(const Right(null)));
       },
