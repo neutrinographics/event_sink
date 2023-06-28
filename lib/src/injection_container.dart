@@ -1,7 +1,7 @@
+import 'package:clean_cache/cache/memory_cache.dart';
 import 'package:clock/clock.dart';
 
 import 'package:event_sink/src/core/data/id_generator.dart';
-import 'package:event_sink/src/core/data/local_cache.dart';
 import 'package:event_sink/src/core/network/network.dart';
 import 'package:event_sink/src/core/time/time_info.dart';
 import 'package:event_sink/src/feature/data/local/data_sources/config_local_data_source.dart';
@@ -60,14 +60,14 @@ void init() {
       ));
 
   // Data sources
-  final configCache = MemoryCacheImpl<String, ConfigModel>();
+  final configCache = MemoryCache<String, ConfigModel>();
   sl.registerLazySingleton<ConfigLocalDataSource>(
     () => ConfigLocalDataSourceImpl(
       cache: configCache,
     ),
   );
-  final eventCache = MemoryCacheImpl<String, EventModel>();
-  final poolCache = MemoryCacheImpl<int, List<String>>();
+  final eventCache = MemoryCache<String, EventModel>();
+  final poolCache = MemoryCache<int, List<String>>();
   sl.registerLazySingleton<EventLocalDataSource>(
     () => EventLocalDataSourceImpl(
       eventCache: eventCache,

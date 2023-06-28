@@ -1,4 +1,4 @@
-import 'package:event_sink/src/core/data/local_cache.dart';
+import 'package:clean_cache/clean_cache.dart';
 import 'package:event_sink/src/core/domain/config_options.dart';
 import 'package:event_sink/src/feature/data/local/models/config_model.dart';
 
@@ -13,7 +13,7 @@ abstract class ConfigLocalDataSource {
 }
 
 class ConfigLocalDataSourceImpl implements ConfigLocalDataSource {
-  final LocalCache<String, ConfigModel> cache;
+  final CleanCache<String, ConfigModel> cache;
 
   ConfigLocalDataSourceImpl({required this.cache});
 

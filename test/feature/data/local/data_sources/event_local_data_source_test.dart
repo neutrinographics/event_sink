@@ -1,4 +1,4 @@
-import 'package:event_sink/src/core/data/local_cache.dart';
+import 'package:clean_cache/clean_cache.dart';
 import 'package:event_sink/src/feature/data/local/data_sources/event_local_data_source.dart';
 import 'package:event_sink/src/feature/data/local/models/event_model.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -8,15 +8,15 @@ import 'package:mockito/mockito.dart';
 
 import 'event_local_data_source_test.mocks.dart';
 
-@GenerateNiceMocks([MockSpec<LocalCache>()])
+@GenerateNiceMocks([MockSpec<CleanCache>()])
 void main() {
   late EventLocalDataSourceImpl dataSource;
-  late MockLocalCache<String, EventModel> mockEventCache;
-  late MockLocalCache<int, List<String>> mockPoolCache;
+  late MockCleanCache<String, EventModel> mockEventCache;
+  late MockCleanCache<int, List<String>> mockPoolCache;
 
   setUp(() {
-    mockEventCache = MockLocalCache<String, EventModel>();
-    mockPoolCache = MockLocalCache<int, List<String>>();
+    mockEventCache = MockCleanCache<String, EventModel>();
+    mockPoolCache = MockCleanCache<int, List<String>>();
     dataSource = EventLocalDataSourceImpl(
       eventCache: mockEventCache,
       poolCache: mockPoolCache,
