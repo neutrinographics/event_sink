@@ -36,7 +36,11 @@ abstract class EventLocalDataSource {
 }
 
 class EventLocalDataSourceImpl extends EventLocalDataSource {
+  /// A cache of every event record
   final CleanCache<String, EventModel> eventCache;
+
+  /// A cache of pools of events.
+  /// This allows us to manage events from different pools.
   final CleanCache<int, List<String>> poolCache;
 
   EventLocalDataSourceImpl({required this.eventCache, required this.poolCache});
