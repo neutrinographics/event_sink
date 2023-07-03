@@ -23,23 +23,3 @@ class OutOfSyncFailure extends ServerFailure {
 class CacheFailure extends Failure {
   const CacheFailure({message = ''}) : super(message: message);
 }
-
-// Failure occurring in the use case layer
-class IllegalArgumentFailure extends Failure {
-  const IllegalArgumentFailure({message = ''}) : super(message: message);
-}
-
-// Failure occurring when an event is not formed properly
-class EventFormatFailure extends Failure {
-  const EventFormatFailure({message = ''}) : super(message: message);
-}
-
-// Failure occurring when user enters wrong pin
-class InvalidPinFailure extends Failure {
-  const InvalidPinFailure({message = ''}) : super(message: message);
-}
-
-// Failure occurring when user enters invalid or expired password reset token
-class PasswordResetFailure extends Failure {
-  const PasswordResetFailure({message = ''}) : super(message: message);
-}

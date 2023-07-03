@@ -202,7 +202,8 @@ class NetworkImpl implements Network {
       throw ServerException(message: '$e\n\n$trace');
     }
 
-    if (strictAuth && response.statusCode == 403) {
+    if (strictAuth &&
+        (response.statusCode == 403 || response.statusCode == 401)) {
       // The request was not authorized.
       throw AuthException.fromResponse(response);
     }
