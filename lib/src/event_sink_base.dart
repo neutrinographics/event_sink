@@ -8,13 +8,13 @@ typedef EventDataGenerator = EventData Function(Map<String, dynamic>);
 /// Defines the logic for interacting with the event controller.
 abstract class EventSinkBase {
   Map<String, EventHandler> eventHandlersMap();
-
   Map<String, EventDataGenerator> get eventDataGeneratorMap;
 
   late EventController _controller;
 
-  EventSinkBase() {
-    ic.init();
+  /// Make sure you call this in your app's main function before doing anything else!
+  Future<void> init() async {
+    await ic.init();
     _controller = ic.sl<EventController>();
   }
 

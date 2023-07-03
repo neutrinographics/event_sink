@@ -1,22 +1,17 @@
+import 'package:clean_cache/util.dart';
 import 'package:clock/clock.dart';
 
 import 'package:event_sink/src/core/data/id_generator.dart';
-import 'package:event_sink/src/core/data/local_cache.dart';
 import 'package:event_sink/src/core/network/network.dart';
 import 'package:event_sink/src/core/time/time_info.dart';
-import 'package:event_sink/src/feature/data/local/data_sources/config_local_data_source.dart';
 import 'package:event_sink/src/feature/data/local/data_sources/event_local_data_source.dart';
-import 'package:event_sink/src/feature/data/local/models/config_model.dart';
 import 'package:event_sink/src/feature/data/local/models/event_model.dart';
 import 'package:event_sink/src/feature/data/remote/data_sources/event_remote_data_source.dart';
-import 'package:event_sink/src/feature/data/repositories/config_repository_impl.dart';
 import 'package:event_sink/src/feature/data/repositories/event_repository_impl.dart';
-import 'package:event_sink/src/feature/domain/repositories/config_repository.dart';
 import 'package:event_sink/src/feature/domain/repositories/event_repository.dart';
 import 'package:event_sink/src/feature/domain/use_cases/add_event.dart';
 import 'package:event_sink/src/feature/domain/use_cases/apply_events.dart';
 import 'package:event_sink/src/feature/domain/use_cases/clear_cache.dart';
-import 'package:event_sink/src/feature/domain/use_cases/set_string_config.dart';
 import 'package:event_sink/src/feature/domain/use_cases/sync_events.dart';
 import 'package:event_sink/src/event_controller.dart';
 import 'package:get_it/get_it.dart';
@@ -29,13 +24,12 @@ import 'package:http/http.dart' as http;
 // instance of any calling code that also uses GetIt.
 final sl = GetIt.asNewInstance();
 
-void init() {
+Future<void> init() async {
   // Controllers
   sl.registerFactory(() => EventController(
         syncEvents: sl(),
         applyEvents: sl(),
         addEvent: sl(),
-        setConfig: sl(),
         clearCache: sl(),
       ));
 
@@ -46,7 +40,6 @@ void init() {
         eventRepository: sl(),
       ));
   sl.registerLazySingleton(() => AddEvent(eventRepository: sl()));
-  sl.registerLazySingleton(() => SetStringConfig(configRepository: sl()));
 
   // Repositories
   sl.registerLazySingleton<EventRepository>(() => EventRepositoryImpl(
@@ -55,19 +48,16 @@ void init() {
         idGenerator: sl(),
         timeInfo: sl(),
       ));
-  sl.registerLazySingleton<ConfigRepository>(() => ConfigRepositoryImpl(
-        localDataSource: sl(),
-      ));
 
   // Data sources
-  final configCache = MemoryCacheImpl<String, ConfigModel>();
-  sl.registerLazySingleton<ConfigLocalDataSource>(
-    () => ConfigLocalDataSourceImpl(
-      cache: configCache,
-    ),
+  final eventCache = await buildHybridHiveCache<String, EventModel>(
+    'event_sink-events',
+    loader: EventModel.fromJson,
   );
-  final eventCache = MemoryCacheImpl<String, EventModel>();
-  final poolCache = MemoryCacheImpl<int, List<String>>();
+  final poolCache = await buildHybridHiveCache<int, List<String>>(
+    'event_sink-pools',
+    loader: (json) => json as List<String>,
+  );
   sl.registerLazySingleton<EventLocalDataSource>(
     () => EventLocalDataSourceImpl(
       eventCache: eventCache,

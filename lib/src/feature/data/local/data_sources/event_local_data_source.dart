@@ -1,4 +1,4 @@
-import 'package:event_sink/src/core/data/local_cache.dart';
+import 'package:clean_cache/clean_cache.dart';
 import 'package:event_sink/src/core/error/exception.dart';
 import 'package:event_sink/src/feature/data/local/models/event_model.dart';
 
@@ -36,8 +36,12 @@ abstract class EventLocalDataSource {
 }
 
 class EventLocalDataSourceImpl extends EventLocalDataSource {
-  final LocalCache<String, EventModel> eventCache;
-  final LocalCache<int, List<String>> poolCache;
+  /// A cache of every event record
+  final CleanCache<String, EventModel> eventCache;
+
+  /// A cache of pools of events.
+  /// This allows us to manage events from different pools.
+  final CleanCache<int, List<String>> poolCache;
 
   EventLocalDataSourceImpl({required this.eventCache, required this.poolCache});
 

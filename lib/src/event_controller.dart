@@ -7,7 +7,6 @@ import 'package:event_sink/src/feature/domain/entities/event_info.dart';
 import 'package:event_sink/src/feature/domain/use_cases/add_event.dart';
 import 'package:event_sink/src/feature/domain/use_cases/apply_events.dart';
 import 'package:event_sink/src/feature/domain/use_cases/clear_cache.dart';
-import 'package:event_sink/src/feature/domain/use_cases/set_string_config.dart';
 import 'package:event_sink/src/feature/domain/use_cases/sync_events.dart';
 
 // this is sort of in the position of a bloc.
@@ -22,7 +21,6 @@ class EventController {
     required SyncEvents syncEvents,
     required ApplyEvents applyEvents,
     required AddEvent addEvent,
-    required SetStringConfig setConfig,
     required ClearCache clearCache,
   })  : _syncEvents = syncEvents,
         _applyEvents = applyEvents,

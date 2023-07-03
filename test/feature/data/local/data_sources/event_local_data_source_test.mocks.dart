@@ -5,7 +5,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i2;
 
-import 'package:event_sink/src/core/data/local_cache.dart' as _i3;
+import 'package:clean_cache/clean_cache.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -29,10 +29,10 @@ class _FakeFuture_0<T> extends _i1.SmartFake implements _i2.Future<T> {
         );
 }
 
-/// A class which mocks [LocalCache].
+/// A class which mocks [CleanCache].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockLocalCache<K, T> extends _i1.Mock implements _i3.LocalCache<K, T> {
+class MockCleanCache<K, T> extends _i1.Mock implements _i3.CleanCache<K, T> {
   @override
   _i2.Future<void> write(
     K? key,
