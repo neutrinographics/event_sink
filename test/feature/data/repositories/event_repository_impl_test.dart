@@ -153,13 +153,12 @@ void main() {
         when(mockEventLocalDataSource.hasEvent(any))
             .thenAnswer((_) async => false);
         when(mockTimeInfo.now()).thenReturn(tToday);
-        when(mockEventLocalDataSource.addEvent(any))
-            .thenThrow(CacheException());
+        when(mockEventLocalDataSource.addEvent(any)).thenThrow(Exception());
 
         // act
         final result = await repository.fetch(tHost, tPool, authToken: tToken);
         // assert
-        expect(result, equals(const Left(CacheFailure())));
+        expect(result.swap().toOption().toNullable(), isA<CacheFailure>());
         verify(mockEventLocalDataSource.addEvent(any));
       },
     );
@@ -245,11 +244,11 @@ void main() {
       () async {
         // arrange
         when(mockEventLocalDataSource.getPooledEvents(any))
-            .thenThrow(CacheException());
+            .thenThrow(Exception());
         // act
         final result = await repository.push(tHost, tPool, authToken: tToken);
         // assert
-        expect(result, equals(const Left(CacheFailure())));
+        expect(result.swap().toOption().toNullable(), isA<CacheFailure>());
       },
     );
 
@@ -280,13 +279,12 @@ void main() {
         when(mockEventRemoteDataSource.createEvent(any,
                 token: anyNamed('token'), host: anyNamed('host')))
             .thenAnswer((_) async => remoteEvents.removeAt(0));
-        when(mockEventLocalDataSource.addEvent(any))
-            .thenThrow(CacheException());
+        when(mockEventLocalDataSource.addEvent(any)).thenThrow(Exception());
 
         // act
         final result = await repository.push(tHost, tPool, authToken: tToken);
         // assert
-        expect(result, equals(const Left(CacheFailure())));
+        expect(result.swap().toOption().toNullable(), isA<CacheFailure>());
       },
     );
 
@@ -472,12 +470,12 @@ void main() {
       () async {
         // arrange
         when(mockEventLocalDataSource.getPooledEvents(any))
-            .thenThrow(CacheException());
+            .thenThrow(Exception());
         // act
         final result = await repository.rebase(tPool);
         // assert
         verify(mockEventLocalDataSource.getPooledEvents(any));
-        expect(result, equals(const Left(CacheFailure())));
+        expect(result.swap().toOption().toNullable(), isA<CacheFailure>());
       },
     );
 
@@ -487,14 +485,13 @@ void main() {
         // arrange
         when(mockEventLocalDataSource.getPooledEvents(any))
             .thenAnswer((_) async => tCachedEventsFirst);
-        when(mockEventLocalDataSource.addEvent(any))
-            .thenThrow(CacheException());
+        when(mockEventLocalDataSource.addEvent(any)).thenThrow(Exception());
         // act
         final result = await repository.rebase(tPool);
         // assert
         verify(mockEventLocalDataSource.getPooledEvents(any));
         // assert
-        expect(result, equals(const Left(CacheFailure())));
+        expect(result.swap().toOption().toNullable(), isA<CacheFailure>());
       },
     );
   });
@@ -583,12 +580,12 @@ void main() {
           streamId: tEventModel.streamId,
         );
         when(mockEventLocalDataSource.getPooledEvents(any))
-            .thenThrow(CacheException());
+            .thenThrow(Exception());
         // act
         final result = await repository.add(event, tPool);
 
         // assert
-        expect(result, equals(const Left(CacheFailure())));
+        expect(result.swap().toOption().toNullable(), isA<CacheFailure>());
         verify(mockEventLocalDataSource.getPooledEvents(any));
         verifyNever(mockEventLocalDataSource.addEvent(any));
       },
@@ -608,13 +605,12 @@ void main() {
         when(mockIdGenerator.generateId()).thenReturn(tEventId);
         when(mockEventLocalDataSource.getPoolSize(any))
             .thenAnswer((_) async => tPoolSize);
-        when(mockEventLocalDataSource.addEvent(any))
-            .thenThrow(CacheException());
+        when(mockEventLocalDataSource.addEvent(any)).thenThrow(Exception());
         // act
         final result = await repository.add(event, tPool);
 
         // assert
-        expect(result, equals(const Left(CacheFailure())));
+        expect(result.swap().toOption().toNullable(), isA<CacheFailure>());
         verify(mockEventLocalDataSource.getPooledEvents(any));
         verify(mockEventLocalDataSource.addEvent(any));
       },
@@ -637,12 +633,12 @@ void main() {
       () async {
         // arrange
         when(mockEventLocalDataSource.getPooledEvents(tPool))
-            .thenThrow(CacheException());
+            .thenThrow(Exception());
         // act
         final result = await repository.list(tPool);
 
         // assert
-        expect(result, equals(const Left(CacheFailure())));
+        expect(result.swap().toOption().toNullable(), isA<CacheFailure>());
         verify(mockEventLocalDataSource.getPooledEvents(any));
         verifyNever(mockEventLocalDataSource.addEvent(any));
       },
@@ -673,13 +669,12 @@ void main() {
       "Should return CacheFailure if events cannot be read from cache",
       () async {
         // arrange
-        when(mockEventLocalDataSource.getEvent(any))
-            .thenThrow(CacheException());
+        when(mockEventLocalDataSource.getEvent(any)).thenThrow(Exception());
         // act
         final result = await repository.markApplied(tEvent);
 
         // assert
-        expect(result, equals(const Left(CacheFailure())));
+        expect(result.swap().toOption().toNullable(), isA<CacheFailure>());
         verify(mockEventLocalDataSource.getEvent(any));
         verifyNever(mockEventLocalDataSource.addEvent(any));
       },
@@ -706,13 +701,12 @@ void main() {
         // arrange
         when(mockEventLocalDataSource.getEvent(any))
             .thenAnswer((_) async => tEventModel);
-        when(mockEventLocalDataSource.addEvent(any))
-            .thenThrow(CacheException());
+        when(mockEventLocalDataSource.addEvent(any)).thenThrow(Exception());
         // act
         final result = await repository.markApplied(tEvent);
 
         // assert
-        expect(result, equals(const Left(CacheFailure())));
+        expect(result.swap().toOption().toNullable(), isA<CacheFailure>());
         verify(mockEventLocalDataSource.addEvent(any));
       },
     );
@@ -738,12 +732,11 @@ void main() {
       () async {
         // arrange
         const tPool = 1;
-        when(mockEventLocalDataSource.clearPool(tPool))
-            .thenThrow(CacheException());
+        when(mockEventLocalDataSource.clearPool(tPool)).thenThrow(Exception());
         // act
         final result = await repository.clearPoolCache(tPool);
         // assert
-        expect(result, const Left(CacheFailure()));
+        expect(result.swap().toOption().toNullable(), isA<CacheFailure>());
         verify(mockEventLocalDataSource.clearPool(tPool));
         verifyNoMoreInteractions(mockEventLocalDataSource);
       },
@@ -768,11 +761,11 @@ void main() {
       'should return CacheFailure if clearing cache fails',
       () async {
         // arrange
-        when(mockEventLocalDataSource.clear()).thenThrow(CacheException());
+        when(mockEventLocalDataSource.clear()).thenThrow(Exception());
         // act
         final result = await repository.clearCache();
         // assert
-        expect(result, const Left(CacheFailure()));
+        expect(result.swap().toOption().toNullable(), isA<CacheFailure>());
         verify(mockEventLocalDataSource.clear());
         verifyNoMoreInteractions(mockEventLocalDataSource);
       },

@@ -52,11 +52,11 @@ Future<void> init() async {
   // Data sources
   final eventCache = await buildHybridHiveCache<String, EventModel>(
     'event_sink-events',
-    loader: EventModel.fromJson,
+    loader: (json) => EventModel.fromJson(json),
   );
   final poolCache = await buildHybridHiveCache<int, List<String>>(
     'event_sink-pools',
-    loader: (json) => json as List<String>,
+    loader: (json) => json.cast<String>() as List<String>,
   );
   sl.registerLazySingleton<EventLocalDataSource>(
     () => EventLocalDataSourceImpl(

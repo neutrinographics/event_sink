@@ -1,6 +1,5 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
-import 'package:event_sink/src/core/error/exception.dart';
 import 'package:event_sink/src/core/error/failure.dart';
 import 'package:event_sink/src/event_data.dart';
 import 'package:event_sink/src/event_handler.dart';
@@ -130,11 +129,11 @@ void main() {
 
       when(mockEventRepository.list(any))
           .thenAnswer((_) async => Right(tEvents));
-      when(mockTestEventHandler(any, any, any)).thenThrow(CacheException());
+      when(mockTestEventHandler(any, any, any)).thenThrow(Exception());
       // act
       final result = await useCase(tParams);
       // assert
-      expect(result, const Left(CacheFailure()));
+      expect(result.swap().toOption().toNullable(), isA<CacheFailure>());
       verify(mockTestEventHandler(tStream, tPool, tData));
       verifyNever(mockEventRepository.markApplied(tEvent));
     },

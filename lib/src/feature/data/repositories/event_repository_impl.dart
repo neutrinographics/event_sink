@@ -53,8 +53,8 @@ class EventRepositoryImpl extends EventRepository {
               pool: pool,
             ).copyWith(createdAt: timeInfo.now()),
           );
-        } on CacheException catch (e) {
-          return Left(CacheFailure(message: e.message));
+        } on Exception catch (e, stack) {
+          return Left(CacheFailure(message: "$e\n\n$stack"));
         }
       } else {
         final existingEvent = await localDataSource.getEvent(e.eventId);
@@ -66,8 +66,8 @@ class EventRepositoryImpl extends EventRepository {
               // TRICKY: the remote event order may be different from the local order.
               order: e.order,
             ));
-          } on CacheException catch (e) {
-            return Left(CacheFailure(message: e.message));
+          } on Exception catch (e, stack) {
+            return Left(CacheFailure(message: "$e\n\n$stack"));
           }
         }
       }
@@ -85,8 +85,8 @@ class EventRepositoryImpl extends EventRepository {
 
     try {
       events = await localDataSource.getPooledEvents(pool);
-    } on CacheException catch (e) {
-      return Left(CacheFailure(message: e.message));
+    } on Exception catch (e, stack) {
+      return Left(CacheFailure(message: "$e\n\n$stack"));
     }
 
     for (var e in events) {
@@ -106,8 +106,8 @@ class EventRepositoryImpl extends EventRepository {
         return Left(OutOfSyncFailure(message: e.message));
       } on ServerException catch (e) {
         return Left(ServerFailure(message: e.message));
-      } on CacheException catch (e) {
-        return Left(CacheFailure(message: e.message));
+      } on Exception catch (e, stack) {
+        return Left(CacheFailure(message: "$e\n\n$stack"));
       }
     }
     return const Right(null);
@@ -118,8 +118,8 @@ class EventRepositoryImpl extends EventRepository {
     List<EventModel> events;
     try {
       events = await localDataSource.getPooledEvents(pool);
-    } on CacheException catch (e) {
-      return Left(CacheFailure(message: e.message));
+    } on Exception catch (e, stack) {
+      return Left(CacheFailure(message: "$e\n\n$stack"));
     }
 
     // Group events based on stream_id
@@ -130,8 +130,8 @@ class EventRepositoryImpl extends EventRepository {
       if (events == null || events.isEmpty) continue;
       try {
         await _rebaseStream(events);
-      } on CacheException catch (e) {
-        return Left(CacheFailure(message: e.message));
+      } on Exception catch (e, stack) {
+        return Left(CacheFailure(message: "$e\n\n$stack"));
       }
     }
     return const Right(null);
@@ -196,8 +196,8 @@ class EventRepositoryImpl extends EventRepository {
       );
 
       await localDataSource.addEvent(eventModel);
-    } on CacheException catch (e) {
-      return Left(CacheFailure(message: e.message));
+    } on Exception catch (e, stack) {
+      return Left(CacheFailure(message: "$e\n\n$stack"));
     }
     return const Right(null);
   }
@@ -223,8 +223,8 @@ class EventRepositoryImpl extends EventRepository {
     List<EventModel> models;
     try {
       models = await localDataSource.getPooledEvents(pool);
-    } on CacheException catch (e) {
-      return Left(CacheFailure(message: e.message));
+    } on Exception catch (e, stack) {
+      return Left(CacheFailure(message: "$e\n\n$stack"));
     }
 
     final List<EventStub> events = [];
@@ -241,8 +241,8 @@ class EventRepositoryImpl extends EventRepository {
       final model = await localDataSource.getEvent(event.eventId);
       await localDataSource.addEvent(model.copyWith(applied: true));
       return const Right(null);
-    } on CacheException catch (e) {
-      return Left(CacheFailure(message: e.message));
+    } on Exception catch (e, stack) {
+      return Left(CacheFailure(message: "$e\n\n$stack"));
     }
   }
 
@@ -251,8 +251,8 @@ class EventRepositoryImpl extends EventRepository {
     try {
       await localDataSource.clear();
       return const Right(null);
-    } on CacheException catch (e) {
-      return Left(CacheFailure(message: e.message));
+    } on Exception catch (e, stack) {
+      return Left(CacheFailure(message: "$e\n\n$stack"));
     }
   }
 
@@ -261,8 +261,8 @@ class EventRepositoryImpl extends EventRepository {
     try {
       await localDataSource.clearPool(pool);
       return const Right(null);
-    } on CacheException catch (e) {
-      return Left(CacheFailure(message: e.message));
+    } on Exception catch (e, stack) {
+      return Left(CacheFailure(message: "$e\n\n$stack"));
     }
   }
 }

@@ -1,5 +1,4 @@
 import 'package:clean_cache/clean_cache.dart';
-import 'package:event_sink/src/core/error/exception.dart';
 import 'package:event_sink/src/feature/data/local/models/event_model.dart';
 
 abstract class EventLocalDataSource {
@@ -88,13 +87,7 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
 
   @override
   Future<List<EventModel>> getAllEvents() async {
-    final List<EventModel> eventModels;
-    try {
-      eventModels = await eventCache.values();
-    } catch (e, trace) {
-      throw CacheException(message: '$e\n\n$trace');
-    }
-
+    final List<EventModel> eventModels = await eventCache.values();
     sort(eventModels);
     return eventModels;
   }
