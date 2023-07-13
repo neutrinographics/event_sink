@@ -154,6 +154,26 @@ void main() {
     );
   });
 
+  group('getPoolSize', () {
+    const tPool = 1;
+
+    test(
+      'should return the number of events in a pool',
+      () async {
+        // arrange
+        const tEventIds = ['1', '2'];
+        when(mockPoolCache.exists(any)).thenAnswer((_) async => true);
+        when(mockPoolCache.read(any)).thenAnswer((_) async => tEventIds);
+        // act
+        final result = await dataSource.getPoolSize(tPool);
+        // assert
+        expect(result, tEventIds.length);
+        verify(mockPoolCache.exists(tPool));
+        verify(mockPoolCache.read(tPool));
+      },
+    );
+  });
+
   group('getPooledEvents', () {
     const tEventId = "event-1";
     const tPool = 1;

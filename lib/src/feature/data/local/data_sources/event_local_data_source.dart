@@ -146,7 +146,8 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
 
   @override
   Future<int> getPoolSize(int pool) async {
-    return (await poolCache.keys()).length;
+    final eventPool = await _readPool(pool);
+    return eventPool.length;
   }
 
   @override
