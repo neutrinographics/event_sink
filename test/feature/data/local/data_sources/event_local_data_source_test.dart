@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:clean_cache/clean_cache.dart';
 import 'package:event_sink/src/feature/data/local/data_sources/event_local_data_source.dart';
 import 'package:event_sink/src/feature/data/local/models/event_model.dart';
@@ -7,6 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
+import '../../../../fixtures/fixture_reader.dart';
 import 'event_local_data_source_test.mocks.dart';
 
 @GenerateNiceMocks([MockSpec<CleanCache>()])
@@ -188,6 +191,26 @@ void main() {
       final result = await dataSource.getPoolSize(tPoolId);
       // assert
       expect(result, tPool.eventIds.length);
+    });
+
+    test("should re-index the pools if the pool cache is empty", () async {
+      // arrange
+      const tPoolId = 1;
+      final tEvent = EventModel.fromJson(json.decode(fixture('event.json')));
+      final tPool = PoolModel(
+        id: tPoolId,
+        eventIds: [tEvent.eventId],
+      );
+      when(mockPoolCache.keys())
+          .thenAnswer((_) async => []); // <-- Indicates the pool cache is empty
+      when(mockPoolCache.exists(any)).thenAnswer((_) async => true);
+      when(mockEventCache.values()).thenAnswer((_) async => [tEvent]);
+      when(mockPoolCache.read(any)).thenAnswer((_) async => tPool);
+      // act
+      await dataSource.getPoolSize(tPoolId);
+      // assert
+      verify(mockEventCache.values());
+      verify(mockPoolCache.write(tPoolId, tPool));
     });
   });
 

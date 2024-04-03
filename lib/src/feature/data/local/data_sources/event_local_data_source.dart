@@ -128,14 +128,21 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
 
   Future<void> _indexPools() async {
     final events = await eventCache.values();
-    final pools = <int, PoolModel>{};
+    final pools = <int, List<String>>{};
 
     for (final event in events) {
-      final pool = pools[event.pool] ?? PoolModel(id: event.pool, eventIds: []);
-      pool.eventIds.add(event.eventId);
+      final pool = pools[event.pool] ?? [];
+      pool.add(event.eventId);
+      pools[event.pool] = pool;
     }
-    for (final pool in pools.values) {
-      await poolCache.write(pool.id, pool);
+    for (final poolId in pools.keys) {
+      await poolCache.write(
+        poolId,
+        PoolModel(
+          id: poolId,
+          eventIds: pools[poolId] ?? [],
+        ),
+      );
     }
   }
 
