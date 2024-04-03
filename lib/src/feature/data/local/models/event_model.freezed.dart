@@ -12,7 +12,7 @@ part of 'event_model.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 EventModel _$EventModelFromJson(Map<String, dynamic> json) {
   return _EventModel.fromJson(json);
@@ -20,36 +20,46 @@ EventModel _$EventModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$EventModel {
-  /// The unique ID of the event
+  /// The unique identifier for the event.
   @JsonKey(name: 'event_id')
+  @HiveField(0)
   String get eventId => throw _privateConstructorUsedError;
-
-  /// The time when this event was recorded locally.
-  @JsonKey(name: 'created_at')
-  DateTime get createdAt => throw _privateConstructorUsedError;
 
   /// The order in which the event should be applied.
   @JsonKey(name: 'sort_order')
+  @HiveField(1)
   int get order => throw _privateConstructorUsedError;
 
   /// Indicates if the event has been synced to the server.
+  @HiveField(2)
   bool get synced => throw _privateConstructorUsedError;
 
-  /// Indicates the event has already been applied to the aggregate.
+  /// Indicates the event has already been applied to the local aggregate.
+  @HiveField(3)
   bool get applied => throw _privateConstructorUsedError;
 
   /// The ID of the stream being manipulated by this event.
   @JsonKey(name: 'stream_id')
+  @HiveField(4)
   String get streamId => throw _privateConstructorUsedError;
 
   /// The version of the stream's state.
+  @HiveField(5)
   int get version => throw _privateConstructorUsedError;
 
   /// The name of the event.
+  @HiveField(6)
   String get name => throw _privateConstructorUsedError;
+
+  /// The pool to which the event belongs.
+  @HiveField(7)
   int get pool => throw _privateConstructorUsedError;
+  @JsonKey(name: 'created_at')
+  @HiveField(8)
+  DateTime get createdAt => throw _privateConstructorUsedError;
 
   /// Custom event data
+  @HiveField(9)
   Map<String, dynamic> get data => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -65,16 +75,16 @@ abstract class $EventModelCopyWith<$Res> {
       _$EventModelCopyWithImpl<$Res, EventModel>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'event_id') String eventId,
-      @JsonKey(name: 'created_at') DateTime createdAt,
-      @JsonKey(name: 'sort_order') int order,
-      bool synced,
-      bool applied,
-      @JsonKey(name: 'stream_id') String streamId,
-      int version,
-      String name,
-      int pool,
-      Map<String, dynamic> data});
+      {@JsonKey(name: 'event_id') @HiveField(0) String eventId,
+      @JsonKey(name: 'sort_order') @HiveField(1) int order,
+      @HiveField(2) bool synced,
+      @HiveField(3) bool applied,
+      @JsonKey(name: 'stream_id') @HiveField(4) String streamId,
+      @HiveField(5) int version,
+      @HiveField(6) String name,
+      @HiveField(7) int pool,
+      @JsonKey(name: 'created_at') @HiveField(8) DateTime createdAt,
+      @HiveField(9) Map<String, dynamic> data});
 }
 
 /// @nodoc
@@ -91,7 +101,6 @@ class _$EventModelCopyWithImpl<$Res, $Val extends EventModel>
   @override
   $Res call({
     Object? eventId = null,
-    Object? createdAt = null,
     Object? order = null,
     Object? synced = null,
     Object? applied = null,
@@ -99,6 +108,7 @@ class _$EventModelCopyWithImpl<$Res, $Val extends EventModel>
     Object? version = null,
     Object? name = null,
     Object? pool = null,
+    Object? createdAt = null,
     Object? data = null,
   }) {
     return _then(_value.copyWith(
@@ -106,10 +116,6 @@ class _$EventModelCopyWithImpl<$Res, $Val extends EventModel>
           ? _value.eventId
           : eventId // ignore: cast_nullable_to_non_nullable
               as String,
-      createdAt: null == createdAt
-          ? _value.createdAt
-          : createdAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
       order: null == order
           ? _value.order
           : order // ignore: cast_nullable_to_non_nullable
@@ -138,6 +144,10 @@ class _$EventModelCopyWithImpl<$Res, $Val extends EventModel>
           ? _value.pool
           : pool // ignore: cast_nullable_to_non_nullable
               as int,
+      createdAt: null == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,
       data: null == data
           ? _value.data
           : data // ignore: cast_nullable_to_non_nullable
@@ -147,39 +157,38 @@ class _$EventModelCopyWithImpl<$Res, $Val extends EventModel>
 }
 
 /// @nodoc
-abstract class _$$_EventModelCopyWith<$Res>
+abstract class _$$EventModelImplCopyWith<$Res>
     implements $EventModelCopyWith<$Res> {
-  factory _$$_EventModelCopyWith(
-          _$_EventModel value, $Res Function(_$_EventModel) then) =
-      __$$_EventModelCopyWithImpl<$Res>;
+  factory _$$EventModelImplCopyWith(
+          _$EventModelImpl value, $Res Function(_$EventModelImpl) then) =
+      __$$EventModelImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'event_id') String eventId,
-      @JsonKey(name: 'created_at') DateTime createdAt,
-      @JsonKey(name: 'sort_order') int order,
-      bool synced,
-      bool applied,
-      @JsonKey(name: 'stream_id') String streamId,
-      int version,
-      String name,
-      int pool,
-      Map<String, dynamic> data});
+      {@JsonKey(name: 'event_id') @HiveField(0) String eventId,
+      @JsonKey(name: 'sort_order') @HiveField(1) int order,
+      @HiveField(2) bool synced,
+      @HiveField(3) bool applied,
+      @JsonKey(name: 'stream_id') @HiveField(4) String streamId,
+      @HiveField(5) int version,
+      @HiveField(6) String name,
+      @HiveField(7) int pool,
+      @JsonKey(name: 'created_at') @HiveField(8) DateTime createdAt,
+      @HiveField(9) Map<String, dynamic> data});
 }
 
 /// @nodoc
-class __$$_EventModelCopyWithImpl<$Res>
-    extends _$EventModelCopyWithImpl<$Res, _$_EventModel>
-    implements _$$_EventModelCopyWith<$Res> {
-  __$$_EventModelCopyWithImpl(
-      _$_EventModel _value, $Res Function(_$_EventModel) _then)
+class __$$EventModelImplCopyWithImpl<$Res>
+    extends _$EventModelCopyWithImpl<$Res, _$EventModelImpl>
+    implements _$$EventModelImplCopyWith<$Res> {
+  __$$EventModelImplCopyWithImpl(
+      _$EventModelImpl _value, $Res Function(_$EventModelImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? eventId = null,
-    Object? createdAt = null,
     Object? order = null,
     Object? synced = null,
     Object? applied = null,
@@ -187,17 +196,14 @@ class __$$_EventModelCopyWithImpl<$Res>
     Object? version = null,
     Object? name = null,
     Object? pool = null,
+    Object? createdAt = null,
     Object? data = null,
   }) {
-    return _then(_$_EventModel(
+    return _then(_$EventModelImpl(
       eventId: null == eventId
           ? _value.eventId
           : eventId // ignore: cast_nullable_to_non_nullable
               as String,
-      createdAt: null == createdAt
-          ? _value.createdAt
-          : createdAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
       order: null == order
           ? _value.order
           : order // ignore: cast_nullable_to_non_nullable
@@ -226,6 +232,10 @@ class __$$_EventModelCopyWithImpl<$Res>
           ? _value.pool
           : pool // ignore: cast_nullable_to_non_nullable
               as int,
+      createdAt: null == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,
       data: null == data
           ? _value._data
           : data // ignore: cast_nullable_to_non_nullable
@@ -236,69 +246,80 @@ class __$$_EventModelCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_EventModel extends _EventModel {
-  const _$_EventModel(
-      {@JsonKey(name: 'event_id') required this.eventId,
-      @JsonKey(name: 'created_at') required this.createdAt,
-      @JsonKey(name: 'sort_order') required this.order,
-      this.synced = false,
-      this.applied = false,
-      @JsonKey(name: 'stream_id') required this.streamId,
-      required this.version,
-      required this.name,
-      required this.pool,
-      required final Map<String, dynamic> data})
+@HiveType(typeId: 1)
+class _$EventModelImpl extends _EventModel {
+  _$EventModelImpl(
+      {@JsonKey(name: 'event_id') @HiveField(0) required this.eventId,
+      @JsonKey(name: 'sort_order') @HiveField(1) required this.order,
+      @HiveField(2) this.synced = false,
+      @HiveField(3) this.applied = false,
+      @JsonKey(name: 'stream_id') @HiveField(4) required this.streamId,
+      @HiveField(5) required this.version,
+      @HiveField(6) required this.name,
+      @HiveField(7) required this.pool,
+      @JsonKey(name: 'created_at') @HiveField(8) required this.createdAt,
+      @HiveField(9) required final Map<String, dynamic> data})
       : _data = data,
         super._();
 
-  factory _$_EventModel.fromJson(Map<String, dynamic> json) =>
-      _$$_EventModelFromJson(json);
+  factory _$EventModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$EventModelImplFromJson(json);
 
-  /// The unique ID of the event
+  /// The unique identifier for the event.
   @override
   @JsonKey(name: 'event_id')
+  @HiveField(0)
   final String eventId;
-
-  /// The time when this event was recorded locally.
-  @override
-  @JsonKey(name: 'created_at')
-  final DateTime createdAt;
 
   /// The order in which the event should be applied.
   @override
   @JsonKey(name: 'sort_order')
+  @HiveField(1)
   final int order;
 
   /// Indicates if the event has been synced to the server.
   @override
   @JsonKey()
+  @HiveField(2)
   final bool synced;
 
-  /// Indicates the event has already been applied to the aggregate.
+  /// Indicates the event has already been applied to the local aggregate.
   @override
   @JsonKey()
+  @HiveField(3)
   final bool applied;
 
   /// The ID of the stream being manipulated by this event.
   @override
   @JsonKey(name: 'stream_id')
+  @HiveField(4)
   final String streamId;
 
   /// The version of the stream's state.
   @override
+  @HiveField(5)
   final int version;
 
   /// The name of the event.
   @override
+  @HiveField(6)
   final String name;
+
+  /// The pool to which the event belongs.
   @override
+  @HiveField(7)
   final int pool;
+  @override
+  @JsonKey(name: 'created_at')
+  @HiveField(8)
+  final DateTime createdAt;
 
   /// Custom event data
   final Map<String, dynamic> _data;
 
   /// Custom event data
   @override
+  @HiveField(9)
   Map<String, dynamic> get data {
     if (_data is EqualUnmodifiableMapView) return _data;
     // ignore: implicit_dynamic_type
@@ -307,17 +328,15 @@ class _$_EventModel extends _EventModel {
 
   @override
   String toString() {
-    return 'EventModel(eventId: $eventId, createdAt: $createdAt, order: $order, synced: $synced, applied: $applied, streamId: $streamId, version: $version, name: $name, pool: $pool, data: $data)';
+    return 'EventModel(eventId: $eventId, order: $order, synced: $synced, applied: $applied, streamId: $streamId, version: $version, name: $name, pool: $pool, createdAt: $createdAt, data: $data)';
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_EventModel &&
+            other is _$EventModelImpl &&
             (identical(other.eventId, eventId) || other.eventId == eventId) &&
-            (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt) &&
             (identical(other.order, order) || other.order == order) &&
             (identical(other.synced, synced) || other.synced == synced) &&
             (identical(other.applied, applied) || other.applied == applied) &&
@@ -326,6 +345,8 @@ class _$_EventModel extends _EventModel {
             (identical(other.version, version) || other.version == version) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.pool, pool) || other.pool == pool) &&
+            (identical(other.createdAt, createdAt) ||
+                other.createdAt == createdAt) &&
             const DeepCollectionEquality().equals(other._data, _data));
   }
 
@@ -334,7 +355,6 @@ class _$_EventModel extends _EventModel {
   int get hashCode => Object.hash(
       runtimeType,
       eventId,
-      createdAt,
       order,
       synced,
       applied,
@@ -342,83 +362,97 @@ class _$_EventModel extends _EventModel {
       version,
       name,
       pool,
+      createdAt,
       const DeepCollectionEquality().hash(_data));
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_EventModelCopyWith<_$_EventModel> get copyWith =>
-      __$$_EventModelCopyWithImpl<_$_EventModel>(this, _$identity);
+  _$$EventModelImplCopyWith<_$EventModelImpl> get copyWith =>
+      __$$EventModelImplCopyWithImpl<_$EventModelImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_EventModelToJson(
+    return _$$EventModelImplToJson(
       this,
     );
   }
 }
 
 abstract class _EventModel extends EventModel {
-  const factory _EventModel(
-      {@JsonKey(name: 'event_id') required final String eventId,
-      @JsonKey(name: 'created_at') required final DateTime createdAt,
-      @JsonKey(name: 'sort_order') required final int order,
-      final bool synced,
-      final bool applied,
-      @JsonKey(name: 'stream_id') required final String streamId,
-      required final int version,
-      required final String name,
-      required final int pool,
-      required final Map<String, dynamic> data}) = _$_EventModel;
-  const _EventModel._() : super._();
+  factory _EventModel(
+      {@JsonKey(name: 'event_id') @HiveField(0) required final String eventId,
+      @JsonKey(name: 'sort_order') @HiveField(1) required final int order,
+      @HiveField(2) final bool synced,
+      @HiveField(3) final bool applied,
+      @JsonKey(name: 'stream_id') @HiveField(4) required final String streamId,
+      @HiveField(5) required final int version,
+      @HiveField(6) required final String name,
+      @HiveField(7) required final int pool,
+      @JsonKey(name: 'created_at')
+      @HiveField(8)
+      required final DateTime createdAt,
+      @HiveField(9)
+      required final Map<String, dynamic> data}) = _$EventModelImpl;
+  _EventModel._() : super._();
 
   factory _EventModel.fromJson(Map<String, dynamic> json) =
-      _$_EventModel.fromJson;
+      _$EventModelImpl.fromJson;
 
   @override
 
-  /// The unique ID of the event
+  /// The unique identifier for the event.
   @JsonKey(name: 'event_id')
+  @HiveField(0)
   String get eventId;
-  @override
-
-  /// The time when this event was recorded locally.
-  @JsonKey(name: 'created_at')
-  DateTime get createdAt;
   @override
 
   /// The order in which the event should be applied.
   @JsonKey(name: 'sort_order')
+  @HiveField(1)
   int get order;
   @override
 
   /// Indicates if the event has been synced to the server.
+  @HiveField(2)
   bool get synced;
   @override
 
-  /// Indicates the event has already been applied to the aggregate.
+  /// Indicates the event has already been applied to the local aggregate.
+  @HiveField(3)
   bool get applied;
   @override
 
   /// The ID of the stream being manipulated by this event.
   @JsonKey(name: 'stream_id')
+  @HiveField(4)
   String get streamId;
   @override
 
   /// The version of the stream's state.
+  @HiveField(5)
   int get version;
   @override
 
   /// The name of the event.
+  @HiveField(6)
   String get name;
   @override
+
+  /// The pool to which the event belongs.
+  @HiveField(7)
   int get pool;
+  @override
+  @JsonKey(name: 'created_at')
+  @HiveField(8)
+  DateTime get createdAt;
   @override
 
   /// Custom event data
+  @HiveField(9)
   Map<String, dynamic> get data;
   @override
   @JsonKey(ignore: true)
-  _$$_EventModelCopyWith<_$_EventModel> get copyWith =>
+  _$$EventModelImplCopyWith<_$EventModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

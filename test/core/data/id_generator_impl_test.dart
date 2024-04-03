@@ -24,13 +24,13 @@ void main() {
       'should create an id',
       () async {
         // arrange
-        when(mockUuid.v4(options: anyNamed('options'))).thenAnswer(
+        when(mockUuid.v4(config: anyNamed('config'))).thenAnswer(
           (_) => tResult,
         );
         // act
         final result = generator.generateId();
         // assert
-        verify(mockUuid.v4(options: anyNamed('options')));
+        verify(mockUuid.v4(config: anyNamed('config')));
         verifyNoMoreInteractions(mockUuid);
         expect(result, equals(tResult));
       },

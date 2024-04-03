@@ -31,3 +31,5 @@ build/
 
 .flutter-plugins
 .flutter-plugins-dependencies
+test/staging/
+test/fixtures/ephemeral/

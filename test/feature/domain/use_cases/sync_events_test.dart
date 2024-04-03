@@ -1,6 +1,5 @@
 import 'package:dartz/dartz.dart';
 import 'package:event_sink/src/core/error/failure.dart';
-import 'package:event_sink/src/core/network/network_info.dart';
 import 'package:event_sink/src/feature/domain/repositories/event_repository.dart';
 import 'package:event_sink/src/feature/domain/use_cases/sync_events.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -10,15 +9,13 @@ import 'package:mockito/mockito.dart';
 import '../../../test_utils.dart';
 import 'sync_events_test.mocks.dart';
 
-@GenerateMocks([EventRepository, NetworkInfo])
+@GenerateMocks([EventRepository])
 void main() {
   late MockEventRepository mockEventRepository;
-  late MockNetworkInfo mockNetworkInfo;
   late SyncEvents useCase;
 
   setUp(() {
     mockEventRepository = MockEventRepository();
-    mockNetworkInfo = MockNetworkInfo();
     useCase = SyncEvents(
       eventRepository: mockEventRepository,
     );
@@ -35,7 +32,6 @@ void main() {
     'should sync the events',
     () async {
       // arrange
-      when(mockNetworkInfo.isConnected()).thenAnswer((_) async => true);
       when(mockEventRepository.fetch(tHost, tPool))
           .thenAnswer((_) async => const Right(null));
       when(mockEventRepository.rebase(tPool))
@@ -54,7 +50,6 @@ void main() {
     'should return failure when the fetch fails with ServerFailure',
     () async {
       // arrange
-      when(mockNetworkInfo.isConnected()).thenAnswer((_) async => true);
       when(mockEventRepository.fetch(tHost, tPool))
           .thenAnswer((_) async => const Left(ServerFailure()));
       // act
@@ -70,7 +65,6 @@ void main() {
     'should return failure when the fetch fails with CacheFailure',
     () async {
       // arrange
-      when(mockNetworkInfo.isConnected()).thenAnswer((_) async => true);
       when(mockEventRepository.fetch(tHost, tPool))
           .thenAnswer((_) async => const Left(CacheFailure()));
       // act
@@ -86,7 +80,6 @@ void main() {
     'should return failure when the rebase fails with CacheFailure',
     () async {
       // arrange
-      when(mockNetworkInfo.isConnected()).thenAnswer((_) async => true);
       when(mockEventRepository.fetch(tHost, tPool))
           .thenAnswer((_) async => const Right(null));
       when(mockEventRepository.rebase(tPool))
@@ -105,7 +98,6 @@ void main() {
     'should return failure when push fails with ServerFailure',
     () async {
       // arrange
-      when(mockNetworkInfo.isConnected()).thenAnswer((_) async => true);
       when(mockEventRepository.fetch(tHost, tPool))
           .thenAnswer((_) async => const Right(null));
       when(mockEventRepository.rebase(tPool))
@@ -123,7 +115,6 @@ void main() {
     'should return failure when push fails with CacheException',
     () async {
       // arrange
-      when(mockNetworkInfo.isConnected()).thenAnswer((_) async => true);
       when(mockEventRepository.fetch(tHost, tPool))
           .thenAnswer((_) async => const Right(null));
       when(mockEventRepository.rebase(tPool))
@@ -150,7 +141,6 @@ void main() {
       when(mockEventRepository.push(tHost, tPool)).thenAnswer(
         (_) async => resultList[pushCallCount++],
       );
-      when(mockNetworkInfo.isConnected()).thenAnswer((_) async => true);
       when(mockEventRepository.fetch(tHost, tPool))
           .thenAnswer((_) async => const Right(null));
       when(mockEventRepository.rebase(tPool))
@@ -169,7 +159,6 @@ void main() {
     'should return ServerFailure after max retries',
     () async {
       // arrange
-      when(mockNetworkInfo.isConnected()).thenAnswer((_) async => true);
       when(mockEventRepository.fetch(tHost, tPool))
           .thenAnswer((_) async => const Right(null));
       when(mockEventRepository.rebase(tPool))

@@ -2,6 +2,7 @@ import 'package:event_sink/src/feature/data/remote/models/remote_event_model.dar
 import 'package:event_sink/src/feature/data/remote/models/remote_new_event_model.dart';
 import 'package:event_sink/src/feature/domain/entities/event_stub.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:hive/hive.dart';
 
 part 'event_model.freezed.dart';
 
@@ -9,37 +10,38 @@ part 'event_model.g.dart';
 
 /// Represents a event
 @freezed
-class EventModel with _$EventModel {
-  const EventModel._();
+class EventModel extends HiveObject with _$EventModel {
+  EventModel._();
 
-  const factory EventModel({
-    /// The unique ID of the event
-    @JsonKey(name: 'event_id') required String eventId,
-
-    /// The time when this event was recorded locally.
-    @JsonKey(name: 'created_at') required DateTime createdAt,
+  @HiveType(typeId: 1)
+  factory EventModel({
+    /// The unique identifier for the event.
+    @JsonKey(name: 'event_id') @HiveField(0) required String eventId,
 
     /// The order in which the event should be applied.
-    @JsonKey(name: 'sort_order') required int order,
+    @JsonKey(name: 'sort_order') @HiveField(1) required int order,
 
     /// Indicates if the event has been synced to the server.
-    @Default(false) bool synced,
+    @HiveField(2) @Default(false) bool synced,
 
-    /// Indicates the event has already been applied to the aggregate.
-    @Default(false) bool applied,
+    /// Indicates the event has already been applied to the local aggregate.
+    @HiveField(3) @Default(false) bool applied,
 
     /// The ID of the stream being manipulated by this event.
-    @JsonKey(name: 'stream_id') required String streamId,
+    @JsonKey(name: 'stream_id') @HiveField(4) required String streamId,
 
     /// The version of the stream's state.
-    required int version,
+    @HiveField(5) required int version,
 
     /// The name of the event.
-    required String name,
-    required int pool,
+    @HiveField(6) required String name,
+
+    /// The pool to which the event belongs.
+    @HiveField(7) required int pool,
+    @JsonKey(name: 'created_at') @HiveField(8) required DateTime createdAt,
 
     /// Custom event data
-    required Map<String, dynamic> data,
+    @HiveField(9) required Map<String, dynamic> data,
   }) = _EventModel;
 
   factory EventModel.fromJson(Map<String, dynamic> json) =>

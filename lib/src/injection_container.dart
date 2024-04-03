@@ -1,4 +1,4 @@
-import 'package:clean_cache/util.dart';
+import 'package:clean_cache/cache/memory_cache.dart';
 import 'package:clock/clock.dart';
 
 import 'package:event_sink/src/core/data/id_generator.dart';
@@ -17,6 +17,8 @@ import 'package:event_sink/src/event_controller.dart';
 import 'package:get_it/get_it.dart';
 import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
+
+import 'core/data/cache.dart';
 
 /// Service Locator (sl)
 
@@ -50,18 +52,12 @@ Future<void> init() async {
       ));
 
   // Data sources
-  final eventCache = await buildHybridHiveCache<String, EventModel>(
-    'event_sink-events',
-    loader: (json) => EventModel.fromJson(json),
-  );
-  final poolCache = await buildHybridHiveCache<int, List<String>>(
-    'event_sink-pools',
-    loader: (json) => json.cast<String>() as List<String>,
-  );
+  final eventCache =
+      await buildHybridHiveCache<String, EventModel>('event_sink-events');
   sl.registerLazySingleton<EventLocalDataSource>(
     () => EventLocalDataSourceImpl(
       eventCache: eventCache,
-      poolCache: poolCache,
+      poolCache: MemoryCache(),
     ),
   );
   sl.registerLazySingleton<EventRemoteDataSource>(

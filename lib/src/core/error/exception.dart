@@ -32,12 +32,12 @@ class ServerException implements Exception {
 }
 
 class OutOfSyncException extends ServerException {
-  OutOfSyncException({message = ''}) : super(message: message);
+  OutOfSyncException({super.message = ''});
 }
 
 /// This is thrown when the network request is not authorized.
 class AuthException extends ServerException {
-  AuthException({required String message}) : super(message: message);
+  AuthException({required super.message});
 
   static AuthException fromResponse(Response response) {
     return AuthException(

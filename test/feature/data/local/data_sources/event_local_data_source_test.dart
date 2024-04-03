@@ -1,6 +1,7 @@
 import 'package:clean_cache/clean_cache.dart';
 import 'package:event_sink/src/feature/data/local/data_sources/event_local_data_source.dart';
 import 'package:event_sink/src/feature/data/local/models/event_model.dart';
+import 'package:event_sink/src/feature/data/local/models/pool_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:mockito/annotations.dart';
@@ -12,11 +13,11 @@ import 'event_local_data_source_test.mocks.dart';
 void main() {
   late EventLocalDataSourceImpl dataSource;
   late MockCleanCache<String, EventModel> mockEventCache;
-  late MockCleanCache<int, List<String>> mockPoolCache;
+  late MockCleanCache<int, PoolModel> mockPoolCache;
 
   setUp(() {
     mockEventCache = MockCleanCache<String, EventModel>();
-    mockPoolCache = MockCleanCache<int, List<String>>();
+    mockPoolCache = MockCleanCache<int, PoolModel>();
     dataSource = EventLocalDataSourceImpl(
       eventCache: mockEventCache,
       poolCache: mockPoolCache,
@@ -26,7 +27,7 @@ void main() {
   group('getAllEvents', () {
     const tEventId = "eventId";
 
-    final tEventModel = EventModel(
+    final tEvent = EventModel(
       eventId: tEventId,
       streamId: '175794e2-83a6-4f9a-b873-d43484e2c0b5',
       order: 1,
@@ -43,9 +44,9 @@ void main() {
         () async {
       // arrange
       final tEventModels = [
-        tEventModel.copyWith(version: 2, order: 2),
-        tEventModel,
-        tEventModel.copyWith(version: 3, order: 3),
+        tEvent.copyWith(version: 2, order: 2),
+        tEvent,
+        tEvent.copyWith(version: 3, order: 3),
       ];
       when(mockEventCache.values()).thenAnswer((_) async => tEventModels);
 
@@ -81,7 +82,10 @@ void main() {
         await dataSource.addEvent(tModel);
         // assert
         verify(mockEventCache.write(tEventId, any));
-        final expectedPoolState = [tEventId];
+        final expectedPoolState = PoolModel(
+          id: tModel.pool,
+          eventIds: [tEventId],
+        );
         verify(mockPoolCache.write(any, expectedPoolState));
       },
     );
@@ -91,14 +95,20 @@ void main() {
       () async {
         // arrange
         const tExistingEventId = 'event-2';
-        const List<String> tExistingEvents = [tExistingEventId];
+        final PoolModel tExistingPool = PoolModel(
+          id: tModel.pool,
+          eventIds: [tExistingEventId],
+        );
         when(mockPoolCache.exists(any)).thenAnswer((_) async => true);
-        when(mockPoolCache.read(1)).thenAnswer((_) async => tExistingEvents);
+        when(mockPoolCache.read(1)).thenAnswer((_) async => tExistingPool);
         // act
         await dataSource.addEvent(tModel);
         // assert
         verify(mockEventCache.write(any, any));
-        final expectedPoolState = [tExistingEventId, tEventId];
+        final expectedPoolState = PoolModel(
+          id: tModel.pool,
+          eventIds: [tExistingEventId, tEventId],
+        );
         verify(mockPoolCache.write(any, expectedPoolState));
       },
     );
@@ -106,13 +116,14 @@ void main() {
 
   group('removeEvent', () {
     const tEventId = 'event-1';
+    final createdAt = DateTime.now();
     final tModel = EventModel(
       eventId: tEventId,
       streamId: '175794e2-83a6-4f9a-b873-d43484e2c0b5',
       version: 1,
       order: 1,
       name: "create-group",
-      createdAt: DateTime.now(),
+      createdAt: createdAt,
       data: {
         "group_stream_id": "3304ABE8-D744-48CE-8FC6-2FEA19E6B4D8",
       },
@@ -124,15 +135,20 @@ void main() {
       () async {
         // arrange
         const tOtherEventId = 'other-event';
-        final tPoolData = [tOtherEventId, tModel.eventId];
+        final tPoolData = PoolModel(
+            id: tModel.pool, eventIds: [tOtherEventId, tModel.eventId]);
         when(mockEventCache.read(any)).thenAnswer((_) async => tModel);
+        when(mockPoolCache.keys()).thenAnswer((_) async => [tModel.pool]);
         when(mockPoolCache.exists(any)).thenAnswer((_) async => true);
         when(mockPoolCache.read(any)).thenAnswer((_) async => tPoolData);
         // act
         await dataSource.removeEvent(tEventId);
         // assert
         verify(mockEventCache.delete(tEventId));
-        final expectedPoolData = [tOtherEventId];
+        final expectedPoolData = PoolModel(
+          id: tModel.pool,
+          eventIds: [tOtherEventId],
+        );
         verify(mockPoolCache.write(tModel.pool, expectedPoolData));
       },
     );
@@ -141,7 +157,10 @@ void main() {
       'should delete the pool if the last event is deleted',
       () async {
         // arrange
-        final tPoolData = [tModel.eventId];
+        final tPoolData = PoolModel(
+          id: tModel.pool,
+          eventIds: [tModel.eventId],
+        );
         when(mockEventCache.read(any)).thenAnswer((_) async => tModel);
         when(mockPoolCache.exists(any)).thenAnswer((_) async => true);
         when(mockPoolCache.read(any)).thenAnswer((_) async => tPoolData);
@@ -155,36 +174,34 @@ void main() {
   });
 
   group('getPoolSize', () {
-    const tPool = 1;
-
-    test(
-      'should return the number of events in a pool',
-      () async {
-        // arrange
-        const tEventIds = ['1', '2'];
-        when(mockPoolCache.exists(any)).thenAnswer((_) async => true);
-        when(mockPoolCache.read(any)).thenAnswer((_) async => tEventIds);
-        // act
-        final result = await dataSource.getPoolSize(tPool);
-        // assert
-        expect(result, tEventIds.length);
-        verify(mockPoolCache.exists(tPool));
-        verify(mockPoolCache.read(tPool));
-      },
-    );
+    test("should return the number of events in the pool", () async {
+      // arrange
+      const tPoolId = 1;
+      final tPool = PoolModel(
+        id: tPoolId,
+        eventIds: ['event-1', 'event-2'],
+      );
+      when(mockPoolCache.keys()).thenAnswer((_) async => [tPoolId]);
+      when(mockPoolCache.exists(any)).thenAnswer((_) async => true);
+      when(mockPoolCache.read(any)).thenAnswer((_) async => tPool);
+      // act
+      final result = await dataSource.getPoolSize(tPoolId);
+      // assert
+      expect(result, tPool.eventIds.length);
+    });
   });
 
   group('getPooledEvents', () {
     const tEventId = "event-1";
     const tPool = 1;
-
+    final createdAt = DateTime.now();
     final tEventModel = EventModel(
       eventId: tEventId,
       streamId: '175794e2-83a6-4f9a-b873-d43484e2c0b5',
       version: 1,
       order: 1,
       name: "create-group",
-      createdAt: DateTime.now(),
+      createdAt: createdAt,
       data: {
         "group_stream_id": "3304ABE8-D744-48CE-8FC6-2FEA19E6B4D8",
       },
@@ -194,7 +211,10 @@ void main() {
     test('should return the pooled events', () async {
       // arrange
       when(mockPoolCache.exists(any)).thenAnswer((_) async => true);
-      when(mockPoolCache.read(any)).thenAnswer((_) async => [tEventId]);
+      when(mockPoolCache.read(any)).thenAnswer((_) async => PoolModel(
+            id: tPool,
+            eventIds: [tEventId],
+          ));
       when(mockEventCache.read(any)).thenAnswer((_) async => tEventModel);
       // act
       final result = await dataSource.getPooledEvents(tPool);
@@ -223,20 +243,24 @@ void main() {
       'should clear the events in a single pool',
       () async {
         // arrange
-        const tPoolEvents = [
-          'one',
-          'two',
-        ];
-        const tPool = 1;
-        when(mockPoolCache.read(any)).thenAnswer((_) async => tPoolEvents);
+        const tPoolId = 1;
+        final tPool = PoolModel(
+          id: tPoolId,
+          eventIds: ['one', 'two'],
+        );
+        when(mockPoolCache.keys()).thenAnswer((_) async => [tPoolId]);
+        when(mockPoolCache.exists(any)).thenAnswer((_) async => true);
+        when(mockPoolCache.read(any)).thenAnswer((_) async => tPool);
         // act
-        await dataSource.clearPool(tPool);
+        await dataSource.clearPool(tPoolId);
         // assert
-        verify(mockPoolCache.read(tPool));
-        verify(mockPoolCache.delete(tPool));
-        for (final id in tPoolEvents) {
+        verify(mockPoolCache.read(tPoolId));
+        verify(mockPoolCache.delete(tPoolId));
+        for (final id in tPool.eventIds) {
           verify(mockEventCache.delete(id));
         }
+        verify(mockPoolCache.keys());
+        verify(mockPoolCache.exists(tPoolId));
         verifyNoMoreInteractions(mockPoolCache);
         verifyNoMoreInteractions(mockEventCache);
       },
