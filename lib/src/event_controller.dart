@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:event_sink/src/core/error/failure.dart';
 import 'package:event_sink/src/event_data.dart';
 import 'package:event_sink/src/event_handler.dart';
-import 'package:event_sink/src/event_sink_base.dart';
+import 'package:event_sink/src/event_sink.dart';
 import 'package:event_sink/src/feature/domain/entities/event_info.dart';
 import 'package:event_sink/src/feature/domain/use_cases/add_event.dart';
 import 'package:event_sink/src/feature/domain/use_cases/apply_events.dart';
@@ -41,8 +41,7 @@ class EventController {
         retryCount: retryCount,
       ));
 
-  /// Processes events
-  Future<Either<Failure, void>> apply(
+  Future<Either<Failure, void>> processNewEvents(
           int pool,
           Map<String, EventHandler> handlers,
           Map<String, EventDataGenerator> paramGenerators) =>
@@ -52,15 +51,12 @@ class EventController {
         dataGenerators: paramGenerators,
       ));
 
-  /// Adds an event
   Future<Either<Failure, void>> add(EventInfo<EventData> event, int pool) =>
       _addEvent(AddEventParams(event: event, pool: pool));
 
-  /// Deletes all of the locally cached data.
-  Future<Either<Failure, void>> drain() async =>
+  Future<Either<Failure, void>> deleteAllPoolCaches() async =>
       _clearCache(const ClearCacheParams());
 
-  /// Deletes all of the locally cached data in the pool
-  Future<Either<Failure, void>> drainPool(int pool) async =>
+  Future<Either<Failure, void>> deletePoolCache(int pool) async =>
       _clearCache(ClearCacheParams(pool: pool));
 }

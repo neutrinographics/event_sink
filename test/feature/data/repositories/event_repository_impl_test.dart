@@ -22,12 +22,10 @@ import '../../../test_utils.dart';
 import 'event_repository_impl_test.mocks.dart';
 
 class MockEvent extends EventInfo<MockEventData> {
-  const MockEvent({required String streamId, required MockEventData params})
-      : super(
-          streamId: streamId,
-          name: 'add_member',
-          data: params,
-        );
+  const MockEvent(
+      {required super.streamId,
+      required MockEventData super.data,
+      super.name = 'add_member'});
 
   @override
   List<Object?> get props => [streamId, name, data];
@@ -527,7 +525,7 @@ void main() {
       () async {
         // arrange
         final event = MockEvent(
-          params: MockEventData(),
+          data: MockEventData(),
           streamId: tEventModel.streamId,
         );
         when(mockTimeInfo.now()).thenReturn(tTime);
@@ -551,7 +549,7 @@ void main() {
       () async {
         // arrange
         final event = MockEvent(
-          params: MockEventData(),
+          data: MockEventData(),
           streamId: tEventModel.streamId,
         );
         when(mockTimeInfo.now()).thenReturn(tTime);
@@ -576,7 +574,7 @@ void main() {
       () async {
         // arrange
         final event = MockEvent(
-          params: MockEventData(),
+          data: MockEventData(),
           streamId: tEventModel.streamId,
         );
         when(mockEventLocalDataSource.getPooledEvents(any))
@@ -596,7 +594,7 @@ void main() {
       () async {
         // arrange
         final event = MockEvent(
-          params: MockEventData(),
+          data: MockEventData(),
           streamId: tEventModel.streamId,
         );
         when(mockTimeInfo.now()).thenReturn(tTime);

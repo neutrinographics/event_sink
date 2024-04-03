@@ -12,7 +12,7 @@ part of 'remote_event_model.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 RemoteEventModel _$RemoteEventModelFromJson(Map<String, dynamic> json) {
   return _RemoteEventModel.fromJson(json);
@@ -125,11 +125,11 @@ class _$RemoteEventModelCopyWithImpl<$Res, $Val extends RemoteEventModel>
 }
 
 /// @nodoc
-abstract class _$$_RemoteEventModelCopyWith<$Res>
+abstract class _$$RemoteEventModelImplCopyWith<$Res>
     implements $RemoteEventModelCopyWith<$Res> {
-  factory _$$_RemoteEventModelCopyWith(
-          _$_RemoteEventModel value, $Res Function(_$_RemoteEventModel) then) =
-      __$$_RemoteEventModelCopyWithImpl<$Res>;
+  factory _$$RemoteEventModelImplCopyWith(_$RemoteEventModelImpl value,
+          $Res Function(_$RemoteEventModelImpl) then) =
+      __$$RemoteEventModelImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -143,11 +143,11 @@ abstract class _$$_RemoteEventModelCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_RemoteEventModelCopyWithImpl<$Res>
-    extends _$RemoteEventModelCopyWithImpl<$Res, _$_RemoteEventModel>
-    implements _$$_RemoteEventModelCopyWith<$Res> {
-  __$$_RemoteEventModelCopyWithImpl(
-      _$_RemoteEventModel _value, $Res Function(_$_RemoteEventModel) _then)
+class __$$RemoteEventModelImplCopyWithImpl<$Res>
+    extends _$RemoteEventModelCopyWithImpl<$Res, _$RemoteEventModelImpl>
+    implements _$$RemoteEventModelImplCopyWith<$Res> {
+  __$$RemoteEventModelImplCopyWithImpl(_$RemoteEventModelImpl _value,
+      $Res Function(_$RemoteEventModelImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -161,7 +161,7 @@ class __$$_RemoteEventModelCopyWithImpl<$Res>
     Object? data = null,
     Object? createdAt = null,
   }) {
-    return _then(_$_RemoteEventModel(
+    return _then(_$RemoteEventModelImpl(
       eventId: null == eventId
           ? _value.eventId
           : eventId // ignore: cast_nullable_to_non_nullable
@@ -196,8 +196,8 @@ class __$$_RemoteEventModelCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_RemoteEventModel implements _RemoteEventModel {
-  _$_RemoteEventModel(
+class _$RemoteEventModelImpl implements _RemoteEventModel {
+  _$RemoteEventModelImpl(
       {@JsonKey(name: 'event_id') required this.eventId,
       @JsonKey(name: 'stream_id') required this.streamId,
       @JsonKey(name: 'sort_order') required this.order,
@@ -207,8 +207,8 @@ class _$_RemoteEventModel implements _RemoteEventModel {
       @JsonKey(name: 'created_at') required this.createdAt})
       : _data = data;
 
-  factory _$_RemoteEventModel.fromJson(Map<String, dynamic> json) =>
-      _$$_RemoteEventModelFromJson(json);
+  factory _$RemoteEventModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$RemoteEventModelImplFromJson(json);
 
   /// The unique ID of this event
   @override
@@ -258,10 +258,10 @@ class _$_RemoteEventModel implements _RemoteEventModel {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_RemoteEventModel &&
+            other is _$RemoteEventModelImpl &&
             (identical(other.eventId, eventId) || other.eventId == eventId) &&
             (identical(other.streamId, streamId) ||
                 other.streamId == streamId) &&
@@ -281,12 +281,13 @@ class _$_RemoteEventModel implements _RemoteEventModel {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_RemoteEventModelCopyWith<_$_RemoteEventModel> get copyWith =>
-      __$$_RemoteEventModelCopyWithImpl<_$_RemoteEventModel>(this, _$identity);
+  _$$RemoteEventModelImplCopyWith<_$RemoteEventModelImpl> get copyWith =>
+      __$$RemoteEventModelImplCopyWithImpl<_$RemoteEventModelImpl>(
+          this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_RemoteEventModelToJson(
+    return _$$RemoteEventModelImplToJson(
       this,
     );
   }
@@ -301,10 +302,10 @@ abstract class _RemoteEventModel implements RemoteEventModel {
           @JsonKey(name: 'action_type') required final String name,
           required final Map<String, dynamic> data,
           @JsonKey(name: 'created_at') required final DateTime createdAt}) =
-      _$_RemoteEventModel;
+      _$RemoteEventModelImpl;
 
   factory _RemoteEventModel.fromJson(Map<String, dynamic> json) =
-      _$_RemoteEventModel.fromJson;
+      _$RemoteEventModelImpl.fromJson;
 
   @override
 
@@ -343,6 +344,6 @@ abstract class _RemoteEventModel implements RemoteEventModel {
   DateTime get createdAt;
   @override
   @JsonKey(ignore: true)
-  _$$_RemoteEventModelCopyWith<_$_RemoteEventModel> get copyWith =>
+  _$$RemoteEventModelImplCopyWith<_$RemoteEventModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

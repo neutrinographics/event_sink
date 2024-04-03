@@ -11,15 +11,15 @@ abstract class Failure extends Equatable {
 
 // General failures
 class ServerFailure extends Failure {
-  const ServerFailure({message = ''}) : super(message: message);
+  const ServerFailure({super.message = ''});
 }
 
 // Failure occurring when the server has new events
 class OutOfSyncFailure extends ServerFailure {
-  const OutOfSyncFailure({message = ''}) : super(message: message);
+  const OutOfSyncFailure({super.message = ''});
 }
 
 // Failure occurring in the cache layer
 class CacheFailure extends Failure {
-  const CacheFailure({message = ''}) : super(message: message);
+  const CacheFailure({super.message = ''});
 }

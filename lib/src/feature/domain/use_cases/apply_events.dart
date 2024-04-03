@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:event_sink/src/core/domain/usecase.dart';
 import 'package:event_sink/src/core/error/failure.dart';
 import 'package:event_sink/src/event_handler.dart';
-import 'package:event_sink/src/event_sink_base.dart';
+import 'package:event_sink/src/event_sink.dart';
 import 'package:event_sink/src/feature/domain/repositories/event_repository.dart';
 
 class ApplyEvents extends UseCase<void, ApplyEventsParams> {

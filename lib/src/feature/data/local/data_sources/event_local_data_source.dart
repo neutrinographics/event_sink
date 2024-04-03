@@ -1,5 +1,8 @@
 import 'package:clean_cache/clean_cache.dart';
+import 'package:collection/collection.dart';
 import 'package:event_sink/src/feature/data/local/models/event_model.dart';
+
+import '../models/pool_model.dart';
 
 abstract class EventLocalDataSource {
   /// Writes an event to the cache.
@@ -19,10 +22,10 @@ abstract class EventLocalDataSource {
   Future<List<EventModel>> getAllEvents();
 
   /// Returns the number of events in the pool.
-  Future<int> getPoolSize(int pool);
+  Future<int> getPoolSize(int poolId);
 
   /// Returns a sorted list of events from the pool.
-  Future<List<EventModel>> getPooledEvents(int pool);
+  Future<List<EventModel>> getPooledEvents(int poolId);
 
   /// Returns a list of all cached pools.
   Future<List<int>> getPools();
@@ -31,7 +34,7 @@ abstract class EventLocalDataSource {
   Future<void> clear();
 
   /// Clears the cache in a single pool.
-  Future<void> clearPool(int pool);
+  Future<void> clearPool(int poolId);
 }
 
 class EventLocalDataSourceImpl extends EventLocalDataSource {
@@ -40,7 +43,7 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
 
   /// A cache of pools of events.
   /// This allows us to manage events from different pools.
-  final CleanCache<int, List<String>> poolCache;
+  final CleanCache<int, PoolModel> poolCache;
 
   EventLocalDataSourceImpl({required this.eventCache, required this.poolCache});
 
@@ -48,10 +51,11 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
   Future<void> addEvent(EventModel model) async {
     await eventCache.write(model.eventId, model);
 
-    final eventPool = await _readPool(model.pool);
-    if (!eventPool.contains(model.eventId)) {
-      eventPool.add(model.eventId);
-      await poolCache.write(model.pool, eventPool);
+    final pool = await _readPool(model.pool);
+    if (!pool.eventIds.contains(model.eventId)) {
+      final updatedPool =
+          pool.copyWith(eventIds: [...pool.eventIds, model.eventId]);
+      await poolCache.write(updatedPool.id, updatedPool);
     }
   }
 
@@ -60,24 +64,30 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
     final model = await eventCache.read(eventId);
     await eventCache.delete(eventId);
 
-    final eventPool = await _readPool(model.pool);
-    eventPool.remove(eventId);
-    if (eventPool.isEmpty) {
-      await poolCache.delete(model.pool);
+    final pool = await _readPool(model.pool);
+    final updatedPoolEventIds =
+        pool.eventIds.whereNot((id) => id == eventId).toList();
+
+    if (updatedPoolEventIds.isEmpty) {
+      await poolCache.delete(pool.id);
     } else {
-      await poolCache.write(model.pool, eventPool);
+      await poolCache.write(
+          pool.id,
+          pool.copyWith(
+            eventIds: updatedPoolEventIds,
+          ));
     }
   }
 
   @override
-  Future<List<EventModel>> getPooledEvents(int pool) async {
+  Future<List<EventModel>> getPooledEvents(int poolId) async {
     final List<EventModel> models = [];
 
-    final List<String> eventIds = await _readPool(pool);
-    for (final id in eventIds) {
-      models.add(await eventCache.read(id));
+    final PoolModel pool = await _readPool(poolId);
+    for (final id in pool.eventIds) {
+      final event = await eventCache.read(id);
+      models.add(event);
     }
-
     sort(models);
     return models;
   }
@@ -87,9 +97,9 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
 
   @override
   Future<List<EventModel>> getAllEvents() async {
-    final List<EventModel> eventModels = await eventCache.values();
-    sort(eventModels);
-    return eventModels;
+    final List<EventModel> events = await eventCache.values();
+    sort(events);
+    return events;
   }
 
   @override
@@ -99,11 +109,33 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
   }
 
   /// Returns the pool data or an empty list if the pool is empty.
-  Future<List<String>> _readPool(int pool) async {
-    if (await poolCache.exists(pool)) {
-      return List.from(await poolCache.read(pool));
+  Future<PoolModel> _readPool(int poolId) async {
+    final noPools = (await poolCache.keys()).isEmpty;
+    if (noPools) {
+      await _indexPools();
+    }
+
+    final poolExists = await poolCache.exists(poolId);
+    if (poolExists) {
+      return poolCache.read(poolId);
     } else {
-      return [];
+      return PoolModel(
+        id: poolId,
+        eventIds: [],
+      );
+    }
+  }
+
+  Future<void> _indexPools() async {
+    final events = await eventCache.values();
+    final pools = <int, PoolModel>{};
+
+    for (final event in events) {
+      final pool = pools[event.pool] ?? PoolModel(id: event.pool, eventIds: []);
+      pool.eventIds.add(event.eventId);
+    }
+    for (final pool in pools.values) {
+      await poolCache.write(pool.id, pool);
     }
   }
 
@@ -142,20 +174,22 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
   Future<bool> hasEvent(String eventId) => eventCache.exists(eventId);
 
   @override
-  Future<EventModel> getEvent(String eventId) => eventCache.read(eventId);
-
-  @override
-  Future<int> getPoolSize(int pool) async {
-    final eventPool = await _readPool(pool);
-    return eventPool.length;
+  Future<EventModel> getEvent(String eventId) {
+    return eventCache.read(eventId);
   }
 
   @override
-  Future<void> clearPool(int pool) async {
-    final events = await poolCache.read(pool);
-    for (final id in events) {
+  Future<int> getPoolSize(int poolId) async {
+    final pool = await _readPool(poolId);
+    return pool.eventIds.length;
+  }
+
+  @override
+  Future<void> clearPool(int poolId) async {
+    final pool = await _readPool(poolId);
+    for (final id in pool.eventIds) {
       await eventCache.delete(id);
     }
-    await poolCache.delete(pool);
+    await poolCache.delete(poolId);
   }
 }

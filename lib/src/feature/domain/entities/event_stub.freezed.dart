@@ -12,7 +12,7 @@ part of 'event_stub.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$EventStub {
@@ -110,10 +110,11 @@ class _$EventStubCopyWithImpl<$Res, $Val extends EventStub>
 }
 
 /// @nodoc
-abstract class _$$_EventStubCopyWith<$Res> implements $EventStubCopyWith<$Res> {
-  factory _$$_EventStubCopyWith(
-          _$_EventStub value, $Res Function(_$_EventStub) then) =
-      __$$_EventStubCopyWithImpl<$Res>;
+abstract class _$$EventStubImplCopyWith<$Res>
+    implements $EventStubCopyWith<$Res> {
+  factory _$$EventStubImplCopyWith(
+          _$EventStubImpl value, $Res Function(_$EventStubImpl) then) =
+      __$$EventStubImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -127,11 +128,11 @@ abstract class _$$_EventStubCopyWith<$Res> implements $EventStubCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$_EventStubCopyWithImpl<$Res>
-    extends _$EventStubCopyWithImpl<$Res, _$_EventStub>
-    implements _$$_EventStubCopyWith<$Res> {
-  __$$_EventStubCopyWithImpl(
-      _$_EventStub _value, $Res Function(_$_EventStub) _then)
+class __$$EventStubImplCopyWithImpl<$Res>
+    extends _$EventStubCopyWithImpl<$Res, _$EventStubImpl>
+    implements _$$EventStubImplCopyWith<$Res> {
+  __$$EventStubImplCopyWithImpl(
+      _$EventStubImpl _value, $Res Function(_$EventStubImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -145,7 +146,7 @@ class __$$_EventStubCopyWithImpl<$Res>
     Object? applied = null,
     Object? data = null,
   }) {
-    return _then(_$_EventStub(
+    return _then(_$EventStubImpl(
       eventId: null == eventId
           ? _value.eventId
           : eventId // ignore: cast_nullable_to_non_nullable
@@ -180,8 +181,8 @@ class __$$_EventStubCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_EventStub implements _EventStub {
-  _$_EventStub(
+class _$EventStubImpl implements _EventStub {
+  _$EventStubImpl(
       {required this.eventId,
       required this.streamId,
       required this.name,
@@ -230,10 +231,10 @@ class _$_EventStub implements _EventStub {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_EventStub &&
+            other is _$EventStubImpl &&
             (identical(other.eventId, eventId) || other.eventId == eventId) &&
             (identical(other.streamId, streamId) ||
                 other.streamId == streamId) &&
@@ -251,8 +252,8 @@ class _$_EventStub implements _EventStub {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_EventStubCopyWith<_$_EventStub> get copyWith =>
-      __$$_EventStubCopyWithImpl<_$_EventStub>(this, _$identity);
+  _$$EventStubImplCopyWith<_$EventStubImpl> get copyWith =>
+      __$$EventStubImplCopyWithImpl<_$EventStubImpl>(this, _$identity);
 }
 
 abstract class _EventStub implements EventStub {
@@ -263,7 +264,7 @@ abstract class _EventStub implements EventStub {
       required final int pool,
       required final int version,
       required final bool applied,
-      required final Map<String, dynamic> data}) = _$_EventStub;
+      required final Map<String, dynamic> data}) = _$EventStubImpl;
 
   @override
 
@@ -293,6 +294,6 @@ abstract class _EventStub implements EventStub {
   Map<String, dynamic> get data;
   @override
   @JsonKey(ignore: true)
-  _$$_EventStubCopyWith<_$_EventStub> get copyWith =>
+  _$$EventStubImplCopyWith<_$EventStubImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

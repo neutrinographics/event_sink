@@ -1,5 +1,6 @@
+import 'package:uuid/data.dart';
+import 'package:uuid/rng.dart';
 import 'package:uuid/uuid.dart';
-import 'package:uuid/uuid_util.dart';
 
 abstract class IdGenerator {
   String generateId();
@@ -12,6 +13,7 @@ class IdGeneratorImpl implements IdGenerator {
 
   @override
   String generateId() {
-    return _uuid.v4(options: {'rng': UuidUtil.cryptoRNG});
+    final options = V4Options(null, CryptoRNG());
+    return _uuid.v4(config: options);
   }
 }
