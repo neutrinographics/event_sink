@@ -19,8 +19,12 @@ class TestEventHandler implements EventHandler<TestEventData> {
 
 class TestEventData extends Equatable implements EventData {
   final String hello;
+  final Map<String, dynamic> fields;
 
-  const TestEventData({required this.hello});
+  const TestEventData({
+    required this.hello,
+    this.fields = const {},
+  });
 
   @override
   Map<String, dynamic> toJson() {

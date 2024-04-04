@@ -74,6 +74,7 @@ class MockNetwork extends _i1.Mock implements _i3.Network {
   _i4.Future<_i2.Response> get(
     Uri? url, {
     Map<String, String>? headers,
+    Duration? timeout,
     bool? strictAuth,
   }) =>
       (super.noSuchMethod(
@@ -82,6 +83,7 @@ class MockNetwork extends _i1.Mock implements _i3.Network {
           [url],
           {
             #headers: headers,
+            #timeout: timeout,
             #strictAuth: strictAuth,
           },
         ),
@@ -92,6 +94,7 @@ class MockNetwork extends _i1.Mock implements _i3.Network {
             [url],
             {
               #headers: headers,
+              #timeout: timeout,
               #strictAuth: strictAuth,
             },
           ),

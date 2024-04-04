@@ -44,8 +44,11 @@ class SyncEvents extends UseCase<void, SyncEventsParams> {
     }
 
     // download events
-    final failureOrDownload =
-        await eventRepository.fetch(host, pool, authToken: authToken);
+    final failureOrDownload = await eventRepository.fetch(
+      host,
+      pool,
+      authToken: authToken,
+    );
 
     // rebase events
     final failureOrRebase = await failureOrDownload.fold(

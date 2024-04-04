@@ -16,6 +16,7 @@ abstract class Network {
   Future<Response> get(
     Uri url, {
     Map<String, String>? headers,
+    Duration? timeout,
 
     /// Raises an [AuthException] if the response code is 403
     bool strictAuth,
@@ -68,7 +69,7 @@ abstract class Network {
 }
 
 class NetworkImpl implements Network {
-  static const defaultTimeout = Duration(seconds: 10);
+  static const defaultTimeout = Duration(seconds: 30);
   final http.Client client;
 
   NetworkImpl(this.client);
@@ -91,13 +92,13 @@ class NetworkImpl implements Network {
   Future<Response> get(
     Uri url, {
     Map<String, String>? headers,
-    Duration timeout = defaultTimeout,
+    Duration? timeout,
     strictAuth = true,
   }) =>
       _requestHandler(
-        requester: () => client
-            .get(url, headers: headers)
-            .timeout(timeout, onTimeout: _timeoutHandler(url, timeout)),
+        requester: () => client.get(url, headers: headers).timeout(
+            timeout ?? defaultTimeout,
+            onTimeout: _timeoutHandler(url, timeout ?? defaultTimeout)),
         strictAuth: strictAuth,
       );
 
