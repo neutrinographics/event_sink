@@ -11,7 +11,7 @@ _$RemoteNewEventModelImpl _$$RemoteNewEventModelImplFromJson(
     _$RemoteNewEventModelImpl(
       eventId: json['event_id'] as String,
       streamId: json['stream_id'] as String,
-      version: json['version'] as int,
+      version: (json['version'] as num).toInt(),
       name: json['action_type'] as String,
       data: json['data'] as Map<String, dynamic>,
     );

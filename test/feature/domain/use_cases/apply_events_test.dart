@@ -98,13 +98,13 @@ void main() {
       // arrange
       when(mockEventRepository.list(any))
           .thenAnswer((_) async => Right(tEvents));
-      when(mockEventRepository.markApplied(any))
+      when(mockEventRepository.markAppliedList(any))
           .thenAnswer((_) async => const Right(null));
       // act
       final result = await useCase(tParams);
       // assert
       expect(result, const Right(null));
-      verify(mockEventRepository.markApplied(tEvent));
+      verify(mockEventRepository.markAppliedList([tEvent]));
       verify(mockTestEventHandler(tStream, tPool, tData));
       verifyNoMoreInteractions(mockTestEventHandler);
     },
@@ -116,13 +116,13 @@ void main() {
       // arrange
       when(mockEventRepository.list(any))
           .thenAnswer((_) async => Right(tEvents));
-      when(mockEventRepository.markApplied(any))
+      when(mockEventRepository.markAppliedList(any))
           .thenAnswer((_) async => const Left(CacheFailure()));
       // act
       final result = await useCase(tParams);
       // assert
       expect(result, const Left(CacheFailure()));
-      verify(mockEventRepository.markApplied(tEvent));
+      verify(mockEventRepository.markAppliedList([tEvent]));
     },
   );
 

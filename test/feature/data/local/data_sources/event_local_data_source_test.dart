@@ -117,6 +117,58 @@ void main() {
     );
   });
 
+  group('addEvents', () {
+    final tEvents = [
+      EventModel(
+        eventId: 'event-1',
+        streamId: '175794e2-83a6-4f9a-b873-d43484e2c0b5',
+        version: 1,
+        order: 1,
+        name: "create-group",
+        createdAt: DateTime.now(),
+        data: {
+          "group_stream_id": "3304ABE8-D744-48CE-8FC6-2FEA19E6B4D8",
+        },
+        pool: 1,
+      ),
+      EventModel(
+        eventId: 'event-2',
+        streamId: '175794e2-83a6-4f9a-b873-d43484e2c0b5',
+        version: 2,
+        order: 2,
+        name: "create-group",
+        createdAt: DateTime.now(),
+        data: {
+          "group_stream_id": "3304ABE8-D744-48CE-8FC6-2FEA19E6B4D8",
+        },
+        pool: 2,
+      ),
+    ];
+
+    test(
+      'should add a list of events',
+      () async {
+        // arrange
+        when(mockPoolCache.exists(any)).thenAnswer((_) async => false);
+        // act
+        await dataSource.addEvents(tEvents);
+        // assert
+        final expectedPoolState = PoolModel(
+          id: tEvents.last.pool,
+          eventIds: [tEvents.last.eventId],
+        );
+        verify(mockPoolCache.write(tEvents.last.pool, expectedPoolState));
+
+        final expectedEvents = {
+          tEvents.first.eventId: tEvents.first,
+          tEvents.last.eventId: tEvents.last,
+        };
+
+        verify(mockEventCache.writeAll(expectedEvents));
+      },
+    );
+  });
+
   group('removeEvent', () {
     const tEventId = 'event-1';
     final createdAt = DateTime.now();
