@@ -439,4 +439,56 @@ class MockUuid extends _i1.Mock implements _i3.Uuid {
           ),
         ),
       ) as _i2.UuidValue);
+
+  @override
+  String v8g({_i4.V8GenericOptions? config}) => (super.noSuchMethod(
+        Invocation.method(
+          #v8g,
+          [],
+          {#config: config},
+        ),
+        returnValue: _i5.dummyValue<String>(
+          this,
+          Invocation.method(
+            #v8g,
+            [],
+            {#config: config},
+          ),
+        ),
+      ) as String);
+
+  @override
+  List<int> v8gbuffer(
+    List<int>? buffer, {
+    _i4.V8GenericOptions? config,
+    int? offset = 0,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #v8gbuffer,
+          [buffer],
+          {
+            #config: config,
+            #offset: offset,
+          },
+        ),
+        returnValue: <int>[],
+      ) as List<int>);
+
+  @override
+  _i2.UuidValue v8gobj({_i4.V8GenericOptions? config}) => (super.noSuchMethod(
+        Invocation.method(
+          #v8gobj,
+          [],
+          {#config: config},
+        ),
+        returnValue: _FakeUuidValue_0(
+          this,
+          Invocation.method(
+            #v8gobj,
+            [],
+            {#config: config},
+          ),
+        ),
+      ) as _i2.UuidValue);
 }

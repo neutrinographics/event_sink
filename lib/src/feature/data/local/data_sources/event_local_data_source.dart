@@ -8,6 +8,9 @@ abstract class EventLocalDataSource {
   /// Writes an event to the cache.
   Future<void> addEvent(EventModel model);
 
+  /// Writes a list of events to the cache.
+  Future<void> addEvents(List<EventModel> models);
+
   /// Checks if an event exists in the cache
   Future<bool> hasEvent(String eventId);
 
@@ -56,6 +59,22 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
       final updatedPool =
           pool.copyWith(eventIds: [...pool.eventIds, model.eventId]);
       await poolCache.write(updatedPool.id, updatedPool);
+    }
+  }
+
+  @override
+  Future<void> addEvents(List<EventModel> models) async {
+    await eventCache.writeAll(Map.fromEntries(
+      models.map((model) => MapEntry(model.eventId, model)),
+    ));
+
+    for (final model in models) {
+      final pool = await _readPool(model.pool);
+      if (!pool.eventIds.contains(model.eventId)) {
+        final updatedPool =
+            pool.copyWith(eventIds: [...pool.eventIds, model.eventId]);
+        await poolCache.write(updatedPool.id, updatedPool);
+      }
     }
   }
 

@@ -74,13 +74,13 @@ class EventModelImplAdapter extends TypeAdapter<_$EventModelImpl> {
 _$EventModelImpl _$$EventModelImplFromJson(Map<String, dynamic> json) =>
     _$EventModelImpl(
       eventId: json['event_id'] as String,
-      order: json['sort_order'] as int,
+      order: (json['sort_order'] as num).toInt(),
       synced: json['synced'] as bool? ?? false,
       applied: json['applied'] as bool? ?? false,
       streamId: json['stream_id'] as String,
-      version: json['version'] as int,
+      version: (json['version'] as num).toInt(),
       name: json['name'] as String,
-      pool: json['pool'] as int,
+      pool: (json['pool'] as num).toInt(),
       createdAt: DateTime.parse(json['created_at'] as String),
       data: json['data'] as Map<String, dynamic>,
     );

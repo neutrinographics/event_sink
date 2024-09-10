@@ -42,36 +42,36 @@ class EventRepositoryImpl extends EventRepository {
       return Left(ServerFailure(message: e.message));
     }
 
+    List<EventModel> eventsToAdd = [];
     for (var e in remoteEvents) {
       final bool hasEvent = await localDataSource.hasEvent(e.eventId);
       if (!hasEvent) {
-        // record new event
-        try {
-          await localDataSource.addEvent(
-            EventModel.fromRemote(
-              remoteEvent: e,
-              pool: pool,
-            ).copyWith(createdAt: timeInfo.now()),
-          );
-        } on Exception catch (e, stack) {
-          return Left(CacheFailure(message: "$e\n\n$stack"));
-        }
+        eventsToAdd.add(
+          EventModel.fromRemote(
+            remoteEvent: e,
+            pool: pool,
+          ).copyWith(createdAt: timeInfo.now()),
+        );
       } else {
         final existingEvent = await localDataSource.getEvent(e.eventId);
         if (!existingEvent.synced) {
-          // Mark the event as synced.
-          try {
-            await localDataSource.addEvent(existingEvent.copyWith(
+          eventsToAdd.add(
+            existingEvent.copyWith(
               synced: true,
               // TRICKY: the remote event order may be different from the local order.
               order: e.order,
-            ));
-          } on Exception catch (e, stack) {
-            return Left(CacheFailure(message: "$e\n\n$stack"));
-          }
+            ),
+          );
         }
       }
     }
+
+    try {
+      await localDataSource.addEvents(eventsToAdd);
+    } on Exception catch (e, stack) {
+      return Left(CacheFailure(message: "$e\n\n$stack"));
+    }
+
     return const Right(null);
   }
 
@@ -89,6 +89,7 @@ class EventRepositoryImpl extends EventRepository {
       return Left(CacheFailure(message: "$e\n\n$stack"));
     }
 
+    List<EventModel> eventsToAdd = [];
     for (var e in events) {
       if (e.synced) continue;
       try {
@@ -98,10 +99,12 @@ class EventRepositoryImpl extends EventRepository {
           token: authToken,
         );
 
-        await localDataSource.addEvent(EventModel.fromRemote(
-          remoteEvent: syncedEvent,
-          pool: pool,
-        ).copyWith(applied: e.applied, createdAt: timeInfo.now()));
+        eventsToAdd.add(
+          EventModel.fromRemote(
+            remoteEvent: syncedEvent,
+            pool: pool,
+          ).copyWith(applied: e.applied, createdAt: timeInfo.now()),
+        );
       } on OutOfSyncException catch (e) {
         return Left(OutOfSyncFailure(message: e.message));
       } on ServerException catch (e) {
@@ -110,6 +113,13 @@ class EventRepositoryImpl extends EventRepository {
         return Left(CacheFailure(message: "$e\n\n$stack"));
       }
     }
+
+    try {
+      await localDataSource.addEvents(eventsToAdd);
+    } on Exception catch (e, stack) {
+      return Left(CacheFailure(message: "$e\n\n$stack"));
+    }
+
     return const Right(null);
   }
 
@@ -168,14 +178,17 @@ class EventRepositoryImpl extends EventRepository {
     if (unSyncedEvents.first.version == lastSyncedVersion + 1) return;
 
     int lastVersion = lastSyncedVersion;
+
+    List<EventModel> eventsToAdd = [];
     for (final unSyncedEvent in unSyncedEvents) {
       final updatedEvent = unSyncedEvent.copyWith(
         version: lastVersion + 1,
       );
-
-      await localDataSource.addEvent(updatedEvent);
+      eventsToAdd.add(updatedEvent);
       lastVersion = updatedEvent.version;
     }
+
+    await localDataSource.addEvents(eventsToAdd);
   }
 
   @override
@@ -240,6 +253,24 @@ class EventRepositoryImpl extends EventRepository {
     try {
       final model = await localDataSource.getEvent(event.eventId);
       await localDataSource.addEvent(model.copyWith(applied: true));
+      return const Right(null);
+    } on Exception catch (e, stack) {
+      return Left(CacheFailure(message: "$e\n\n$stack"));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> markAppliedList(List<EventStub> events) async {
+    try {
+      final eventIds = events.map((e) => e.eventId).toList();
+      final eventModels = await localDataSource.getAllEvents()
+        ..retainWhere((element) => eventIds.contains(element.eventId));
+
+      final updatedModels =
+          eventModels.map((e) => e.copyWith(applied: true)).toList();
+
+      await localDataSource.addEvents(updatedModels);
+
       return const Right(null);
     } on Exception catch (e, stack) {
       return Left(CacheFailure(message: "$e\n\n$stack"));

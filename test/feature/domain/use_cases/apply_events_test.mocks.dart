@@ -184,6 +184,24 @@ class MockEventRepository extends _i1.Mock implements _i3.EventRepository {
       ) as _i4.Future<_i2.Either<_i5.Failure, void>>);
 
   @override
+  _i4.Future<_i2.Either<_i5.Failure, void>> markAppliedList(
+          List<_i8.EventStub>? events) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #markAppliedList,
+          [events],
+        ),
+        returnValue: _i4.Future<_i2.Either<_i5.Failure, void>>.value(
+            _FakeEither_0<_i5.Failure, void>(
+          this,
+          Invocation.method(
+            #markAppliedList,
+            [events],
+          ),
+        )),
+      ) as _i4.Future<_i2.Either<_i5.Failure, void>>);
+
+  @override
   _i4.Future<_i2.Either<_i5.Failure, void>> clearCache() => (super.noSuchMethod(
         Invocation.method(
           #clearCache,

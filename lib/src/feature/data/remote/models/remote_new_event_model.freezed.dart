@@ -40,8 +40,12 @@ mixin _$RemoteNewEventModel {
   /// Custom event data
   Map<String, dynamic> get data => throw _privateConstructorUsedError;
 
+  /// Serializes this RemoteNewEventModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of RemoteNewEventModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $RemoteNewEventModelCopyWith<RemoteNewEventModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -70,6 +74,8 @@ class _$RemoteNewEventModelCopyWithImpl<$Res, $Val extends RemoteNewEventModel>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of RemoteNewEventModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -128,6 +134,8 @@ class __$$RemoteNewEventModelImplCopyWithImpl<$Res>
       $Res Function(_$RemoteNewEventModelImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of RemoteNewEventModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -226,12 +234,14 @@ class _$RemoteNewEventModelImpl implements _RemoteNewEventModel {
             const DeepCollectionEquality().equals(other._data, _data));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, eventId, streamId, version, name,
       const DeepCollectionEquality().hash(_data));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of RemoteNewEventModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$RemoteNewEventModelImplCopyWith<_$RemoteNewEventModelImpl> get copyWith =>
@@ -257,33 +267,35 @@ abstract class _RemoteNewEventModel implements RemoteNewEventModel {
   factory _RemoteNewEventModel.fromJson(Map<String, dynamic> json) =
       _$RemoteNewEventModelImpl.fromJson;
 
-  @override
-
   /// The unique ID of this event
+  @override
   @JsonKey(name: 'event_id')
   String get eventId;
-  @override
 
   /// The ID of the stream affected by this event.
+  @override
   @JsonKey(name: 'stream_id')
   String get streamId;
-  @override
 
   /// The version of the stream's state.
   /// This is effectively the number of events that have been added to the
   /// stream indicated by the [streamId].
-  int get version;
   @override
+  int get version;
 
   /// The name of the event
+  @override
   @JsonKey(name: 'action_type')
   String get name;
-  @override
 
   /// Custom event data
-  Map<String, dynamic> get data;
   @override
-  @JsonKey(ignore: true)
+  Map<String, dynamic> get data;
+
+  /// Create a copy of RemoteNewEventModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$RemoteNewEventModelImplCopyWith<_$RemoteNewEventModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
