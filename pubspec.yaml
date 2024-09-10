@@ -1,7 +1,7 @@
 name: event_sink
 description: A data synchronization tool based on event sourcing and CQRS
-version: 1.0.1
-homepage:
+version: 1.2.0
+homepage: https://github.com/neutrinographics/event_sink
 
 environment:
   sdk: '>=2.18.5 <4.0.0'
