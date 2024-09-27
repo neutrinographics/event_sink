@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:event_sink/src/core/domain/usecase.dart';
 import 'package:event_sink/src/core/error/failure.dart';
+import 'package:event_sink/src/feature/data/remote/data_sources/event_remote_data_source.dart';
 import 'package:event_sink/src/feature/domain/repositories/event_repository.dart';
 
 class SyncEvents extends UseCase<void, SyncEventsParams> {
@@ -19,7 +20,7 @@ class SyncEvents extends UseCase<void, SyncEventsParams> {
     // but using connectivity_plus breaks the generator because dart:ui cannot
     // be used on the platform.
     return await _recursiveRebase(
-      host: params.host,
+      dataSource: params.dataSource,
       authToken: params.authToken,
       allowedRetries: params.maxRetryCount,
       pool: params.pool,
@@ -28,7 +29,7 @@ class SyncEvents extends UseCase<void, SyncEventsParams> {
 
   Future<Either<Failure, void>> _recursiveRebase({
     int retryCount = 0,
-    required Uri host,
+    required EventRemoteDataSource dataSource,
     required String? authToken,
     required int allowedRetries,
     required int pool,
@@ -45,7 +46,7 @@ class SyncEvents extends UseCase<void, SyncEventsParams> {
 
     // download events
     final failureOrDownload = await eventRepository.fetch(
-      host,
+      dataSource,
       pool,
       authToken: authToken,
     );
@@ -59,7 +60,7 @@ class SyncEvents extends UseCase<void, SyncEventsParams> {
     // push events
     final failureOrPush = await failureOrRebase.fold(
       (l) async => Left(l),
-      (_) => eventRepository.push(host, pool, authToken: authToken),
+      (_) => eventRepository.push(dataSource, pool, authToken: authToken),
     );
 
     // if push is successful then we can return
@@ -77,7 +78,7 @@ class SyncEvents extends UseCase<void, SyncEventsParams> {
     _lastPushFailure = pushFailure;
 
     return _recursiveRebase(
-      host: host,
+      dataSource: dataSource,
       authToken: authToken,
       allowedRetries: allowedRetries,
       pool: pool,
@@ -94,7 +95,9 @@ class SyncEventsParams extends Equatable {
   final int pool;
 
   /// The remote host where the pool of events will be synced.
-  final Uri host;
+  // final Uri host;
+
+  final EventRemoteDataSource dataSource;
 
   /// The authentication token used to authenticate requests to the remote [host].
   final String? authToken;
@@ -103,9 +106,9 @@ class SyncEventsParams extends Equatable {
     int retryCount = 4,
     this.authToken,
     required this.pool,
-    required this.host,
+    required this.dataSource,
   }) : maxRetryCount = retryCount;
 
   @override
-  List<Object?> get props => [maxRetryCount, pool, host, authToken];
+  List<Object?> get props => [maxRetryCount, pool, dataSource, authToken];
 }

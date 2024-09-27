@@ -8,6 +8,7 @@ typedef EventDataGenerator = EventData Function(Map<String, dynamic>);
 /// Defines the logic for interacting with the event controller.
 abstract class EventSink {
   Map<String, EventHandler> eventHandlersMap();
+
   Map<String, EventDataGenerator> get eventDataGeneratorMap;
 
   late EventController _controller;
@@ -20,13 +21,13 @@ abstract class EventSink {
 
   /// Uploads events to the server that have been generated on this device.
   Future<Either<Failure, void>> sync(
-    Uri host,
+    EventRemoteDataSource dataSource,
     int pool, {
     String? authToken,
     int retryCount = 4,
   }) =>
       _controller.sync(
-        host,
+        dataSource,
         pool,
         authToken: authToken,
         retryCount: retryCount,

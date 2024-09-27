@@ -3,6 +3,7 @@ import 'package:event_sink/src/core/error/failure.dart';
 import 'package:event_sink/src/event_data.dart';
 import 'package:event_sink/src/event_handler.dart';
 import 'package:event_sink/src/event_sink.dart';
+import 'package:event_sink/src/feature/data/remote/data_sources/event_remote_data_source.dart';
 import 'package:event_sink/src/feature/domain/entities/event_info.dart';
 import 'package:event_sink/src/feature/domain/use_cases/add_event.dart';
 import 'package:event_sink/src/feature/domain/use_cases/apply_events.dart';
@@ -29,13 +30,13 @@ class EventController {
 
   /// Synchronizes events with the server
   Future<Either<Failure, void>> sync(
-    Uri host,
+    EventRemoteDataSource dataSource,
     int pool, {
     String? authToken,
     int retryCount = 4,
   }) =>
       _syncEvents(SyncEventsParams(
-        host: host,
+        dataSource: dataSource,
         authToken: authToken,
         pool: pool,
         retryCount: retryCount,

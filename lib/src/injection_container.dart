@@ -1,22 +1,20 @@
 import 'package:clean_cache/cache/memory_cache.dart';
 import 'package:clock/clock.dart';
-
 import 'package:event_sink/src/core/data/id_generator.dart';
 import 'package:event_sink/src/core/network/network.dart';
 import 'package:event_sink/src/core/time/time_info.dart';
+import 'package:event_sink/src/event_controller.dart';
 import 'package:event_sink/src/feature/data/local/data_sources/event_local_data_source.dart';
 import 'package:event_sink/src/feature/data/local/models/event_model.dart';
-import 'package:event_sink/src/feature/data/remote/data_sources/event_remote_data_source.dart';
 import 'package:event_sink/src/feature/data/repositories/event_repository_impl.dart';
 import 'package:event_sink/src/feature/domain/repositories/event_repository.dart';
 import 'package:event_sink/src/feature/domain/use_cases/add_event.dart';
 import 'package:event_sink/src/feature/domain/use_cases/apply_events.dart';
 import 'package:event_sink/src/feature/domain/use_cases/clear_cache.dart';
 import 'package:event_sink/src/feature/domain/use_cases/sync_events.dart';
-import 'package:event_sink/src/event_controller.dart';
 import 'package:get_it/get_it.dart';
-import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
+import 'package:uuid/uuid.dart';
 
 import 'core/data/cache.dart';
 
@@ -46,7 +44,6 @@ Future<void> init() async {
   // Repositories
   sl.registerLazySingleton<EventRepository>(() => EventRepositoryImpl(
         localDataSource: sl(),
-        remoteDataSource: sl(),
         idGenerator: sl(),
         timeInfo: sl(),
       ));
@@ -58,11 +55,6 @@ Future<void> init() async {
     () => EventLocalDataSourceImpl(
       eventCache: eventCache,
       poolCache: MemoryCache(),
-    ),
-  );
-  sl.registerLazySingleton<EventRemoteDataSource>(
-    () => EventRemoteDataSourceImpl(
-      network: sl(),
     ),
   );
 

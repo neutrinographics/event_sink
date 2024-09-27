@@ -15,27 +15,24 @@ import 'package:event_sink/src/feature/domain/repositories/event_repository.dart
 
 class EventRepositoryImpl extends EventRepository {
   final EventLocalDataSource localDataSource;
-  final EventRemoteDataSource remoteDataSource;
   final IdGenerator idGenerator;
   final TimeInfo timeInfo;
 
   EventRepositoryImpl({
     required this.localDataSource,
-    required this.remoteDataSource,
     required this.idGenerator,
     required this.timeInfo,
   });
 
   @override
   Future<Either<Failure, void>> fetch(
-    Uri host,
+    EventRemoteDataSource remoteDataSource,
     int pool, {
     String? authToken,
   }) async {
     List<RemoteEventModel> remoteEvents;
     try {
       remoteEvents = await remoteDataSource.getEvents(
-        host: host,
         token: authToken,
       );
     } on ServerException catch (e) {
@@ -77,7 +74,7 @@ class EventRepositoryImpl extends EventRepository {
 
   @override
   Future<Either<Failure, void>> push(
-    Uri host,
+    EventRemoteDataSource remoteDataSource,
     int pool, {
     String? authToken,
   }) async {
@@ -95,7 +92,6 @@ class EventRepositoryImpl extends EventRepository {
       try {
         final syncedEvent = await remoteDataSource.createEvent(
           e.toNewRemote(),
-          host: host,
           token: authToken,
         );
 
