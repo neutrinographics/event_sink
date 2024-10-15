@@ -23,13 +23,11 @@ abstract class EventSink {
   Future<Either<Failure, void>> sync(
     EventRemoteDataSource dataSource,
     int pool, {
-    String? authToken,
     int retryCount = 4,
   }) =>
       _controller.sync(
         dataSource,
         pool,
-        authToken: authToken,
         retryCount: retryCount,
       );
 

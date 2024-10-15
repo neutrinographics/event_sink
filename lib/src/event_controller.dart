@@ -32,12 +32,10 @@ class EventController {
   Future<Either<Failure, void>> sync(
     EventRemoteDataSource dataSource,
     int pool, {
-    String? authToken,
     int retryCount = 4,
   }) =>
       _syncEvents(SyncEventsParams(
         dataSource: dataSource,
-        authToken: authToken,
         pool: pool,
         retryCount: retryCount,
       ));

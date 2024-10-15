@@ -27,14 +27,11 @@ class EventRepositoryImpl extends EventRepository {
   @override
   Future<Either<Failure, void>> fetch(
     EventRemoteDataSource remoteDataSource,
-    int pool, {
-    String? authToken,
-  }) async {
+    int pool,
+  ) async {
     List<RemoteEventModel> remoteEvents;
     try {
-      remoteEvents = await remoteDataSource.getEvents(
-        token: authToken,
-      );
+      remoteEvents = await remoteDataSource.getEvents();
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     }
@@ -75,9 +72,8 @@ class EventRepositoryImpl extends EventRepository {
   @override
   Future<Either<Failure, void>> push(
     EventRemoteDataSource remoteDataSource,
-    int pool, {
-    String? authToken,
-  }) async {
+    int pool,
+  ) async {
     List<EventModel> events;
 
     try {
@@ -92,7 +88,6 @@ class EventRepositoryImpl extends EventRepository {
       try {
         final syncedEvent = await remoteDataSource.createEvent(
           e.toNewRemote(),
-          token: authToken,
         );
 
         eventsToAdd.add(

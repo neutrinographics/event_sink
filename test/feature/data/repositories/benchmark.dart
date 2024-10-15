@@ -63,19 +63,15 @@ void main() {
 
   group('fetch', () {
     const tPool = 1;
-    const tAuthToken = "authToken";
 
     test('should fetch and record the remote events', () async {
       // arrange
-      when(mockRemoteDataSource.getEvents(
-        token: anyNamed('token'),
-      )).thenAnswer((_) async => events);
+      when(mockRemoteDataSource.getEvents()).thenAnswer((_) async => events);
       // act
       final stopwatch = Stopwatch()..start();
       await repository.fetch(
         mockRemoteDataSource,
         tPool,
-        authToken: tAuthToken,
       );
       stopwatch.stop();
       // assert

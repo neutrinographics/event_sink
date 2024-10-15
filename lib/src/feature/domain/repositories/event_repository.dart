@@ -21,16 +21,14 @@ abstract class EventRepository {
   /// event cache.
   Future<Either<Failure, void>> fetch(
     EventRemoteDataSource remoteDataSource,
-    int pool, {
-    String? authToken,
-  });
+    int pool,
+  );
 
   /// Uploads events to the server that have been generated on this device.
   Future<Either<Failure, void>> push(
     EventRemoteDataSource remoteDataSource,
-    int pool, {
-    String? authToken,
-  });
+    int pool,
+  );
 
   /// Re-applies any un-synced events on top of the event from the server.
   /// This is akin to a git rebase.

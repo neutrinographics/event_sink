@@ -6,16 +6,11 @@ abstract class EventRemoteDataSource {
   /// Returns a sorted list of events from the server.
   ///
   /// Throws a [ServerException] if the download fails.
-  Future<List<RemoteEventModel>> getEvents({
-    required String? token,
-  });
+  Future<List<RemoteEventModel>> getEvents();
 
   /// Uploads a [RemoteNewEventModel] to the server.
   /// Returns the newly created remote event.
   ///
   /// Throws [ServerException] if the upload fails.
-  Future<RemoteEventModel> createEvent(
-    RemoteNewEventModel event, {
-    required String? token,
-  });
+  Future<RemoteEventModel> createEvent(RemoteNewEventModel event);
 }

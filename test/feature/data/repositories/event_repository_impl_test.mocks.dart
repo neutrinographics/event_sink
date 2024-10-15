@@ -74,12 +74,10 @@ class MockEventRemoteDataSource extends _i1.Mock
   }
 
   @override
-  _i5.Future<List<_i2.RemoteEventModel>> getEvents({required String? token}) =>
-      (super.noSuchMethod(
+  _i5.Future<List<_i2.RemoteEventModel>> getEvents() => (super.noSuchMethod(
         Invocation.method(
           #getEvents,
           [],
-          {#token: token},
         ),
         returnValue: _i5.Future<List<_i2.RemoteEventModel>>.value(
             <_i2.RemoteEventModel>[]),
@@ -87,14 +85,11 @@ class MockEventRemoteDataSource extends _i1.Mock
 
   @override
   _i5.Future<_i2.RemoteEventModel> createEvent(
-    _i6.RemoteNewEventModel? event, {
-    required String? token,
-  }) =>
+          _i6.RemoteNewEventModel? event) =>
       (super.noSuchMethod(
         Invocation.method(
           #createEvent,
           [event],
-          {#token: token},
         ),
         returnValue:
             _i5.Future<_i2.RemoteEventModel>.value(_FakeRemoteEventModel_0(
@@ -102,7 +97,6 @@ class MockEventRemoteDataSource extends _i1.Mock
           Invocation.method(
             #createEvent,
             [event],
-            {#token: token},
           ),
         )),
       ) as _i5.Future<_i2.RemoteEventModel>);

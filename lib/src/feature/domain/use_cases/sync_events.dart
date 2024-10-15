@@ -21,7 +21,6 @@ class SyncEvents extends UseCase<void, SyncEventsParams> {
     // be used on the platform.
     return await _recursiveRebase(
       dataSource: params.dataSource,
-      authToken: params.authToken,
       allowedRetries: params.maxRetryCount,
       pool: params.pool,
     );
@@ -30,7 +29,6 @@ class SyncEvents extends UseCase<void, SyncEventsParams> {
   Future<Either<Failure, void>> _recursiveRebase({
     int retryCount = 0,
     required EventRemoteDataSource dataSource,
-    required String? authToken,
     required int allowedRetries,
     required int pool,
   }) async {
@@ -48,7 +46,6 @@ class SyncEvents extends UseCase<void, SyncEventsParams> {
     final failureOrDownload = await eventRepository.fetch(
       dataSource,
       pool,
-      authToken: authToken,
     );
 
     // rebase events
@@ -60,7 +57,10 @@ class SyncEvents extends UseCase<void, SyncEventsParams> {
     // push events
     final failureOrPush = await failureOrRebase.fold(
       (l) async => Left(l),
-      (_) => eventRepository.push(dataSource, pool, authToken: authToken),
+      (_) => eventRepository.push(
+        dataSource,
+        pool,
+      ),
     );
 
     // if push is successful then we can return
@@ -79,7 +79,6 @@ class SyncEvents extends UseCase<void, SyncEventsParams> {
 
     return _recursiveRebase(
       dataSource: dataSource,
-      authToken: authToken,
       allowedRetries: allowedRetries,
       pool: pool,
       retryCount: retryCount + 1,
@@ -99,16 +98,12 @@ class SyncEventsParams extends Equatable {
 
   final EventRemoteDataSource dataSource;
 
-  /// The authentication token used to authenticate requests to the remote [host].
-  final String? authToken;
-
   const SyncEventsParams({
     int retryCount = 4,
-    this.authToken,
     required this.pool,
     required this.dataSource,
   }) : maxRetryCount = retryCount;
 
   @override
-  List<Object?> get props => [maxRetryCount, pool, dataSource, authToken];
+  List<Object?> get props => [maxRetryCount, pool, dataSource];
 }

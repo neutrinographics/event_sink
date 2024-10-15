@@ -50,9 +50,8 @@ class MockEventRepository extends _i1.Mock implements _i3.EventRepository {
   @override
   _i4.Future<_i2.Either<_i5.Failure, void>> fetch(
     _i6.EventRemoteDataSource? remoteDataSource,
-    int? pool, {
-    String? authToken,
-  }) =>
+    int? pool,
+  ) =>
       (super.noSuchMethod(
         Invocation.method(
           #fetch,
@@ -60,7 +59,6 @@ class MockEventRepository extends _i1.Mock implements _i3.EventRepository {
             remoteDataSource,
             pool,
           ],
-          {#authToken: authToken},
         ),
         returnValue: _i4.Future<_i2.Either<_i5.Failure, void>>.value(
             _FakeEither_0<_i5.Failure, void>(
@@ -71,7 +69,6 @@ class MockEventRepository extends _i1.Mock implements _i3.EventRepository {
               remoteDataSource,
               pool,
             ],
-            {#authToken: authToken},
           ),
         )),
       ) as _i4.Future<_i2.Either<_i5.Failure, void>>);
@@ -79,9 +76,8 @@ class MockEventRepository extends _i1.Mock implements _i3.EventRepository {
   @override
   _i4.Future<_i2.Either<_i5.Failure, void>> push(
     _i6.EventRemoteDataSource? remoteDataSource,
-    int? pool, {
-    String? authToken,
-  }) =>
+    int? pool,
+  ) =>
       (super.noSuchMethod(
         Invocation.method(
           #push,
@@ -89,7 +85,6 @@ class MockEventRepository extends _i1.Mock implements _i3.EventRepository {
             remoteDataSource,
             pool,
           ],
-          {#authToken: authToken},
         ),
         returnValue: _i4.Future<_i2.Either<_i5.Failure, void>>.value(
             _FakeEither_0<_i5.Failure, void>(
@@ -100,7 +95,6 @@ class MockEventRepository extends _i1.Mock implements _i3.EventRepository {
               remoteDataSource,
               pool,
             ],
-            {#authToken: authToken},
           ),
         )),
       ) as _i4.Future<_i2.Either<_i5.Failure, void>>);
