@@ -7,14 +7,16 @@ import 'dart:async' as _i4;
 
 import 'package:dartz/dartz.dart' as _i2;
 import 'package:event_sink/src/core/error/failure.dart' as _i5;
-import 'package:event_sink/src/event_data.dart' as _i7;
-import 'package:event_sink/src/feature/domain/entities/event_info.dart' as _i6;
-import 'package:event_sink/src/feature/domain/entities/event_stub.dart' as _i8;
+import 'package:event_sink/src/event_data.dart' as _i8;
+import 'package:event_sink/src/feature/data/remote/data_sources/event_remote_data_source.dart'
+    as _i6;
+import 'package:event_sink/src/feature/domain/entities/event_info.dart' as _i7;
+import 'package:event_sink/src/feature/domain/entities/event_stub.dart' as _i9;
 import 'package:event_sink/src/feature/domain/repositories/event_repository.dart'
     as _i3;
 import 'package:mockito/mockito.dart' as _i1;
 
-import 'apply_events_test.dart' as _i9;
+import 'apply_events_test.dart' as _i10;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -49,7 +51,7 @@ class MockEventRepository extends _i1.Mock implements _i3.EventRepository {
 
   @override
   _i4.Future<_i2.Either<_i5.Failure, void>> fetch(
-    Uri? host,
+    _i6.EventRemoteDataSource? remoteDataSource,
     int? pool, {
     String? authToken,
   }) =>
@@ -57,7 +59,7 @@ class MockEventRepository extends _i1.Mock implements _i3.EventRepository {
         Invocation.method(
           #fetch,
           [
-            host,
+            remoteDataSource,
             pool,
           ],
           {#authToken: authToken},
@@ -68,7 +70,7 @@ class MockEventRepository extends _i1.Mock implements _i3.EventRepository {
           Invocation.method(
             #fetch,
             [
-              host,
+              remoteDataSource,
               pool,
             ],
             {#authToken: authToken},
@@ -78,7 +80,7 @@ class MockEventRepository extends _i1.Mock implements _i3.EventRepository {
 
   @override
   _i4.Future<_i2.Either<_i5.Failure, void>> push(
-    Uri? host,
+    _i6.EventRemoteDataSource? remoteDataSource,
     int? pool, {
     String? authToken,
   }) =>
@@ -86,7 +88,7 @@ class MockEventRepository extends _i1.Mock implements _i3.EventRepository {
         Invocation.method(
           #push,
           [
-            host,
+            remoteDataSource,
             pool,
           ],
           {#authToken: authToken},
@@ -97,7 +99,7 @@ class MockEventRepository extends _i1.Mock implements _i3.EventRepository {
           Invocation.method(
             #push,
             [
-              host,
+              remoteDataSource,
               pool,
             ],
             {#authToken: authToken},
@@ -124,7 +126,7 @@ class MockEventRepository extends _i1.Mock implements _i3.EventRepository {
 
   @override
   _i4.Future<_i2.Either<_i5.Failure, void>> add(
-    _i6.EventInfo<_i7.EventData>? event,
+    _i7.EventInfo<_i8.EventData>? event,
     int? pool,
   ) =>
       (super.noSuchMethod(
@@ -149,25 +151,25 @@ class MockEventRepository extends _i1.Mock implements _i3.EventRepository {
       ) as _i4.Future<_i2.Either<_i5.Failure, void>>);
 
   @override
-  _i4.Future<_i2.Either<_i5.Failure, List<_i8.EventStub>>> list(int? pool) =>
+  _i4.Future<_i2.Either<_i5.Failure, List<_i9.EventStub>>> list(int? pool) =>
       (super.noSuchMethod(
         Invocation.method(
           #list,
           [pool],
         ),
         returnValue:
-            _i4.Future<_i2.Either<_i5.Failure, List<_i8.EventStub>>>.value(
-                _FakeEither_0<_i5.Failure, List<_i8.EventStub>>(
+            _i4.Future<_i2.Either<_i5.Failure, List<_i9.EventStub>>>.value(
+                _FakeEither_0<_i5.Failure, List<_i9.EventStub>>(
           this,
           Invocation.method(
             #list,
             [pool],
           ),
         )),
-      ) as _i4.Future<_i2.Either<_i5.Failure, List<_i8.EventStub>>>);
+      ) as _i4.Future<_i2.Either<_i5.Failure, List<_i9.EventStub>>>);
 
   @override
-  _i4.Future<_i2.Either<_i5.Failure, void>> markApplied(_i8.EventStub? event) =>
+  _i4.Future<_i2.Either<_i5.Failure, void>> markApplied(_i9.EventStub? event) =>
       (super.noSuchMethod(
         Invocation.method(
           #markApplied,
@@ -185,7 +187,7 @@ class MockEventRepository extends _i1.Mock implements _i3.EventRepository {
 
   @override
   _i4.Future<_i2.Either<_i5.Failure, void>> markAppliedList(
-          List<_i8.EventStub>? events) =>
+          List<_i9.EventStub>? events) =>
       (super.noSuchMethod(
         Invocation.method(
           #markAppliedList,
@@ -238,7 +240,7 @@ class MockEventRepository extends _i1.Mock implements _i3.EventRepository {
 /// A class which mocks [TestEventHandler].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockTestEventHandler extends _i1.Mock implements _i9.TestEventHandler {
+class MockTestEventHandler extends _i1.Mock implements _i10.TestEventHandler {
   MockTestEventHandler() {
     _i1.throwOnMissingStub(this);
   }
@@ -247,7 +249,7 @@ class MockTestEventHandler extends _i1.Mock implements _i9.TestEventHandler {
   _i4.Future<void> call(
     String? streamId,
     int? pool,
-    _i9.TestEventData? data,
+    _i10.TestEventData? data,
   ) =>
       (super.noSuchMethod(
         Invocation.method(

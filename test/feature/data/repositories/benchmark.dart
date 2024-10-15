@@ -56,26 +56,27 @@ void main() {
     TimeInfoImpl timeInfo = TimeInfoImpl(const Clock());
     repository = EventRepositoryImpl(
       localDataSource: localDataSource,
-      remoteDataSource: mockRemoteDataSource,
       idGenerator: idGenerator,
       timeInfo: timeInfo,
     );
   });
 
   group('fetch', () {
-    final tHost = Uri(host: 'localhost');
     const tPool = 1;
     const tAuthToken = "authToken";
 
     test('should fetch and record the remote events', () async {
       // arrange
       when(mockRemoteDataSource.getEvents(
-        host: anyNamed('host'),
         token: anyNamed('token'),
       )).thenAnswer((_) async => events);
       // act
       final stopwatch = Stopwatch()..start();
-      await repository.fetch(tHost, tPool, authToken: tAuthToken);
+      await repository.fetch(
+        mockRemoteDataSource,
+        tPool,
+        authToken: tAuthToken,
+      );
       stopwatch.stop();
       // assert
       debugPrint("Fetch finished after ${stopwatch.elapsedMilliseconds}ms");

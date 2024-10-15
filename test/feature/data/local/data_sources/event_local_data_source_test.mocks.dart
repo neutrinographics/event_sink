@@ -54,6 +54,16 @@ class MockCleanCache<K, T> extends _i1.Mock implements _i3.CleanCache<K, T> {
       ) as _i2.Future<void>);
 
   @override
+  _i2.Future<void> writeAll(Map<K, T>? data) => (super.noSuchMethod(
+        Invocation.method(
+          #writeAll,
+          [data],
+        ),
+        returnValue: _i2.Future<void>.value(),
+        returnValueForMissingStub: _i2.Future<void>.value(),
+      ) as _i2.Future<void>);
+
+  @override
   _i2.Future<T> read(K? key) => (super.noSuchMethod(
         Invocation.method(
           #read,
