@@ -1,8 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
+import 'package:event_sink/event_sink.dart';
 import 'package:event_sink/src/core/domain/usecase.dart';
-import 'package:event_sink/src/core/error/failure.dart';
-import 'package:event_sink/src/feature/data/remote/data_sources/event_remote_data_source.dart';
 import 'package:event_sink/src/feature/domain/repositories/event_repository.dart';
 
 class SyncEvents extends UseCase<void, SyncEventsParams> {
@@ -20,7 +19,6 @@ class SyncEvents extends UseCase<void, SyncEventsParams> {
     // but using connectivity_plus breaks the generator because dart:ui cannot
     // be used on the platform.
     return await _recursiveRebase(
-      dataSource: params.dataSource,
       allowedRetries: params.maxRetryCount,
       pool: params.pool,
     );
@@ -28,7 +26,6 @@ class SyncEvents extends UseCase<void, SyncEventsParams> {
 
   Future<Either<Failure, void>> _recursiveRebase({
     int retryCount = 0,
-    required EventRemoteDataSource dataSource,
     required int allowedRetries,
     required int pool,
   }) async {
@@ -43,10 +40,7 @@ class SyncEvents extends UseCase<void, SyncEventsParams> {
     }
 
     // download events
-    final failureOrDownload = await eventRepository.fetch(
-      dataSource,
-      pool,
-    );
+    final failureOrDownload = await eventRepository.fetch(pool);
 
     // rebase events
     final failureOrRebase = await failureOrDownload.fold(
@@ -57,10 +51,7 @@ class SyncEvents extends UseCase<void, SyncEventsParams> {
     // push events
     final failureOrPush = await failureOrRebase.fold(
       (l) async => Left(l),
-      (_) => eventRepository.push(
-        dataSource,
-        pool,
-      ),
+      (_) => eventRepository.push(pool),
     );
 
     // if push is successful then we can return
@@ -78,7 +69,6 @@ class SyncEvents extends UseCase<void, SyncEventsParams> {
     _lastPushFailure = pushFailure;
 
     return _recursiveRebase(
-      dataSource: dataSource,
       allowedRetries: allowedRetries,
       pool: pool,
       retryCount: retryCount + 1,
@@ -96,14 +86,11 @@ class SyncEventsParams extends Equatable {
   /// The remote host where the pool of events will be synced.
   // final Uri host;
 
-  final EventRemoteDataSource dataSource;
-
   const SyncEventsParams({
     int retryCount = 4,
     required this.pool,
-    required this.dataSource,
   }) : maxRetryCount = retryCount;
 
   @override
-  List<Object?> get props => [maxRetryCount, pool, dataSource];
+  List<Object?> get props => [maxRetryCount, pool];
 }

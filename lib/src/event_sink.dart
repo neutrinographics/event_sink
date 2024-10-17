@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:event_sink/event_sink.dart';
 import 'package:event_sink/src/event_controller.dart';
+import 'package:event_sink/src/feature/domain/repositories/event_repository.dart';
 import 'injection_container.dart' as ic;
 
 typedef EventDataGenerator = EventData Function(Map<String, dynamic>);
@@ -14,19 +15,24 @@ abstract class EventSink {
   late EventController _controller;
 
   /// Make sure you call this in your app's main function before doing anything else!
-  Future<void> init() async {
+  Future<void> init({
+    required EventLocalDataSource localDataSource,
+    required EventRemoteDataSource remoteDataSource,
+  }) async {
     await ic.init();
+    ic.sl<EventRepository>().init(
+          localDataSource: localDataSource,
+          remoteDataSource: remoteDataSource,
+        );
     _controller = ic.sl<EventController>();
   }
 
   /// Uploads events to the server that have been generated on this device.
   Future<Either<Failure, void>> sync(
-    EventRemoteDataSource dataSource,
     int pool, {
     int retryCount = 4,
   }) =>
       _controller.sync(
-        dataSource,
         pool,
         retryCount: retryCount,
       );

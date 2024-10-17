@@ -1,10 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:event_sink/src/core/error/failure.dart';
-import 'package:event_sink/src/event_data.dart';
-import 'package:event_sink/src/event_handler.dart';
-import 'package:event_sink/src/event_sink.dart';
-import 'package:event_sink/src/feature/data/remote/data_sources/event_remote_data_source.dart';
-import 'package:event_sink/src/feature/domain/entities/event_info.dart';
+import 'package:event_sink/event_sink.dart';
 import 'package:event_sink/src/feature/domain/use_cases/add_event.dart';
 import 'package:event_sink/src/feature/domain/use_cases/apply_events.dart';
 import 'package:event_sink/src/feature/domain/use_cases/clear_cache.dart';
@@ -30,20 +25,19 @@ class EventController {
 
   /// Synchronizes events with the server
   Future<Either<Failure, void>> sync(
-    EventRemoteDataSource dataSource,
     int pool, {
     int retryCount = 4,
   }) =>
       _syncEvents(SyncEventsParams(
-        dataSource: dataSource,
         pool: pool,
         retryCount: retryCount,
       ));
 
   Future<Either<Failure, void>> processNewEvents(
-          int pool,
-          Map<String, EventHandler> handlers,
-          Map<String, EventDataGenerator> paramGenerators) =>
+    int pool,
+    Map<String, EventHandler> handlers,
+    Map<String, EventDataGenerator> paramGenerators,
+  ) =>
       _applyEvents(ApplyEventsParams(
         pool: pool,
         handlers: handlers,

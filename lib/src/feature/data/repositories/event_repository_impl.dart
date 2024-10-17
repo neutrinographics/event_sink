@@ -14,21 +14,28 @@ import 'package:event_sink/src/feature/domain/entities/event_stub.dart';
 import 'package:event_sink/src/feature/domain/repositories/event_repository.dart';
 
 class EventRepositoryImpl extends EventRepository {
-  final EventLocalDataSource localDataSource;
   final IdGenerator idGenerator;
   final TimeInfo timeInfo;
 
+  late EventLocalDataSource localDataSource;
+  late EventRemoteDataSource remoteDataSource;
+
   EventRepositoryImpl({
-    required this.localDataSource,
     required this.idGenerator,
     required this.timeInfo,
   });
 
   @override
-  Future<Either<Failure, void>> fetch(
-    EventRemoteDataSource remoteDataSource,
-    int pool,
-  ) async {
+  void init({
+    required EventRemoteDataSource remoteDataSource,
+    required EventLocalDataSource localDataSource,
+  }) {
+    this.remoteDataSource = remoteDataSource;
+    this.localDataSource = localDataSource;
+  }
+
+  @override
+  Future<Either<Failure, void>> fetch(int pool) async {
     List<RemoteEventModel> remoteEvents;
     try {
       remoteEvents = await remoteDataSource.getEvents();
@@ -70,10 +77,7 @@ class EventRepositoryImpl extends EventRepository {
   }
 
   @override
-  Future<Either<Failure, void>> push(
-    EventRemoteDataSource remoteDataSource,
-    int pool,
-  ) async {
+  Future<Either<Failure, void>> push(int pool) async {
     List<EventModel> events;
 
     try {

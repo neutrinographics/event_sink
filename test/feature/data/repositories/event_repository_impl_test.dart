@@ -57,9 +57,12 @@ void main() {
     mockIdGenerator = MockIdGenerator();
     mockTimeInfo = MockTimeInfo();
     repository = EventRepositoryImpl(
-      localDataSource: mockEventLocalDataSource,
       idGenerator: mockIdGenerator,
       timeInfo: mockTimeInfo,
+    );
+    repository.init(
+      remoteDataSource: mockEventRemoteDataSource,
+      localDataSource: mockEventLocalDataSource,
     );
   });
 
@@ -112,10 +115,7 @@ void main() {
         when(mockEventRemoteDataSource.getEvents())
             .thenAnswer((_) async => tRemoteEvents);
         // act
-        final result = await repository.fetch(
-          mockEventRemoteDataSource,
-          tPool,
-        );
+        final result = await repository.fetch(tPool);
         // assert
         verify(mockEventRemoteDataSource.getEvents());
         // should only cache the new event
@@ -155,10 +155,7 @@ void main() {
         when(mockEventLocalDataSource.addEvents(any)).thenThrow(Exception());
 
         // act
-        final result = await repository.fetch(
-          mockEventRemoteDataSource,
-          tPool,
-        );
+        final result = await repository.fetch(tPool);
         // assert
         expect(result.swap().toOption().toNullable(), isA<CacheFailure>());
         verify(mockEventLocalDataSource.addEvents(any));
@@ -175,10 +172,7 @@ void main() {
         when(mockEventRemoteDataSource.getEvents())
             .thenThrow(ServerException());
         // act
-        final result = await repository.fetch(
-          mockEventRemoteDataSource,
-          tPool,
-        );
+        final result = await repository.fetch(tPool);
         // assert
         expect(result, equals(const Left(ServerFailure())));
         verify(mockEventRemoteDataSource.getEvents());
@@ -219,10 +213,7 @@ void main() {
           any,
         )).thenAnswer((_) async => remoteEvents.removeAt(0));
         // act
-        final result = await repository.push(
-          mockEventRemoteDataSource,
-          tPool,
-        );
+        final result = await repository.push(tPool);
         // assert
         for (var e in tCachedEvents) {
           if (e.synced == true) {
@@ -252,10 +243,7 @@ void main() {
         when(mockEventLocalDataSource.getPooledEvents(any))
             .thenThrow(Exception());
         // act
-        final result = await repository.push(
-          mockEventRemoteDataSource,
-          tPool,
-        );
+        final result = await repository.push(tPool);
         // assert
         expect(result.swap().toOption().toNullable(), isA<CacheFailure>());
       },
@@ -270,10 +258,7 @@ void main() {
         when(mockEventRemoteDataSource.createEvent(any))
             .thenThrow(ServerException());
         // act
-        final result = await repository.push(
-          mockEventRemoteDataSource,
-          tPool,
-        );
+        final result = await repository.push(tPool);
         // assert
         expect(result, equals(const Left(ServerFailure())));
       },
@@ -292,10 +277,7 @@ void main() {
         when(mockEventLocalDataSource.addEvents(any)).thenThrow(Exception());
 
         // act
-        final result = await repository.push(
-          mockEventRemoteDataSource,
-          tPool,
-        );
+        final result = await repository.push(tPool);
         // assert
         expect(result.swap().toOption().toNullable(), isA<CacheFailure>());
       },
@@ -310,10 +292,7 @@ void main() {
         when(mockEventRemoteDataSource.createEvent(any))
             .thenThrow(OutOfSyncException());
         // act
-        final result = await repository.push(
-          mockEventRemoteDataSource,
-          tPool,
-        );
+        final result = await repository.push(tPool);
         // assert
         expect(result, equals(const Left(OutOfSyncFailure())));
       },

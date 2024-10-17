@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:event_sink/src/core/error/failure.dart';
 import 'package:event_sink/src/event_data.dart';
+import 'package:event_sink/src/feature/data/local/data_sources/event_local_data_source.dart';
 import 'package:event_sink/src/feature/data/remote/data_sources/event_remote_data_source.dart';
 import 'package:event_sink/src/feature/domain/entities/event_info.dart';
 import 'package:event_sink/src/feature/domain/entities/event_stub.dart';
@@ -17,18 +18,19 @@ import 'package:event_sink/src/feature/domain/entities/event_stub.dart';
 /// 2. rebase un-synced events onto new ones from the server
 /// 3. push all un-synced events to the server.
 abstract class EventRepository {
+  /// Initializes the repository with the data sources.
+  /// This should be called before any other method.
+  void init({
+    required EventRemoteDataSource remoteDataSource,
+    required EventLocalDataSource localDataSource,
+  });
+
   /// Downloads events from the [remoteDataSource] and stores it in the device
   /// event cache.
-  Future<Either<Failure, void>> fetch(
-    EventRemoteDataSource remoteDataSource,
-    int pool,
-  );
+  Future<Either<Failure, void>> fetch(int pool);
 
   /// Uploads events to the server that have been generated on this device.
-  Future<Either<Failure, void>> push(
-    EventRemoteDataSource remoteDataSource,
-    int pool,
-  );
+  Future<Either<Failure, void>> push(int pool);
 
   /// Re-applies any un-synced events on top of the event from the server.
   /// This is akin to a git rebase.
