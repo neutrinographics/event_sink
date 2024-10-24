@@ -9,7 +9,7 @@ abstract class EventRemoteAdapter {
   Future<void> push(List<RemoteEventModel> events);
 }
 
-mixin AdapterProperties {
+mixin RemoteAdapterProperties {
   int get priority;
 
   PullStrategy get pullStrategy;
