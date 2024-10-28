@@ -1,9 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:event_sink/src/core/error/failure.dart';
-import 'package:event_sink/src/event_data.dart';
-import 'package:event_sink/src/event_handler.dart';
-import 'package:event_sink/src/event_sink.dart';
-import 'package:event_sink/src/feature/domain/entities/event_info.dart';
+import 'package:event_sink/event_sink.dart';
 import 'package:event_sink/src/feature/domain/use_cases/add_event.dart';
 import 'package:event_sink/src/feature/domain/use_cases/apply_events.dart';
 import 'package:event_sink/src/feature/domain/use_cases/clear_cache.dart';
@@ -28,21 +24,17 @@ class EventController {
         _clearCache = clearCache;
 
   /// Synchronizes events with the server
-  Future<Either<Failure, void>> sync(
-    Uri host,
-    int pool, {
-    String? authToken,
-    int retryCount = 4,
+  Future<Either<Failure, void>> sync({
+    required EventRemoteAdapter remoteAdapter,
+    required String pool,
   }) =>
       _syncEvents(SyncEventsParams(
-        host: host,
-        authToken: authToken,
+        remoteAdapter: remoteAdapter,
         pool: pool,
-        retryCount: retryCount,
       ));
 
   Future<Either<Failure, void>> processNewEvents(
-          int pool,
+          String pool,
           Map<String, EventHandler> handlers,
           Map<String, EventDataGenerator> paramGenerators) =>
       _applyEvents(ApplyEventsParams(
@@ -51,12 +43,12 @@ class EventController {
         dataGenerators: paramGenerators,
       ));
 
-  Future<Either<Failure, void>> add(EventInfo<EventData> event, int pool) =>
+  Future<Either<Failure, void>> add(EventInfo<EventData> event, String pool) =>
       _addEvent(AddEventParams(event: event, pool: pool));
 
   Future<Either<Failure, void>> deleteAllPoolCaches() async =>
       _clearCache(const ClearCacheParams());
 
-  Future<Either<Failure, void>> deletePoolCache(int pool) async =>
+  Future<Either<Failure, void>> deletePoolCache(String pool) async =>
       _clearCache(ClearCacheParams(pool: pool));
 }

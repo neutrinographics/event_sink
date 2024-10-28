@@ -6,6 +6,7 @@ import 'package:clock/clock.dart';
 import 'package:event_sink/src/core/data/cache.dart';
 import 'package:event_sink/src/core/data/id_generator.dart';
 import 'package:event_sink/src/core/time/time_info.dart';
+import 'package:event_sink/src/event_remote_adapter.dart';
 import 'package:event_sink/src/feature/data/local/data_sources/event_local_data_source.dart';
 import 'package:event_sink/src/feature/data/local/models/event_model.dart';
 import 'package:event_sink/src/feature/data/local/models/pool_model.dart';
@@ -24,11 +25,12 @@ import 'benchmark.mocks.dart';
 
 /// This benchmark is used to measure the performance of the EventRepositoryImpl.fetch method.
 /// You need to provide a large number of events in the fixture file, fixtures/ephemeral/many-events.json.
-@GenerateMocks([EventRemoteDataSource])
+@GenerateMocks([EventRemoteAdapter, EventRemoteDataSource])
 void main() {
   late List<RemoteEventModel> events;
   late EventRepositoryImpl repository;
   late EventLocalDataSourceImpl localDataSource;
+  late MockEventRemoteAdapter mockRemoteAdapter;
   late MockEventRemoteDataSource mockRemoteDataSource;
 
   setUp(() async {
@@ -51,21 +53,19 @@ void main() {
       eventCache: eventCache,
       poolCache: MemoryCache(),
     );
+    mockRemoteAdapter = MockEventRemoteAdapter();
     mockRemoteDataSource = MockEventRemoteDataSource();
     IdGeneratorImpl idGenerator = IdGeneratorImpl(const Uuid());
     TimeInfoImpl timeInfo = TimeInfoImpl(const Clock());
     repository = EventRepositoryImpl(
       localDataSource: localDataSource,
-      remoteDataSource: mockRemoteDataSource,
       idGenerator: idGenerator,
       timeInfo: timeInfo,
     );
   });
 
   group('fetch', () {
-    final tHost = Uri(host: 'localhost');
-    const tPool = 1;
-    const tAuthToken = "authToken";
+    const tPool = '1';
 
     test('should fetch and record the remote events', () async {
       // arrange
@@ -75,7 +75,10 @@ void main() {
       )).thenAnswer((_) async => events);
       // act
       final stopwatch = Stopwatch()..start();
-      await repository.fetch(tHost, tPool, authToken: tAuthToken);
+      await repository.fetch(
+        remoteAdapter: mockRemoteAdapter,
+        pool: tPool,
+      );
       stopwatch.stop();
       // assert
       debugPrint("Fetch finished after ${stopwatch.elapsedMilliseconds}ms");

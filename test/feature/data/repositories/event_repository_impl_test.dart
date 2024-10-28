@@ -6,9 +6,9 @@ import 'package:event_sink/src/core/error/exception.dart';
 import 'package:event_sink/src/core/error/failure.dart';
 import 'package:event_sink/src/core/time/time_info.dart';
 import 'package:event_sink/src/event_data.dart';
+import 'package:event_sink/src/event_remote_adapter.dart';
 import 'package:event_sink/src/feature/data/local/data_sources/event_local_data_source.dart';
 import 'package:event_sink/src/feature/data/local/models/event_model.dart';
-import 'package:event_sink/src/feature/data/remote/data_sources/event_remote_data_source.dart';
 import 'package:event_sink/src/feature/data/remote/models/remote_event_model.dart';
 import 'package:event_sink/src/feature/data/repositories/event_repository_impl.dart';
 import 'package:event_sink/src/feature/domain/entities/event_info.dart';
@@ -39,43 +39,39 @@ class MockEventData implements EventData {
 }
 
 @GenerateMocks([
-  EventRemoteDataSource,
+  EventRemoteAdapter,
   EventLocalDataSource,
   IdGenerator,
   TimeInfo,
 ])
 void main() {
   late EventRepositoryImpl repository;
-  late MockEventRemoteDataSource mockEventRemoteDataSource;
+  late MockEventRemoteAdapter mockEventRemoteAdapter;
   late MockEventLocalDataSource mockEventLocalDataSource;
   late MockIdGenerator mockIdGenerator;
   late MockTimeInfo mockTimeInfo;
 
   setUp(() {
-    mockEventRemoteDataSource = MockEventRemoteDataSource();
+    mockEventRemoteAdapter = MockEventRemoteAdapter();
     mockEventLocalDataSource = MockEventLocalDataSource();
     mockIdGenerator = MockIdGenerator();
     mockTimeInfo = MockTimeInfo();
     repository = EventRepositoryImpl(
       localDataSource: mockEventLocalDataSource,
-      remoteDataSource: mockEventRemoteDataSource,
       idGenerator: mockIdGenerator,
       timeInfo: mockTimeInfo,
     );
   });
 
-  final tHost = Uri.parse('https://example.com');
-  const tToken = 'token';
-
   group('fetch', () {
     const tEventId = 'event-id';
-    const tPool = 1;
+    const tPool = '1';
     final tToday = DateTime.now();
 
     final baseRemoteEvent =
         RemoteEventModel.fromJson(json.decode(fixture('remote_event.json')));
     final baseLocalEvent =
-        EventModel.fromRemote(remoteEvent: baseRemoteEvent, pool: 1)
+        EventModel.fromRemote(remoteEvent: baseRemoteEvent, pool: '1')
             .copyWith(synced: false, createdAt: tToday);
     final tSyncedLocalEvent =
         baseLocalEvent.copyWith(eventId: 'synced', order: 1, synced: true);
@@ -100,8 +96,7 @@ void main() {
       'should download events from the server',
       () async {
         // arrange
-        when(mockEventRemoteDataSource.getEvents(
-                host: anyNamed('host'), token: anyNamed('token')))
+        when(mockEventRemoteAdapter.pull())
             .thenAnswer((_) async => tRemoteEvents);
         when(mockEventLocalDataSource.hasEvent('synced'))
             .thenAnswer((_) async => true);
@@ -115,10 +110,12 @@ void main() {
         when(mockEventLocalDataSource.getEvent('un-synced'))
             .thenAnswer((_) async => tUnSyncedLocalEvent);
         // act
-        final result = await repository.fetch(tHost, tPool, authToken: tToken);
+        final result = await repository.fetch(
+          remoteAdapter: mockEventRemoteAdapter,
+          pool: tPool,
+        );
         // assert
-        verify(mockEventRemoteDataSource.getEvents(
-            host: anyNamed('host'), token: anyNamed('token')));
+        verify(mockEventRemoteAdapter.pull());
         // should only cache the new event
         final expectedNewEvent = baseLocalEvent.copyWith(
           eventId: '2',
@@ -148,8 +145,7 @@ void main() {
       'should return CacheFailure if the events cannot be stored',
       () async {
         // arrange
-        when(mockEventRemoteDataSource.getEvents(
-                host: anyNamed('host'), token: anyNamed('token')))
+        when(mockEventRemoteAdapter.pull())
             .thenAnswer((_) async => tRemoteEvents);
         when(mockEventLocalDataSource.hasEvent(any))
             .thenAnswer((_) async => false);
@@ -157,7 +153,10 @@ void main() {
         when(mockEventLocalDataSource.addEvents(any)).thenThrow(Exception());
 
         // act
-        final result = await repository.fetch(tHost, tPool, authToken: tToken);
+        final result = await repository.fetch(
+          remoteAdapter: mockEventRemoteAdapter,
+          pool: tPool,
+        );
         // assert
         expect(result.swap().toOption().toNullable(), isA<CacheFailure>());
         verify(mockEventLocalDataSource.addEvents(any));
@@ -171,20 +170,21 @@ void main() {
         when(mockIdGenerator.generateId()).thenReturn(tEventId);
         when(mockEventLocalDataSource.getAllEvents())
             .thenAnswer((_) async => tLocalEvents);
-        when(mockEventRemoteDataSource.getEvents(
-                host: anyNamed('host'), token: anyNamed('token')))
-            .thenThrow(ServerException());
+        when(mockEventRemoteAdapter.pull()).thenThrow(ServerException());
         // act
-        final result = await repository.fetch(tHost, tPool, authToken: tToken);
+        final result = await repository.fetch(
+          remoteAdapter: mockEventRemoteAdapter,
+          pool: tPool,
+        );
         // assert
         expect(result, equals(const Left(ServerFailure())));
-        verify(mockEventRemoteDataSource.getEvents(host: tHost, token: tToken));
+        verify(mockEventRemoteAdapter.pull());
       },
     );
   });
 
   group('push', () {
-    const tPool = 1;
+    const tPool = '1';
     final tTime = DateTime.now();
     final baseEvent = EventModel.fromJson(json.decode(fixture('event.json')))
         .copyWith(createdAt: tTime);
@@ -212,25 +212,19 @@ void main() {
         when(mockEventLocalDataSource.getPooledEvents(any))
             .thenAnswer((_) async => tCachedEvents);
         final remoteEvents = [...tRemoteEvents];
-        when(mockEventRemoteDataSource.createEvent(any,
-                token: anyNamed('token'), host: anyNamed('host')))
-            .thenAnswer((_) async => remoteEvents.removeAt(0));
+        when(mockEventRemoteAdapter.push(any))
+            .thenAnswer((_) async => [remoteEvents.removeAt(0)]);
         // act
-        final result = await repository.push(tHost, tPool, authToken: tToken);
+        final result = await repository.push(
+          remoteAdapter: mockEventRemoteAdapter,
+          pool: tPool,
+        );
         // assert
         for (var e in tCachedEvents) {
           if (e.synced == true) {
-            verifyNever(mockEventRemoteDataSource.createEvent(
-              e.toNewRemote(),
-              host: tHost,
-              token: tToken,
-            ));
+            verifyNever(mockEventRemoteAdapter.push([e.toNewRemote()]));
           } else {
-            verify(mockEventRemoteDataSource.createEvent(
-              e.toNewRemote(),
-              host: tHost,
-              token: tToken,
-            ));
+            verify(mockEventRemoteAdapter.push([e.toNewRemote()]));
           }
         }
         // verify events were updated with their remote id
@@ -250,7 +244,10 @@ void main() {
         when(mockEventLocalDataSource.getPooledEvents(any))
             .thenThrow(Exception());
         // act
-        final result = await repository.push(tHost, tPool, authToken: tToken);
+        final result = await repository.push(
+          remoteAdapter: mockEventRemoteAdapter,
+          pool: tPool,
+        );
         // assert
         expect(result.swap().toOption().toNullable(), isA<CacheFailure>());
       },
@@ -262,11 +259,12 @@ void main() {
         // arrange
         when(mockEventLocalDataSource.getPooledEvents(any))
             .thenAnswer((_) async => tCachedEvents);
-        when(mockEventRemoteDataSource.createEvent(any,
-                host: anyNamed('host'), token: anyNamed('token')))
-            .thenThrow(ServerException());
+        when(mockEventRemoteAdapter.push(any)).thenThrow(ServerException());
         // act
-        final result = await repository.push(tHost, tPool, authToken: tToken);
+        final result = await repository.push(
+          remoteAdapter: mockEventRemoteAdapter,
+          pool: tPool,
+        );
         // assert
         expect(result, equals(const Left(ServerFailure())));
       },
@@ -280,13 +278,15 @@ void main() {
         when(mockEventLocalDataSource.getPooledEvents(any))
             .thenAnswer((_) async => tCachedEvents);
         final remoteEvents = [...tRemoteEvents];
-        when(mockEventRemoteDataSource.createEvent(any,
-                token: anyNamed('token'), host: anyNamed('host')))
-            .thenAnswer((_) async => remoteEvents.removeAt(0));
+        when(mockEventRemoteAdapter.push(any))
+            .thenAnswer((_) async => [remoteEvents.removeAt(0)]);
         when(mockEventLocalDataSource.addEvents(any)).thenThrow(Exception());
 
         // act
-        final result = await repository.push(tHost, tPool, authToken: tToken);
+        final result = await repository.push(
+          remoteAdapter: mockEventRemoteAdapter,
+          pool: tPool,
+        );
         // assert
         expect(result.swap().toOption().toNullable(), isA<CacheFailure>());
       },
@@ -298,11 +298,12 @@ void main() {
         // arrange
         when(mockEventLocalDataSource.getPooledEvents(any))
             .thenAnswer((_) async => tCachedEvents);
-        when(mockEventRemoteDataSource.createEvent(any,
-                host: anyNamed('host'), token: anyNamed('token')))
-            .thenThrow(OutOfSyncException());
+        when(mockEventRemoteAdapter.push(any)).thenThrow(OutOfSyncException());
         // act
-        final result = await repository.push(tHost, tPool, authToken: tToken);
+        final result = await repository.push(
+          remoteAdapter: mockEventRemoteAdapter,
+          pool: tPool,
+        );
         // assert
         expect(result, equals(const Left(OutOfSyncFailure())));
       },
@@ -310,7 +311,7 @@ void main() {
   });
 
   group('rebase', () {
-    const tPool = 1;
+    const tPool = '1';
     final baseEvent = EventModel.fromJson(json.decode(fixture('event.json')));
     final List<EventModel> tCachedEventsFirst = [
       // un-synced events
@@ -509,7 +510,7 @@ void main() {
   group('add', () {
     const tPoolSize = 99;
     const tEventId = 'eventId';
-    const tPool = 1;
+    const tPool = '1';
     final tTime = DateTime.now();
     final tEventModel = EventModel(
       eventId: tEventId,
@@ -628,7 +629,7 @@ void main() {
   });
 
   group('list', () {
-    const int tPool = 1;
+    const tPool = '1';
     final baseEvent = EventModel.fromJson(json.decode(fixture('event.json')));
 
     final tEvents = [
@@ -779,7 +780,7 @@ void main() {
       'should clear cache',
       () async {
         // arrange
-        const tPool = 1;
+        const tPool = '1';
         // act
         final result = await repository.clearPoolCache(tPool);
         // assert
@@ -793,7 +794,7 @@ void main() {
       'should return CacheFailure if clearing cache fails',
       () async {
         // arrange
-        const tPool = 1;
+        const tPool = '1';
         when(mockEventLocalDataSource.clearPool(tPool)).thenThrow(Exception());
         // act
         final result = await repository.clearPoolCache(tPool);

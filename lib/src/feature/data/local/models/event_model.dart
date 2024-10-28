@@ -37,7 +37,7 @@ class EventModel extends HiveObject with _$EventModel {
     @HiveField(6) required String name,
 
     /// The pool to which the event belongs.
-    @HiveField(7) required int pool,
+    @HiveField(7) required String pool,
     @JsonKey(name: 'created_at') @HiveField(8) required DateTime createdAt,
 
     /// Custom event data
@@ -49,7 +49,7 @@ class EventModel extends HiveObject with _$EventModel {
 
   factory EventModel.fromRemote({
     required RemoteEventModel remoteEvent,
-    required int pool,
+    required String pool,
   }) {
     return EventModel(
       eventId: remoteEvent.eventId,

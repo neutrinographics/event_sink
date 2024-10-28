@@ -17,7 +17,7 @@ class PoolModelImplAdapter extends TypeAdapter<_$PoolModelImpl> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return _$PoolModelImpl(
-      id: fields[0] as int,
+      id: fields[0] as String,
       eventIds: (fields[1] as List).cast<String>(),
     );
   }

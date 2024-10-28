@@ -46,7 +46,6 @@ Future<void> init() async {
   // Repositories
   sl.registerLazySingleton<EventRepository>(() => EventRepositoryImpl(
         localDataSource: sl(),
-        remoteDataSource: sl(),
         idGenerator: sl(),
         timeInfo: sl(),
       ));

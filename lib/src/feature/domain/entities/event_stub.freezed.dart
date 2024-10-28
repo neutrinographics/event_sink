@@ -24,7 +24,9 @@ mixin _$EventStub {
 
   /// The name of the event
   String get name => throw _privateConstructorUsedError;
-  int get pool => throw _privateConstructorUsedError;
+
+  /// Pool to which the event belongs
+  String get pool => throw _privateConstructorUsedError;
 
   /// The stream version
   int get version => throw _privateConstructorUsedError;
@@ -51,7 +53,7 @@ abstract class $EventStubCopyWith<$Res> {
       {String eventId,
       String streamId,
       String name,
-      int pool,
+      String pool,
       int version,
       bool applied,
       Map<String, dynamic> data});
@@ -96,7 +98,7 @@ class _$EventStubCopyWithImpl<$Res, $Val extends EventStub>
       pool: null == pool
           ? _value.pool
           : pool // ignore: cast_nullable_to_non_nullable
-              as int,
+              as String,
       version: null == version
           ? _value.version
           : version // ignore: cast_nullable_to_non_nullable
@@ -125,7 +127,7 @@ abstract class _$$EventStubImplCopyWith<$Res>
       {String eventId,
       String streamId,
       String name,
-      int pool,
+      String pool,
       int version,
       bool applied,
       Map<String, dynamic> data});
@@ -168,7 +170,7 @@ class __$$EventStubImplCopyWithImpl<$Res>
       pool: null == pool
           ? _value.pool
           : pool // ignore: cast_nullable_to_non_nullable
-              as int,
+              as String,
       version: null == version
           ? _value.version
           : version // ignore: cast_nullable_to_non_nullable
@@ -209,8 +211,10 @@ class _$EventStubImpl implements _EventStub {
   /// The name of the event
   @override
   final String name;
+
+  /// Pool to which the event belongs
   @override
-  final int pool;
+  final String pool;
 
   /// The stream version
   @override
@@ -269,7 +273,7 @@ abstract class _EventStub implements EventStub {
       {required final String eventId,
       required final String streamId,
       required final String name,
-      required final int pool,
+      required final String pool,
       required final int version,
       required final bool applied,
       required final Map<String, dynamic> data}) = _$EventStubImpl;
@@ -285,8 +289,10 @@ abstract class _EventStub implements EventStub {
   /// The name of the event
   @override
   String get name;
+
+  /// Pool to which the event belongs
   @override
-  int get pool;
+  String get pool;
 
   /// The stream version
   @override

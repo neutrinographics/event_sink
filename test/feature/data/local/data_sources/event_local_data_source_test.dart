@@ -16,11 +16,11 @@ import 'event_local_data_source_test.mocks.dart';
 void main() {
   late EventLocalDataSourceImpl dataSource;
   late MockCleanCache<String, EventModel> mockEventCache;
-  late MockCleanCache<int, PoolModel> mockPoolCache;
+  late MockCleanCache<String, PoolModel> mockPoolCache;
 
   setUp(() {
     mockEventCache = MockCleanCache<String, EventModel>();
-    mockPoolCache = MockCleanCache<int, PoolModel>();
+    mockPoolCache = MockCleanCache<String, PoolModel>();
     dataSource = EventLocalDataSourceImpl(
       eventCache: mockEventCache,
       poolCache: mockPoolCache,
@@ -40,7 +40,7 @@ void main() {
       data: {
         "group_stream_id": "3304ABE8-D744-48CE-8FC6-2FEA19E6B4D8",
       },
-      pool: 1,
+      pool: '1',
     );
 
     test('should return all events sorted by event version in ascending order',
@@ -74,7 +74,7 @@ void main() {
       data: {
         "group_stream_id": "3304ABE8-D744-48CE-8FC6-2FEA19E6B4D8",
       },
-      pool: 1,
+      pool: '1',
     );
 
     test(
@@ -103,7 +103,7 @@ void main() {
           eventIds: [tExistingEventId],
         );
         when(mockPoolCache.exists(any)).thenAnswer((_) async => true);
-        when(mockPoolCache.read(1)).thenAnswer((_) async => tExistingPool);
+        when(mockPoolCache.read('1')).thenAnswer((_) async => tExistingPool);
         // act
         await dataSource.addEvent(tModel);
         // assert
@@ -129,7 +129,7 @@ void main() {
         data: {
           "group_stream_id": "3304ABE8-D744-48CE-8FC6-2FEA19E6B4D8",
         },
-        pool: 1,
+        pool: '1',
       ),
       EventModel(
         eventId: 'event-2',
@@ -141,7 +141,7 @@ void main() {
         data: {
           "group_stream_id": "3304ABE8-D744-48CE-8FC6-2FEA19E6B4D8",
         },
-        pool: 2,
+        pool: '2',
       ),
     ];
 
@@ -182,7 +182,7 @@ void main() {
       data: {
         "group_stream_id": "3304ABE8-D744-48CE-8FC6-2FEA19E6B4D8",
       },
-      pool: 1,
+      pool: '1',
     );
 
     test(
@@ -231,7 +231,7 @@ void main() {
   group('getPoolSize', () {
     test("should return the number of events in the pool", () async {
       // arrange
-      const tPoolId = 1;
+      const tPoolId = '1';
       final tPool = PoolModel(
         id: tPoolId,
         eventIds: ['event-1', 'event-2'],
@@ -247,7 +247,7 @@ void main() {
 
     test("should re-index the pools if the pool cache is empty", () async {
       // arrange
-      const tPoolId = 1;
+      const tPoolId = '1';
       final tEvent = EventModel.fromJson(json.decode(fixture('event.json')));
       final tPool = PoolModel(
         id: tPoolId,
@@ -268,7 +268,7 @@ void main() {
 
   group('getPooledEvents', () {
     const tEventId = "event-1";
-    const tPool = 1;
+    const tPool = '1';
     final createdAt = DateTime.now();
     final tEventModel = EventModel(
       eventId: tEventId,
@@ -318,7 +318,7 @@ void main() {
       'should clear the events in a single pool',
       () async {
         // arrange
-        const tPoolId = 1;
+        const tPoolId = '1';
         final tPool = PoolModel(
           id: tPoolId,
           eventIds: ['one', 'two'],
@@ -353,7 +353,7 @@ void main() {
       data: {
         "group_stream_id": 'group-id',
       },
-      pool: 1,
+      pool: '1',
     );
 
     test(

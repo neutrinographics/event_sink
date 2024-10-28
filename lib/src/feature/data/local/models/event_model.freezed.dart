@@ -53,7 +53,7 @@ mixin _$EventModel {
 
   /// The pool to which the event belongs.
   @HiveField(7)
-  int get pool => throw _privateConstructorUsedError;
+  String get pool => throw _privateConstructorUsedError;
   @JsonKey(name: 'created_at')
   @HiveField(8)
   DateTime get createdAt => throw _privateConstructorUsedError;
@@ -86,7 +86,7 @@ abstract class $EventModelCopyWith<$Res> {
       @JsonKey(name: 'stream_id') @HiveField(4) String streamId,
       @HiveField(5) int version,
       @HiveField(6) String name,
-      @HiveField(7) int pool,
+      @HiveField(7) String pool,
       @JsonKey(name: 'created_at') @HiveField(8) DateTime createdAt,
       @HiveField(9) Map<String, dynamic> data});
 }
@@ -149,7 +149,7 @@ class _$EventModelCopyWithImpl<$Res, $Val extends EventModel>
       pool: null == pool
           ? _value.pool
           : pool // ignore: cast_nullable_to_non_nullable
-              as int,
+              as String,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -178,7 +178,7 @@ abstract class _$$EventModelImplCopyWith<$Res>
       @JsonKey(name: 'stream_id') @HiveField(4) String streamId,
       @HiveField(5) int version,
       @HiveField(6) String name,
-      @HiveField(7) int pool,
+      @HiveField(7) String pool,
       @JsonKey(name: 'created_at') @HiveField(8) DateTime createdAt,
       @HiveField(9) Map<String, dynamic> data});
 }
@@ -239,7 +239,7 @@ class __$$EventModelImplCopyWithImpl<$Res>
       pool: null == pool
           ? _value.pool
           : pool // ignore: cast_nullable_to_non_nullable
-              as int,
+              as String,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -316,7 +316,7 @@ class _$EventModelImpl extends _EventModel {
   /// The pool to which the event belongs.
   @override
   @HiveField(7)
-  final int pool;
+  final String pool;
   @override
   @JsonKey(name: 'created_at')
   @HiveField(8)
@@ -398,7 +398,7 @@ abstract class _EventModel extends EventModel {
       @JsonKey(name: 'stream_id') @HiveField(4) required final String streamId,
       @HiveField(5) required final int version,
       @HiveField(6) required final String name,
-      @HiveField(7) required final int pool,
+      @HiveField(7) required final String pool,
       @JsonKey(name: 'created_at')
       @HiveField(8)
       required final DateTime createdAt,
@@ -450,7 +450,7 @@ abstract class _EventModel extends EventModel {
   /// The pool to which the event belongs.
   @override
   @HiveField(7)
-  int get pool;
+  String get pool;
   @override
   @JsonKey(name: 'created_at')
   @HiveField(8)

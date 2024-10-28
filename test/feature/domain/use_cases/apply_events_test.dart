@@ -14,7 +14,7 @@ import 'apply_events_test.mocks.dart';
 
 class TestEventHandler implements EventHandler<TestEventData> {
   @override
-  Future<void> call(String streamId, int pool, TestEventData data) async {}
+  Future<void> call(String streamId, String pool, TestEventData data) async {}
 }
 
 class TestEventData extends Equatable implements EventData {
@@ -61,11 +61,11 @@ void main() {
     dataGenerators: {
       tEventName: (Map<String, dynamic> json) => TestEventData.fromJson(json),
     },
-    pool: 1,
+    pool: '1',
   );
 
   const tStream = 'stream';
-  const tPool = 1;
+  const tPool = '1';
   const Map<String, dynamic> tRawData = {
     'hello': 'world',
   };
@@ -85,7 +85,7 @@ void main() {
       eventId: 'eventId-merged',
       streamId: 'something',
       name: tEventName,
-      pool: 1,
+      pool: '1',
       version: 1,
       applied: true,
       data: {},

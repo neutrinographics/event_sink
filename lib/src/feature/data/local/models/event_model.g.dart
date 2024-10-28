@@ -24,7 +24,7 @@ class EventModelImplAdapter extends TypeAdapter<_$EventModelImpl> {
       streamId: fields[4] as String,
       version: fields[5] as int,
       name: fields[6] as String,
-      pool: fields[7] as int,
+      pool: fields[7] as String,
       createdAt: fields[8] as DateTime,
       data: (fields[9] as Map).cast<String, dynamic>(),
     );
@@ -80,7 +80,7 @@ _$EventModelImpl _$$EventModelImplFromJson(Map<String, dynamic> json) =>
       streamId: json['stream_id'] as String,
       version: (json['version'] as num).toInt(),
       name: json['name'] as String,
-      pool: (json['pool'] as num).toInt(),
+      pool: json['pool'] as String,
       createdAt: DateTime.parse(json['created_at'] as String),
       data: json['data'] as Map<String, dynamic>,
     );

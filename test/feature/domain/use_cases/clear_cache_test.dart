@@ -39,7 +39,7 @@ void main() {
     'Should clear the cache for a single pool',
     () async {
       // arrange
-      const tPool = 1;
+      const tPool = '1';
       const tParams = ClearCacheParams(pool: tPool);
       when(mockEventRepository.clearPoolCache(tPool))
           .thenAnswer((_) async => const Right(null));

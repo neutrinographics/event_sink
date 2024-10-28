@@ -22,7 +22,7 @@ class ClearCache extends UseCase<void, ClearCacheParams> {
 
 class ClearCacheParams extends Equatable {
   /// Optionally specify which pool should be cleared, otherwise all pools will be cleared.
-  final int? pool;
+  final String? pool;
 
   const ClearCacheParams({this.pool});
 

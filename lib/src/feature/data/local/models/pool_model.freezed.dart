@@ -17,7 +17,7 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$PoolModel {
   @HiveField(0)
-  int get id => throw _privateConstructorUsedError;
+  String get id => throw _privateConstructorUsedError;
   @HiveField(1)
   List<String> get eventIds => throw _privateConstructorUsedError;
 
@@ -33,7 +33,7 @@ abstract class $PoolModelCopyWith<$Res> {
   factory $PoolModelCopyWith(PoolModel value, $Res Function(PoolModel) then) =
       _$PoolModelCopyWithImpl<$Res, PoolModel>;
   @useResult
-  $Res call({@HiveField(0) int id, @HiveField(1) List<String> eventIds});
+  $Res call({@HiveField(0) String id, @HiveField(1) List<String> eventIds});
 }
 
 /// @nodoc
@@ -58,7 +58,7 @@ class _$PoolModelCopyWithImpl<$Res, $Val extends PoolModel>
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as int,
+              as String,
       eventIds: null == eventIds
           ? _value.eventIds
           : eventIds // ignore: cast_nullable_to_non_nullable
@@ -75,7 +75,7 @@ abstract class _$$PoolModelImplCopyWith<$Res>
       __$$PoolModelImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({@HiveField(0) int id, @HiveField(1) List<String> eventIds});
+  $Res call({@HiveField(0) String id, @HiveField(1) List<String> eventIds});
 }
 
 /// @nodoc
@@ -98,7 +98,7 @@ class __$$PoolModelImplCopyWithImpl<$Res>
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as int,
+              as String,
       eventIds: null == eventIds
           ? _value._eventIds
           : eventIds // ignore: cast_nullable_to_non_nullable
@@ -119,7 +119,7 @@ class _$PoolModelImpl extends _PoolModel {
 
   @override
   @HiveField(0)
-  final int id;
+  final String id;
   final List<String> _eventIds;
   @override
   @HiveField(1)
@@ -158,13 +158,13 @@ class _$PoolModelImpl extends _PoolModel {
 
 abstract class _PoolModel extends PoolModel {
   factory _PoolModel(
-      {@HiveField(0) required final int id,
+      {@HiveField(0) required final String id,
       @HiveField(1) required final List<String> eventIds}) = _$PoolModelImpl;
   _PoolModel._() : super._();
 
   @override
   @HiveField(0)
-  int get id;
+  String get id;
   @override
   @HiveField(1)
   List<String> get eventIds;
