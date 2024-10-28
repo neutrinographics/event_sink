@@ -7,7 +7,7 @@
   "stream_id": "stream-id",
   "version": 1,
   "name": "create_group",
-  "pool": 1,
+  "pool": "1",
   "data": {
     "group_stream_id": "group-stream-id"
   }

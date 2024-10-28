@@ -11,7 +11,7 @@ class PoolModel extends HiveObject with _$PoolModel {
 
   @HiveType(typeId: 2)
   factory PoolModel({
-    @HiveField(0) required int id,
+    @HiveField(0) required String id,
     @HiveField(1) required List<String> eventIds,
   }) = _PoolModel;
 }

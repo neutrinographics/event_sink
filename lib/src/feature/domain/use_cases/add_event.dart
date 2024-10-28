@@ -21,7 +21,7 @@ class AddEvent extends UseCase<void, AddEventParams> {
 
 class AddEventParams extends Equatable {
   final EventInfo<EventData> event;
-  final int pool;
+  final String pool;
 
   const AddEventParams({required this.event, required this.pool});
 

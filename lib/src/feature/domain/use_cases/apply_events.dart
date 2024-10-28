@@ -53,7 +53,7 @@ class ApplyEvents extends UseCase<void, ApplyEventsParams> {
 }
 
 class ApplyEventsParams {
-  final int pool;
+  final String pool;
   final Map<String, EventHandler> handlers;
   final Map<String, EventDataGenerator> dataGenerators;
 

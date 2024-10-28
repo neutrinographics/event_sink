@@ -9,5 +9,5 @@ abstract class EventHandler<P extends EventData> {
   /// Processes the [data] of an event that has entered the stream identified by [streamId].
   /// This is usually when you'll update your application state in response to the event.
   /// The [pool] is the larger collection to which the event belongs.
-  Future<void> call(String streamId, int pool, P data);
+  Future<void> call(String streamId, String pool, P data);
 }

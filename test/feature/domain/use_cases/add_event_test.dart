@@ -44,7 +44,7 @@ void main() {
     useCase = AddEvent(eventRepository: mockEventRepository);
   });
 
-  const tPool = 1;
+  const tPool = '1';
   const tEvent = MockEvent(
     streamId: 'streamId',
     data: MockEventData(),

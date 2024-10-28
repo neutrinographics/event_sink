@@ -25,19 +25,19 @@ abstract class EventLocalDataSource {
   Future<List<EventModel>> getAllEvents();
 
   /// Returns the number of events in the pool.
-  Future<int> getPoolSize(int poolId);
+  Future<int> getPoolSize(String poolId);
 
   /// Returns a sorted list of events from the pool.
-  Future<List<EventModel>> getPooledEvents(int poolId);
+  Future<List<EventModel>> getPooledEvents(String poolId);
 
   /// Returns a list of all cached pools.
-  Future<List<int>> getPools();
+  Future<List<String>> getPools();
 
   /// Clears the cache in all pools.
   Future<void> clear();
 
   /// Clears the cache in a single pool.
-  Future<void> clearPool(int poolId);
+  Future<void> clearPool(String poolId);
 }
 
 class EventLocalDataSourceImpl extends EventLocalDataSource {
@@ -46,7 +46,7 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
 
   /// A cache of pools of events.
   /// This allows us to manage events from different pools.
-  final CleanCache<int, PoolModel> poolCache;
+  final CleanCache<String, PoolModel> poolCache;
 
   EventLocalDataSourceImpl({required this.eventCache, required this.poolCache});
 
@@ -99,7 +99,7 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
   }
 
   @override
-  Future<List<EventModel>> getPooledEvents(int poolId) async {
+  Future<List<EventModel>> getPooledEvents(String poolId) async {
     final List<EventModel> models = [];
 
     final PoolModel pool = await _readPool(poolId);
@@ -112,7 +112,7 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
   }
 
   @override
-  Future<List<int>> getPools() => poolCache.keys();
+  Future<List<String>> getPools() => poolCache.keys();
 
   @override
   Future<List<EventModel>> getAllEvents() async {
@@ -128,7 +128,7 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
   }
 
   /// Returns the pool data or an empty list if the pool is empty.
-  Future<PoolModel> _readPool(int poolId) async {
+  Future<PoolModel> _readPool(String poolId) async {
     final noPools = (await poolCache.keys()).isEmpty;
     if (noPools) {
       await _indexPools();
@@ -147,7 +147,7 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
 
   Future<void> _indexPools() async {
     final events = await eventCache.values();
-    final pools = <int, List<String>>{};
+    final pools = <String, List<String>>{};
 
     for (final event in events) {
       final pool = pools[event.pool] ?? [];
@@ -205,13 +205,13 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
   }
 
   @override
-  Future<int> getPoolSize(int poolId) async {
+  Future<int> getPoolSize(String poolId) async {
     final pool = await _readPool(poolId);
     return pool.eventIds.length;
   }
 
   @override
-  Future<void> clearPool(int poolId) async {
+  Future<void> clearPool(String poolId) async {
     final pool = await _readPool(poolId);
     for (final id in pool.eventIds) {
       await eventCache.delete(id);

@@ -6,7 +6,8 @@ abstract class EventRemoteAdapter {
   Future<List<RemoteEventModel>> pull();
 
   /// Pushes events to the remote source.
-  Future<void> push(List<RemoteEventModel> events);
+  /// Returns the newly created remote events.
+  Future<List<RemoteEventModel>> push(List<RemoteNewEventModel> events);
 }
 
 mixin RemoteAdapterProperties {

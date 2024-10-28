@@ -5,9 +5,9 @@ import 'package:event_sink/src/core/error/exception.dart';
 import 'package:event_sink/src/core/error/failure.dart';
 import 'package:event_sink/src/core/time/time_info.dart';
 import 'package:event_sink/src/event_data.dart';
+import 'package:event_sink/src/event_remote_adapter.dart';
 import 'package:event_sink/src/feature/data/local/data_sources/event_local_data_source.dart';
 import 'package:event_sink/src/feature/data/local/models/event_model.dart';
-import 'package:event_sink/src/feature/data/remote/data_sources/event_remote_data_source.dart';
 import 'package:event_sink/src/feature/data/remote/models/remote_event_model.dart';
 import 'package:event_sink/src/feature/domain/entities/event_info.dart';
 import 'package:event_sink/src/feature/domain/entities/event_stub.dart';
@@ -15,29 +15,23 @@ import 'package:event_sink/src/feature/domain/repositories/event_repository.dart
 
 class EventRepositoryImpl extends EventRepository {
   final EventLocalDataSource localDataSource;
-  final EventRemoteDataSource remoteDataSource;
   final IdGenerator idGenerator;
   final TimeInfo timeInfo;
 
   EventRepositoryImpl({
     required this.localDataSource,
-    required this.remoteDataSource,
     required this.idGenerator,
     required this.timeInfo,
   });
 
   @override
-  Future<Either<Failure, void>> fetch(
-    Uri host,
-    int pool, {
-    String? authToken,
+  Future<Either<Failure, void>> fetch({
+    required EventRemoteAdapter remoteAdapter,
+    required String pool,
   }) async {
     List<RemoteEventModel> remoteEvents;
     try {
-      remoteEvents = await remoteDataSource.getEvents(
-        host: host,
-        token: authToken,
-      );
+      remoteEvents = await remoteAdapter.pull();
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     }
@@ -76,10 +70,9 @@ class EventRepositoryImpl extends EventRepository {
   }
 
   @override
-  Future<Either<Failure, void>> push(
-    Uri host,
-    int pool, {
-    String? authToken,
+  Future<Either<Failure, void>> push({
+    required EventRemoteAdapter remoteAdapter,
+    required String pool,
   }) async {
     List<EventModel> events;
 
@@ -93,15 +86,12 @@ class EventRepositoryImpl extends EventRepository {
     for (var e in events) {
       if (e.synced) continue;
       try {
-        final syncedEvent = await remoteDataSource.createEvent(
-          e.toNewRemote(),
-          host: host,
-          token: authToken,
-        );
+        // TODO: refactor this to use a batch push
+        final syncedEvent = await remoteAdapter.push([e.toNewRemote()]);
 
         eventsToAdd.add(
           EventModel.fromRemote(
-            remoteEvent: syncedEvent,
+            remoteEvent: syncedEvent.first,
             pool: pool,
           ).copyWith(applied: e.applied, createdAt: timeInfo.now()),
         );
@@ -124,7 +114,7 @@ class EventRepositoryImpl extends EventRepository {
   }
 
   @override
-  Future<Either<Failure, void>> rebase(int pool) async {
+  Future<Either<Failure, void>> rebase(String pool) async {
     List<EventModel> events;
     try {
       events = await localDataSource.getPooledEvents(pool);
@@ -193,7 +183,7 @@ class EventRepositoryImpl extends EventRepository {
 
   @override
   Future<Either<Failure, void>> add(
-      EventInfo<EventData> event, int pool) async {
+      EventInfo<EventData> event, String pool) async {
     try {
       final streamVersion = await _getStreamVersion(event.streamId, pool);
       final poolSize = await localDataSource.getPoolSize(pool);
@@ -218,7 +208,7 @@ class EventRepositoryImpl extends EventRepository {
   /// Returns the latest version of the event stream.
   /// This will throw a [CacheException] if the stream cannot be loaded.
   /// TODO: this should be updated to be more performant.
-  Future<int> _getStreamVersion(String streamId, int pool) async {
+  Future<int> _getStreamVersion(String streamId, String pool) async {
     List<EventModel> streamEvents;
 
     streamEvents = await localDataSource.getPooledEvents(pool);
@@ -232,7 +222,7 @@ class EventRepositoryImpl extends EventRepository {
   }
 
   @override
-  Future<Either<Failure, List<EventStub>>> list(int pool) async {
+  Future<Either<Failure, List<EventStub>>> list(String pool) async {
     List<EventModel> models;
     try {
       models = await localDataSource.getPooledEvents(pool);
@@ -288,7 +278,7 @@ class EventRepositoryImpl extends EventRepository {
   }
 
   @override
-  Future<Either<Failure, void>> clearPoolCache(int pool) async {
+  Future<Either<Failure, void>> clearPoolCache(String pool) async {
     try {
       await localDataSource.clearPool(pool);
       return const Right(null);
