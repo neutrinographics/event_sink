@@ -19,7 +19,7 @@ class EventModelImplAdapter extends TypeAdapter<_$EventModelImpl> {
     return _$EventModelImpl(
       eventId: fields[0] as String,
       order: fields[1] as int,
-      synced: fields[2] as bool,
+      synced: (fields[2] as Map).cast<String, bool>(),
       applied: fields[3] as bool,
       streamId: fields[4] as String,
       version: fields[5] as int,
@@ -38,8 +38,6 @@ class EventModelImplAdapter extends TypeAdapter<_$EventModelImpl> {
       ..write(obj.eventId)
       ..writeByte(1)
       ..write(obj.order)
-      ..writeByte(2)
-      ..write(obj.synced)
       ..writeByte(3)
       ..write(obj.applied)
       ..writeByte(4)
@@ -52,6 +50,8 @@ class EventModelImplAdapter extends TypeAdapter<_$EventModelImpl> {
       ..write(obj.pool)
       ..writeByte(8)
       ..write(obj.createdAt)
+      ..writeByte(2)
+      ..write(obj.synced)
       ..writeByte(9)
       ..write(obj.data);
   }
@@ -75,7 +75,10 @@ _$EventModelImpl _$$EventModelImplFromJson(Map<String, dynamic> json) =>
     _$EventModelImpl(
       eventId: json['event_id'] as String,
       order: (json['sort_order'] as num).toInt(),
-      synced: json['synced'] as bool? ?? false,
+      synced: (json['synced'] as Map<String, dynamic>?)?.map(
+            (k, e) => MapEntry(k, e as bool),
+          ) ??
+          const {},
       applied: json['applied'] as bool? ?? false,
       streamId: json['stream_id'] as String,
       version: (json['version'] as num).toInt(),

@@ -12,6 +12,7 @@ import 'package:event_sink/src/feature/data/local/models/event_model.dart';
 import 'package:event_sink/src/feature/data/remote/models/remote_event_model.dart';
 import 'package:event_sink/src/feature/data/repositories/event_repository_impl.dart';
 import 'package:event_sink/src/feature/domain/entities/event_info.dart';
+import 'package:event_sink/src/feature/extensions.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:mockito/annotations.dart';
@@ -51,6 +52,8 @@ void main() {
   late MockIdGenerator mockIdGenerator;
   late MockTimeInfo mockTimeInfo;
 
+  const String tRemoteAdapterName = 'test';
+
   setUp(() {
     mockEventRemoteAdapter = MockEventRemoteAdapter();
     mockEventLocalDataSource = MockEventLocalDataSource();
@@ -61,6 +64,10 @@ void main() {
       idGenerator: mockIdGenerator,
       timeInfo: mockTimeInfo,
     );
+
+    repository.init(remoteAdapters: {
+      tRemoteAdapterName: mockEventRemoteAdapter,
+    });
   });
 
   group('fetch', () {
@@ -70,20 +77,25 @@ void main() {
 
     final baseRemoteEvent =
         RemoteEventModel.fromJson(json.decode(fixture('remote_event.json')));
-    final baseLocalEvent =
-        EventModel.fromRemote(remoteEvent: baseRemoteEvent, pool: '1')
-            .copyWith(synced: false, createdAt: tToday);
-    final tSyncedLocalEvent =
-        baseLocalEvent.copyWith(eventId: 'synced', order: 1, synced: true);
+    final baseLocalEvent = EventModel.fromRemote(
+            remoteEvent: baseRemoteEvent,
+            remoteAdapterName: tRemoteAdapterName,
+            pool: '1')
+        .copyWith(synced: {tRemoteAdapterName: false}, createdAt: tToday);
+    final tSyncedLocalEvent = baseLocalEvent.copyWith(
+        eventId: 'synced', order: 1, synced: {tRemoteAdapterName: true});
     final tUnSyncedLocalEvent = baseLocalEvent.copyWith(
-        eventId: 'un-synced', order: 1, synced: false, applied: true);
+        eventId: 'un-synced',
+        order: 1,
+        synced: {tRemoteAdapterName: false},
+        applied: true);
     final List<EventModel> tLocalEvents = [
       tSyncedLocalEvent,
       baseLocalEvent.copyWith(eventId: 'un-synced'),
       baseLocalEvent.copyWith(
           eventId: 'synced',
           order: 9,
-          synced: true,
+          synced: {tRemoteAdapterName: true},
           streamId: 'a-different-stream'),
     ];
     final List<RemoteEventModel> tRemoteEvents = [
@@ -111,7 +123,7 @@ void main() {
             .thenAnswer((_) async => tUnSyncedLocalEvent);
         // act
         final result = await repository.fetch(
-          remoteAdapter: mockEventRemoteAdapter,
+          remoteAdapterName: tRemoteAdapterName,
           pool: tPool,
         );
         // assert
@@ -120,12 +132,12 @@ void main() {
         final expectedNewEvent = baseLocalEvent.copyWith(
           eventId: '2',
           order: 2,
-          synced: true,
+          synced: {tRemoteAdapterName: true},
         );
         final expectedUpdatedEvent = baseLocalEvent.copyWith(
           eventId: 'un-synced',
           order: 3,
-          synced: true,
+          synced: {tRemoteAdapterName: true},
           applied: tUnSyncedLocalEvent.applied,
         );
         verify(
@@ -154,7 +166,7 @@ void main() {
 
         // act
         final result = await repository.fetch(
-          remoteAdapter: mockEventRemoteAdapter,
+          remoteAdapterName: tRemoteAdapterName,
           pool: tPool,
         );
         // assert
@@ -173,7 +185,7 @@ void main() {
         when(mockEventRemoteAdapter.pull()).thenThrow(ServerException());
         // act
         final result = await repository.fetch(
-          remoteAdapter: mockEventRemoteAdapter,
+          remoteAdapterName: tRemoteAdapterName,
           pool: tPool,
         );
         // assert
@@ -190,7 +202,10 @@ void main() {
         .copyWith(createdAt: tTime);
     final List<EventModel> tCachedEvents = [
       baseEvent,
-      baseEvent.copyWith(synced: true, order: 1, streamId: "synced-stream"),
+      baseEvent.copyWith(
+          synced: {tRemoteAdapterName: true},
+          order: 1,
+          streamId: "synced-stream"),
     ];
     final List<RemoteEventModel> tRemoteEvents = [
       RemoteEventModel(
@@ -216,12 +231,12 @@ void main() {
             .thenAnswer((_) async => [remoteEvents.removeAt(0)]);
         // act
         final result = await repository.push(
-          remoteAdapter: mockEventRemoteAdapter,
+          remoteAdapterName: tRemoteAdapterName,
           pool: tPool,
         );
         // assert
         for (var e in tCachedEvents) {
-          if (e.synced == true) {
+          if (e.isSyncedWith(tRemoteAdapterName) == true) {
             verifyNever(mockEventRemoteAdapter.push([e.toNewRemote()]));
           } else {
             verify(mockEventRemoteAdapter.push([e.toNewRemote()]));
@@ -230,7 +245,9 @@ void main() {
         // verify events were updated with their remote id
         verify(
           mockEventLocalDataSource.addEvents(
-            [baseEvent.copyWith(order: 2, synced: true)],
+            [
+              baseEvent.copyWith(order: 2, synced: {tRemoteAdapterName: true})
+            ],
           ),
         );
         expect(result, equals(const Right(null)));
@@ -245,7 +262,7 @@ void main() {
             .thenThrow(Exception());
         // act
         final result = await repository.push(
-          remoteAdapter: mockEventRemoteAdapter,
+          remoteAdapterName: tRemoteAdapterName,
           pool: tPool,
         );
         // assert
@@ -262,7 +279,7 @@ void main() {
         when(mockEventRemoteAdapter.push(any)).thenThrow(ServerException());
         // act
         final result = await repository.push(
-          remoteAdapter: mockEventRemoteAdapter,
+          remoteAdapterName: tRemoteAdapterName,
           pool: tPool,
         );
         // assert
@@ -284,7 +301,7 @@ void main() {
 
         // act
         final result = await repository.push(
-          remoteAdapter: mockEventRemoteAdapter,
+          remoteAdapterName: tRemoteAdapterName,
           pool: tPool,
         );
         // assert
@@ -301,7 +318,7 @@ void main() {
         when(mockEventRemoteAdapter.push(any)).thenThrow(OutOfSyncException());
         // act
         final result = await repository.push(
-          remoteAdapter: mockEventRemoteAdapter,
+          remoteAdapterName: tRemoteAdapterName,
           pool: tPool,
         );
         // assert
@@ -323,19 +340,19 @@ void main() {
       baseEvent.copyWith(
           streamId: 'first',
           order: 11,
-          synced: true,
+          synced: {tRemoteAdapterName: true},
           version: 1,
           eventId: '1.1'),
       baseEvent.copyWith(
           streamId: 'first',
           order: 12,
-          synced: true,
+          synced: {tRemoteAdapterName: true},
           version: 2,
           eventId: '1.2'),
       baseEvent.copyWith(
           streamId: 'first',
           order: 13,
-          synced: true,
+          synced: {tRemoteAdapterName: true},
           version: 3,
           eventId: '1.3'),
     ];
@@ -351,19 +368,19 @@ void main() {
       baseEvent.copyWith(
           streamId: 'second',
           order: 21,
-          synced: true,
+          synced: {tRemoteAdapterName: true},
           version: 1,
           eventId: '2.1'),
       baseEvent.copyWith(
           streamId: 'second',
           order: 22,
-          synced: true,
+          synced: {tRemoteAdapterName: true},
           version: 2,
           eventId: '2.2'),
       baseEvent.copyWith(
           streamId: 'second',
           order: 23,
-          synced: true,
+          synced: {tRemoteAdapterName: true},
           version: 3,
           eventId: '2.3'),
     ];
@@ -461,7 +478,7 @@ void main() {
           baseEvent.copyWith(
             version: 32,
             order: 1,
-            synced: true,
+            synced: {tRemoteAdapterName: true},
           )
         ];
         when(mockEventLocalDataSource.getPooledEvents(any)).thenAnswer(

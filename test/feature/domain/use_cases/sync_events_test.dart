@@ -33,18 +33,20 @@ void main() {
     );
   });
 
+  const tRemoteAdapterName = 'test';
+
   test(
     'should sync the events',
     () async {
       // arrange
       when(mockEventRepository.fetch(
-        remoteAdapter: mockEventRemoteAdapter,
+        remoteAdapterName: tRemoteAdapterName,
         pool: tPool,
       )).thenAnswer((_) async => const Right(null));
       when(mockEventRepository.rebase(tPool))
           .thenAnswer((_) async => const Right(null));
       when(mockEventRepository.push(
-        remoteAdapter: mockEventRemoteAdapter,
+        remoteAdapterName: tRemoteAdapterName,
         pool: tPool,
       )).thenAnswer((_) async => const Right(null));
       // act
@@ -52,7 +54,7 @@ void main() {
       // assert
       expect(result, const Right(null));
       verify(mockEventRepository.push(
-        remoteAdapter: mockEventRemoteAdapter,
+        remoteAdapterName: tRemoteAdapterName,
         pool: tPool,
       ));
     },
@@ -63,7 +65,7 @@ void main() {
     () async {
       // arrange
       when(mockEventRepository.fetch(
-        remoteAdapter: mockEventRemoteAdapter,
+        remoteAdapterName: tRemoteAdapterName,
         pool: tPool,
       )).thenAnswer((_) async => const Left(ServerFailure()));
       // act
@@ -71,7 +73,7 @@ void main() {
       // assert
       expect(result, const Left(ServerFailure()));
       verify(mockEventRepository.fetch(
-        remoteAdapter: mockEventRemoteAdapter,
+        remoteAdapterName: tRemoteAdapterName,
         pool: tPool,
       ));
       verifyNoMoreInteractions(mockEventRepository);
@@ -83,7 +85,7 @@ void main() {
     () async {
       // arrange
       when(mockEventRepository.fetch(
-        remoteAdapter: mockEventRemoteAdapter,
+        remoteAdapterName: tRemoteAdapterName,
         pool: tPool,
       )).thenAnswer((_) async => const Left(CacheFailure()));
       // act
@@ -91,7 +93,7 @@ void main() {
       // assert
       expect(result, const Left(CacheFailure()));
       verify(mockEventRepository.fetch(
-        remoteAdapter: mockEventRemoteAdapter,
+        remoteAdapterName: tRemoteAdapterName,
         pool: tPool,
       ));
       verifyNoMoreInteractions(mockEventRepository);
@@ -103,7 +105,7 @@ void main() {
     () async {
       // arrange
       when(mockEventRepository.fetch(
-        remoteAdapter: mockEventRemoteAdapter,
+        remoteAdapterName: tRemoteAdapterName,
         pool: tPool,
       )).thenAnswer((_) async => const Right(null));
       when(mockEventRepository.rebase(tPool))
@@ -113,7 +115,7 @@ void main() {
       // assert
       expect(result, const Left(CacheFailure()));
       verify(mockEventRepository.fetch(
-        remoteAdapter: mockEventRemoteAdapter,
+        remoteAdapterName: tRemoteAdapterName,
         pool: tPool,
       ));
       verify(mockEventRepository.rebase(tPool));
@@ -126,13 +128,13 @@ void main() {
     () async {
       // arrange
       when(mockEventRepository.fetch(
-        remoteAdapter: mockEventRemoteAdapter,
+        remoteAdapterName: tRemoteAdapterName,
         pool: tPool,
       )).thenAnswer((_) async => const Right(null));
       when(mockEventRepository.rebase(tPool))
           .thenAnswer((_) async => const Right(null));
       when(mockEventRepository.push(
-        remoteAdapter: mockEventRemoteAdapter,
+        remoteAdapterName: tRemoteAdapterName,
         pool: tPool,
       )).thenAnswer((_) async => const Left(ServerFailure()));
       // act
@@ -147,13 +149,13 @@ void main() {
     () async {
       // arrange
       when(mockEventRepository.fetch(
-        remoteAdapter: mockEventRemoteAdapter,
+        remoteAdapterName: tRemoteAdapterName,
         pool: tPool,
       )).thenAnswer((_) async => const Right(null));
       when(mockEventRepository.rebase(tPool))
           .thenAnswer((_) async => const Right(null));
       when(mockEventRepository.push(
-        remoteAdapter: mockEventRemoteAdapter,
+        remoteAdapterName: tRemoteAdapterName,
         pool: tPool,
       )).thenAnswer((_) async => const Left(CacheFailure()));
       // act
@@ -174,13 +176,13 @@ void main() {
         const Right(null),
       ];
       when(mockEventRepository.push(
-        remoteAdapter: mockEventRemoteAdapter,
+        remoteAdapterName: tRemoteAdapterName,
         pool: tPool,
       )).thenAnswer(
         (_) async => resultList[pushCallCount++],
       );
       when(mockEventRepository.fetch(
-        remoteAdapter: mockEventRemoteAdapter,
+        remoteAdapterName: tRemoteAdapterName,
         pool: tPool,
       )).thenAnswer((_) async => const Right(null));
       when(mockEventRepository.rebase(tPool))
@@ -190,12 +192,12 @@ void main() {
       // assert
       expect(result, const Right(null));
       verify(mockEventRepository.fetch(
-        remoteAdapter: mockEventRemoteAdapter,
+        remoteAdapterName: tRemoteAdapterName,
         pool: tPool,
       )).called(2);
       verify(mockEventRepository.rebase(tPool)).called(2);
       verify(mockEventRepository.push(
-        remoteAdapter: mockEventRemoteAdapter,
+        remoteAdapterName: tRemoteAdapterName,
         pool: tPool,
       )).called(2);
     },
@@ -206,13 +208,13 @@ void main() {
     () async {
       // arrange
       when(mockEventRepository.fetch(
-        remoteAdapter: mockEventRemoteAdapter,
+        remoteAdapterName: tRemoteAdapterName,
         pool: tPool,
       )).thenAnswer((_) async => const Right(null));
       when(mockEventRepository.rebase(tPool))
           .thenAnswer((_) async => const Right(null));
       when(mockEventRepository.push(
-        remoteAdapter: mockEventRemoteAdapter,
+        remoteAdapterName: tRemoteAdapterName,
         pool: tPool,
       )).thenAnswer((_) async => const Left(OutOfSyncFailure()));
       // act
@@ -220,11 +222,11 @@ void main() {
       // assert
       expectFailure<ServerFailure>(result);
       verify(mockEventRepository.push(
-        remoteAdapter: mockEventRemoteAdapter,
+        remoteAdapterName: tRemoteAdapterName,
         pool: tPool,
       ));
       verify(mockEventRepository.fetch(
-        remoteAdapter: mockEventRemoteAdapter,
+        remoteAdapterName: tRemoteAdapterName,
         pool: tPool,
       ));
       verify(mockEventRepository.rebase(tPool));

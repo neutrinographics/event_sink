@@ -1,8 +1,5 @@
 import 'package:dartz/dartz.dart';
 import 'package:event_sink/event_sink.dart';
-import 'package:event_sink/src/core/error/failure.dart';
-import 'package:event_sink/src/event_data.dart';
-import 'package:event_sink/src/feature/domain/entities/event_info.dart';
 import 'package:event_sink/src/feature/domain/entities/event_stub.dart';
 
 /// This is the contract for reading and writing [Event]s to the repository.
@@ -17,16 +14,22 @@ import 'package:event_sink/src/feature/domain/entities/event_stub.dart';
 /// 2. rebase un-synced events onto new ones from the server
 /// 3. push all un-synced events to the server.
 abstract class EventRepository {
-  /// Downloads events from the [remoteAdapter] and stores it in the device
+  /// Initializes the repository with the remote adapters that it can use.
+  /// This should called once at the start of the application.
+  void init({
+    required Map<String, EventRemoteAdapter> remoteAdapters,
+  });
+
+  /// Downloads events from a remote adapter and stores it in the device
   /// event cache.
   Future<Either<Failure, void>> fetch({
-    required EventRemoteAdapter remoteAdapter,
+    required String remoteAdapterName,
     required String pool,
   });
 
   /// Uploads events to the server that have been generated on this device.
   Future<Either<Failure, void>> push({
-    required EventRemoteAdapter remoteAdapter,
+    required String remoteAdapterName,
     required String pool,
   });
 

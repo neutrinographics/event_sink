@@ -32,7 +32,7 @@ mixin _$EventModel {
 
   /// Indicates if the event has been synced to the server.
   @HiveField(2)
-  bool get synced => throw _privateConstructorUsedError;
+  Map<String, bool> get synced => throw _privateConstructorUsedError;
 
   /// Indicates the event has already been applied to the local aggregate.
   @HiveField(3)
@@ -81,7 +81,7 @@ abstract class $EventModelCopyWith<$Res> {
   $Res call(
       {@JsonKey(name: 'event_id') @HiveField(0) String eventId,
       @JsonKey(name: 'sort_order') @HiveField(1) int order,
-      @HiveField(2) bool synced,
+      @HiveField(2) Map<String, bool> synced,
       @HiveField(3) bool applied,
       @JsonKey(name: 'stream_id') @HiveField(4) String streamId,
       @HiveField(5) int version,
@@ -129,7 +129,7 @@ class _$EventModelCopyWithImpl<$Res, $Val extends EventModel>
       synced: null == synced
           ? _value.synced
           : synced // ignore: cast_nullable_to_non_nullable
-              as bool,
+              as Map<String, bool>,
       applied: null == applied
           ? _value.applied
           : applied // ignore: cast_nullable_to_non_nullable
@@ -173,7 +173,7 @@ abstract class _$$EventModelImplCopyWith<$Res>
   $Res call(
       {@JsonKey(name: 'event_id') @HiveField(0) String eventId,
       @JsonKey(name: 'sort_order') @HiveField(1) int order,
-      @HiveField(2) bool synced,
+      @HiveField(2) Map<String, bool> synced,
       @HiveField(3) bool applied,
       @JsonKey(name: 'stream_id') @HiveField(4) String streamId,
       @HiveField(5) int version,
@@ -217,9 +217,9 @@ class __$$EventModelImplCopyWithImpl<$Res>
           : order // ignore: cast_nullable_to_non_nullable
               as int,
       synced: null == synced
-          ? _value.synced
+          ? _value._synced
           : synced // ignore: cast_nullable_to_non_nullable
-              as bool,
+              as Map<String, bool>,
       applied: null == applied
           ? _value.applied
           : applied // ignore: cast_nullable_to_non_nullable
@@ -259,7 +259,7 @@ class _$EventModelImpl extends _EventModel {
   _$EventModelImpl(
       {@JsonKey(name: 'event_id') @HiveField(0) required this.eventId,
       @JsonKey(name: 'sort_order') @HiveField(1) required this.order,
-      @HiveField(2) this.synced = false,
+      @HiveField(2) final Map<String, bool> synced = const {},
       @HiveField(3) this.applied = false,
       @JsonKey(name: 'stream_id') @HiveField(4) required this.streamId,
       @HiveField(5) required this.version,
@@ -267,7 +267,8 @@ class _$EventModelImpl extends _EventModel {
       @HiveField(7) required this.pool,
       @JsonKey(name: 'created_at') @HiveField(8) required this.createdAt,
       @HiveField(9) required final Map<String, dynamic> data})
-      : _data = data,
+      : _synced = synced,
+        _data = data,
         super._();
 
   factory _$EventModelImpl.fromJson(Map<String, dynamic> json) =>
@@ -286,10 +287,17 @@ class _$EventModelImpl extends _EventModel {
   final int order;
 
   /// Indicates if the event has been synced to the server.
+  final Map<String, bool> _synced;
+
+  /// Indicates if the event has been synced to the server.
   @override
   @JsonKey()
   @HiveField(2)
-  final bool synced;
+  Map<String, bool> get synced {
+    if (_synced is EqualUnmodifiableMapView) return _synced;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_synced);
+  }
 
   /// Indicates the event has already been applied to the local aggregate.
   @override
@@ -346,7 +354,7 @@ class _$EventModelImpl extends _EventModel {
             other is _$EventModelImpl &&
             (identical(other.eventId, eventId) || other.eventId == eventId) &&
             (identical(other.order, order) || other.order == order) &&
-            (identical(other.synced, synced) || other.synced == synced) &&
+            const DeepCollectionEquality().equals(other._synced, _synced) &&
             (identical(other.applied, applied) || other.applied == applied) &&
             (identical(other.streamId, streamId) ||
                 other.streamId == streamId) &&
@@ -364,7 +372,7 @@ class _$EventModelImpl extends _EventModel {
       runtimeType,
       eventId,
       order,
-      synced,
+      const DeepCollectionEquality().hash(_synced),
       applied,
       streamId,
       version,
@@ -393,7 +401,7 @@ abstract class _EventModel extends EventModel {
   factory _EventModel(
       {@JsonKey(name: 'event_id') @HiveField(0) required final String eventId,
       @JsonKey(name: 'sort_order') @HiveField(1) required final int order,
-      @HiveField(2) final bool synced,
+      @HiveField(2) final Map<String, bool> synced,
       @HiveField(3) final bool applied,
       @JsonKey(name: 'stream_id') @HiveField(4) required final String streamId,
       @HiveField(5) required final int version,
@@ -424,7 +432,7 @@ abstract class _EventModel extends EventModel {
   /// Indicates if the event has been synced to the server.
   @override
   @HiveField(2)
-  bool get synced;
+  Map<String, bool> get synced;
 
   /// Indicates the event has already been applied to the local aggregate.
   @override

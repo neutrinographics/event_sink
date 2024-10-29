@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:event_sink/event_sink.dart';
 import 'package:event_sink/src/event_controller.dart';
+import 'package:event_sink/src/feature/domain/repositories/event_repository.dart';
 import 'injection_container.dart' as ic;
 
 typedef EventDataGenerator = EventData Function(Map<String, dynamic>);
@@ -18,6 +19,7 @@ abstract class EventSink {
   /// Make sure you call this in your app's main function before doing anything else!
   Future<void> init() async {
     await ic.init();
+    ic.sl<EventRepository>().init(remoteAdapters: eventRemoteAdapters);
     _controller = ic.sl<EventController>();
   }
 

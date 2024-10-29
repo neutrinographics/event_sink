@@ -11,7 +11,12 @@ abstract class EventRemoteAdapter {
 }
 
 mixin RemoteAdapterProperties {
+  /// The name of the remote adapter.
+  String get name;
+
+  /// The priority of the remote adapter.
   int get priority;
 
+  /// The pull strategy to apply to the remote events.
   PullStrategy get pullStrategy;
 }
