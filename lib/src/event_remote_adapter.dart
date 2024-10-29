@@ -11,9 +11,6 @@ abstract class EventRemoteAdapter {
 }
 
 mixin RemoteAdapterProperties {
-  /// The name of the remote adapter.
-  String get name;
-
   /// The priority of the remote adapter.
   int get priority;
 
