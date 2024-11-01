@@ -37,8 +37,8 @@ void main() {
   });
 
   group("resolve", () {
-    const firstAdapter = 'adapter';
-    const secondAdapter = 'other-adapter';
+    const firstAdapter = 'first_adapter';
+    const secondAdapter = 'second_adapter';
     final event = EventModel(
       eventId: '1',
       order: 1,
@@ -191,6 +191,37 @@ void main() {
       );
       // assert
       expect(result, existingEvent);
+    });
+
+    test(
+        'should return the remote event if it\'s adapters has an equal priority',
+        () {
+      // arrange
+      final existingEvent = event.copyWith(
+        synced: {
+          firstAdapter: true,
+        },
+        version: 1,
+      );
+      final eventFromAdapter = event.copyWith(
+        synced: {
+          secondAdapter: true,
+        },
+        version: 2,
+      );
+      final remoteAdapters = {
+        firstAdapter: TestAdapter(priority: 1),
+        secondAdapter: TestAdapter(priority: 1),
+      };
+      // act
+      final result = eventResolver.resolve(
+        existingEvent: existingEvent,
+        eventFromAdapter: eventFromAdapter,
+        remoteAdapterName: secondAdapter,
+        remoteAdapters: remoteAdapters,
+      );
+      // assert
+      expect(result, eventFromAdapter);
     });
   });
 }

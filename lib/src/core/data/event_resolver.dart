@@ -21,35 +21,63 @@ class EventResolverImpl implements EventResolver {
     required String remoteAdapterName,
     required Map<String, EventRemoteAdapter> remoteAdapters,
   }) {
-    final newEventRemoteAdapter = remoteAdapters[remoteAdapterName];
-    if (newEventRemoteAdapter == null) {
+    final newEventAdapter = remoteAdapters[remoteAdapterName];
+    if (newEventAdapter == null) {
       throw ArgumentError('Remote Adapter "$remoteAdapterName" not found');
     }
 
-    // RULE 1: if the existing event has not been synced,
-    // return the event from the adapter.
     if (!existingEvent.isSynced()) {
       return eventFromAdapter;
     }
 
-    // RULE 2: if the existing event has been synced with lower priority adapters,
-    // return the event from the adapter.
-    // RULE 3: if the existing event has been synced with higher priority adapters,
-    // return the existing event.
-    final existingEventPriority = newEventRemoteAdapter.priority;
-    final existingEventSyncedWithLowerPriorityAdapters =
-        existingEvent.synced.entries.any((entry) {
-      final adapter = remoteAdapters[entry.key];
-      if (adapter == null) {
-        throw ArgumentError('Remote Adapter "${entry.key}" not found');
-      }
+    if (_isExistingEventSyncedWithEqualPriorityAdapters(
+      existingEvent,
+      newEventAdapter,
+      remoteAdapters,
+    )) {
+      return eventFromAdapter;
+    }
 
-      return adapter.priority < existingEventPriority;
-    });
-    if (existingEventSyncedWithLowerPriorityAdapters) {
+    if (_isExistingEventSyncedWithLowerPriorityAdapters(
+      existingEvent,
+      newEventAdapter,
+      remoteAdapters,
+    )) {
       return eventFromAdapter;
     } else {
       return existingEvent;
     }
+  }
+
+  bool _isExistingEventSyncedWithEqualPriorityAdapters(
+    EventModel existingEvent,
+    EventRemoteAdapter newEventAdapter,
+    Map<String, EventRemoteAdapter> remoteAdapters,
+  ) {
+    return existingEvent.synced.entries.any((entry) {
+      final existingEventAdapter = remoteAdapters[entry.key];
+      if (existingEventAdapter == null) {
+        throw ArgumentError('Remote Adapter "${entry.key}" not found');
+      }
+
+      return existingEventAdapter != newEventAdapter &&
+          existingEventAdapter.priority == newEventAdapter.priority;
+    });
+  }
+
+  bool _isExistingEventSyncedWithLowerPriorityAdapters(
+    EventModel existingEvent,
+    EventRemoteAdapter newEventAdapter,
+    Map<String, EventRemoteAdapter> remoteAdapters,
+  ) {
+    return existingEvent.synced.entries.any((entry) {
+      final existingEventAdapter = remoteAdapters[entry.key];
+      if (existingEventAdapter == null) {
+        throw ArgumentError('Remote Adapter "${entry.key}" not found');
+      }
+
+      return existingEventAdapter != newEventAdapter &&
+          existingEventAdapter.priority < newEventAdapter.priority;
+    });
   }
 }
