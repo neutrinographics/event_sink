@@ -5,6 +5,7 @@ abstract class EventRemoteAdapter {
   PullStrategy get pullStrategy;
 
   /// The priority of the remote adapter.
+  /// higher number means higher priority
   int get priority;
 
   /// Pulls events from the remote source

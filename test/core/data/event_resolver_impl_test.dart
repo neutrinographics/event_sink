@@ -4,8 +4,9 @@ import 'package:flutter_test/flutter_test.dart';
 
 class TestAdapter extends EventRemoteAdapter {
   final int _priority;
-  final PullStrategy _pullStrategy =
-      PullStrategy.rebase; // <-- not needed for this test.
+
+  // not needed for this test.
+  final PullStrategy _pullStrategy = PullStrategy.rebase;
 
   TestAdapter({
     required int priority,
@@ -36,138 +37,160 @@ void main() {
   });
 
   group("resolve", () {
+    const firstAdapter = 'adapter';
+    const secondAdapter = 'other-adapter';
+    final event = EventModel(
+      eventId: '1',
+      order: 1,
+      streamId: '1',
+      version: 1,
+      name: 'name',
+      data: {},
+      createdAt: DateTime.now(),
+      pool: 'pool',
+    );
+
     test(
         'should return the event from the adapter if the existing event has not been synced',
-        () async {
+        () {
       // arrange
-      final existingEvent = EventModel(
-        eventId: '1',
-        order: 1,
-        synced: {},
-        // <-- not synced
-        streamId: '1',
+      final existingEvent = event.copyWith(
+        synced: {}, // <-- not synced
         version: 1,
-        name: 'name',
-        data: {},
-        createdAt: DateTime.now(),
-        pool: 'pool',
       );
-
-      const remoteAdapterName = 'adapter';
-      final eventFromAdapter = EventModel(
-        eventId: '1',
-        order: 1,
-        synced: {
-          'adapter': true,
-        },
-        streamId: '1',
+      final eventFromAdapter = event.copyWith(
+        synced: {firstAdapter: true},
         version: 2,
-        name: 'name',
-        data: {},
-        createdAt: DateTime.now(),
-        pool: 'pool',
       );
-      final remoteAdapters = {'adapter': TestAdapter(priority: 1)};
+      final remoteAdapters = {
+        firstAdapter: TestAdapter(priority: 1),
+      };
       // act
       final result = eventResolver.resolve(
-          existingEvent, eventFromAdapter, remoteAdapterName, remoteAdapters);
+        existingEvent: existingEvent,
+        eventFromAdapter: eventFromAdapter,
+        remoteAdapterName: firstAdapter,
+        remoteAdapters: remoteAdapters,
+      );
       // assert
       expect(result, eventFromAdapter);
     });
 
     test(
-        'should return the event from the adapter if it was synced to a higher priority adapter',
-        () async {
+        'should return the remote event if it\'s adapter has a higher priority than the existing event',
+        () {
       // arrange
-      final existingEvent = EventModel(
-        eventId: '1',
-        order: 1,
+      final existingEvent = event.copyWith(
         synced: {
-          'other-adapter': true, // <-- a lower priority adapter
+          secondAdapter: true, // <-- a lower priority adapter
         },
-        streamId: '1',
         version: 1,
-        name: 'name',
-        data: {},
-        createdAt: DateTime.now(),
-        pool: 'pool',
       );
-
-      const remoteAdapterName = 'adapter';
-      final eventFromAdapter = EventModel(
-        eventId: '1',
-        order: 1,
+      final eventFromAdapter = event.copyWith(
         synced: {
-          'adapter': true,
+          firstAdapter: true,
         },
-        streamId: '1',
         version: 2,
-        name: 'name',
-        data: {},
-        createdAt: DateTime.now(),
-        pool: 'pool',
       );
       final remoteAdapters = {
-        'adapter': TestAdapter(priority: 1),
-        'other-adapter': TestAdapter(priority: 0),
-        // <-- a lower priority adapter
+        firstAdapter: TestAdapter(priority: 1),
+        // a lower priority adapter
+        secondAdapter: TestAdapter(priority: 0),
       };
       // act
       final result = eventResolver.resolve(
-          existingEvent, eventFromAdapter, remoteAdapterName, remoteAdapters);
+        existingEvent: existingEvent,
+        eventFromAdapter: eventFromAdapter,
+        remoteAdapterName: firstAdapter,
+        remoteAdapters: remoteAdapters,
+      );
       // assert
       expect(result, eventFromAdapter);
     });
 
     test('should throw an error if the adapter for the new event was not found',
-        () async {});
+        () {
+      // arrange
+      const nonExistedAdapter = 'non-existed';
+      final existingEvent = event.copyWith(
+        synced: {
+          nonExistedAdapter: true,
+        },
+        version: 1,
+      );
+      final remoteAdapters = {
+        firstAdapter: TestAdapter(priority: 1),
+        secondAdapter: TestAdapter(priority: 0),
+      };
+      // act
+      // assert
+      expect(
+        () => eventResolver.resolve(
+          existingEvent: existingEvent,
+          eventFromAdapter: event,
+          remoteAdapterName: nonExistedAdapter,
+          remoteAdapters: remoteAdapters,
+        ),
+        throwsA(isA<ArgumentError>()),
+      );
+    });
 
     test(
         'should throw an error if the adapter for the existing event was not found',
-        () async {});
+        () {
+      // arrange
+      const nonExistedAdapter = 'non-existed';
+      final existingEvent = event.copyWith(
+        synced: {
+          nonExistedAdapter: true,
+        },
+        version: 1,
+      );
+      final remoteAdapters = {
+        firstAdapter: TestAdapter(priority: 0),
+      };
+      // act
+      // assert
+      expect(
+        () => eventResolver.resolve(
+          existingEvent: existingEvent,
+          eventFromAdapter: event,
+          remoteAdapterName: firstAdapter,
+          remoteAdapters: remoteAdapters,
+        ),
+        throwsA(isA<ArgumentError>()),
+      );
+    });
 
     test(
         'should return the existing event if it was synced to a higher priority adapter',
-        () async {
+        () {
       // arrange
-      // final existingEvent = EventModel(
-      //   eventId: '1',
-      //   order: 1,
-      //   synced: {
-      //     'adapter': true,
-      //   },
-      //   streamId: '1',
-      //   version: 1,
-      //   name: 'name',
-      //   data: {},
-      //   createdAt: DateTime.now(),
-      //   pool: 'pool',
-      // );
-      //
-      // const remoteAdapterName = 'other-adapter';
-      // final eventFromAdapter = EventModel(
-      //   eventId: '1',
-      //   order: 1,
-      //   synced: {
-      //     'other-adapter': true, // <-- a lower priority adapter
-      //   },
-      //   streamId: '1',
-      //   version: 2,
-      //   name: 'name',
-      //   data: {},
-      //   createdAt: DateTime.now(),
-      //   pool: 'pool',
-      // );
-      // final remoteAdapters = {
-      //   'adapter': TestAdapter(priority: 1),
-      //   'other-adapter': TestAdapter(priority: 0),
-      //   // <-- a lower priority adapter
-      // };
-      // // act
-      // final result = eventResolver.resolve(
-      //     existingEvent, eventFromAdapter, remoteAdapterName, remoteAdapters);
-      // // assert
-      // expect(result, existingEvent);
+      final existingEvent = event.copyWith(
+        synced: {
+          firstAdapter: true, // <-- a higher priority adapter
+        },
+        version: 1,
+      );
+      final eventFromAdapter = event.copyWith(
+        synced: {
+          secondAdapter: true,
+        },
+        version: 2,
+      );
+      final remoteAdapters = {
+        firstAdapter: TestAdapter(priority: 1),
+        secondAdapter: TestAdapter(priority: 0),
+      };
+      // act
+      final result = eventResolver.resolve(
+        existingEvent: existingEvent,
+        eventFromAdapter: eventFromAdapter,
+        remoteAdapterName: firstAdapter,
+        remoteAdapters: remoteAdapters,
+      );
+      // assert
+      expect(result, existingEvent);
     });
   });
 }
