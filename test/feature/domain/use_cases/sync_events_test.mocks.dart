@@ -76,8 +76,19 @@ class MockEventRepository extends _i1.Mock implements _i5.EventRepository {
   }
 
   @override
+  void init({required Map<String, _i3.EventRemoteAdapter>? remoteAdapters}) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #init,
+          [],
+          {#remoteAdapters: remoteAdapters},
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
   _i4.Future<_i2.Either<_i3.Failure, void>> fetch({
-    required _i3.EventRemoteAdapter? remoteAdapter,
+    required String? remoteAdapterName,
     required String? pool,
   }) =>
       (super.noSuchMethod(
@@ -85,7 +96,7 @@ class MockEventRepository extends _i1.Mock implements _i5.EventRepository {
           #fetch,
           [],
           {
-            #remoteAdapter: remoteAdapter,
+            #remoteAdapterName: remoteAdapterName,
             #pool: pool,
           },
         ),
@@ -96,7 +107,7 @@ class MockEventRepository extends _i1.Mock implements _i5.EventRepository {
             #fetch,
             [],
             {
-              #remoteAdapter: remoteAdapter,
+              #remoteAdapterName: remoteAdapterName,
               #pool: pool,
             },
           ),
@@ -105,7 +116,7 @@ class MockEventRepository extends _i1.Mock implements _i5.EventRepository {
 
   @override
   _i4.Future<_i2.Either<_i3.Failure, void>> push({
-    required _i3.EventRemoteAdapter? remoteAdapter,
+    required String? remoteAdapterName,
     required String? pool,
   }) =>
       (super.noSuchMethod(
@@ -113,7 +124,7 @@ class MockEventRepository extends _i1.Mock implements _i5.EventRepository {
           #push,
           [],
           {
-            #remoteAdapter: remoteAdapter,
+            #remoteAdapterName: remoteAdapterName,
             #pool: pool,
           },
         ),
@@ -124,7 +135,7 @@ class MockEventRepository extends _i1.Mock implements _i5.EventRepository {
             #push,
             [],
             {
-              #remoteAdapter: remoteAdapter,
+              #remoteAdapterName: remoteAdapterName,
               #pool: pool,
             },
           ),

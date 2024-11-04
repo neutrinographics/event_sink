@@ -1,6 +1,7 @@
 import 'package:clean_cache/clean_cache.dart';
 import 'package:collection/collection.dart';
 import 'package:event_sink/src/feature/data/local/models/event_model.dart';
+import 'package:event_sink/src/feature/extensions.dart';
 
 import '../models/pool_model.dart';
 
@@ -168,19 +169,23 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
   /// Sorts a list of events.
   static void sort(List<EventModel> models) {
     models.sort((a, b) {
+      // TODO: handle the case where an event is synced to multiple remotes
+      final aSynced = a.isSynced();
+      final bSynced = b.isSynced();
+
       // place synced events in front
-      if (a.synced && !b.synced) {
+      if (aSynced && !bSynced) {
         return -1;
       }
-      if (!a.synced && b.synced) {
+      if (!aSynced && bSynced) {
         return 1;
       }
       // sort synced events by order
-      if (a.synced && b.synced) {
+      if (aSynced && bSynced) {
         return a.order - b.order;
       }
       // sort un-synced events by order
-      if (!a.synced && !b.synced) {
+      if (!aSynced && !bSynced) {
         return a.order - b.order;
       }
 

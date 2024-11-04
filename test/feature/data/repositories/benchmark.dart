@@ -6,7 +6,6 @@ import 'package:clock/clock.dart';
 import 'package:event_sink/src/core/data/cache.dart';
 import 'package:event_sink/src/core/data/id_generator.dart';
 import 'package:event_sink/src/core/time/time_info.dart';
-import 'package:event_sink/src/event_remote_adapter.dart';
 import 'package:event_sink/src/feature/data/local/data_sources/event_local_data_source.dart';
 import 'package:event_sink/src/feature/data/local/models/event_model.dart';
 import 'package:event_sink/src/feature/data/local/models/pool_model.dart';
@@ -25,12 +24,11 @@ import 'benchmark.mocks.dart';
 
 /// This benchmark is used to measure the performance of the EventRepositoryImpl.fetch method.
 /// You need to provide a large number of events in the fixture file, fixtures/ephemeral/many-events.json.
-@GenerateMocks([EventRemoteAdapter, EventRemoteDataSource])
+@GenerateMocks([EventRemoteDataSource])
 void main() {
   late List<RemoteEventModel> events;
   late EventRepositoryImpl repository;
   late EventLocalDataSourceImpl localDataSource;
-  late MockEventRemoteAdapter mockRemoteAdapter;
   late MockEventRemoteDataSource mockRemoteDataSource;
 
   setUp(() async {
@@ -53,7 +51,6 @@ void main() {
       eventCache: eventCache,
       poolCache: MemoryCache(),
     );
-    mockRemoteAdapter = MockEventRemoteAdapter();
     mockRemoteDataSource = MockEventRemoteDataSource();
     IdGeneratorImpl idGenerator = IdGeneratorImpl(const Uuid());
     TimeInfoImpl timeInfo = TimeInfoImpl(const Clock());
@@ -76,7 +73,7 @@ void main() {
       // act
       final stopwatch = Stopwatch()..start();
       await repository.fetch(
-        remoteAdapter: mockRemoteAdapter,
+        remoteAdapterName: 'test',
         pool: tPool,
       );
       stopwatch.stop();
