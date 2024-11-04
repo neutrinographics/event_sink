@@ -30,7 +30,7 @@ class EventResolverImpl implements EventResolver {
       return eventFromAdapter;
     }
 
-    if (_isExistingEventSyncedWithEqualPriorityAdapters(
+    if (_existingEventHasEqualPriority(
       existingEvent,
       newEventAdapter,
       remoteAdapters,
@@ -38,7 +38,7 @@ class EventResolverImpl implements EventResolver {
       return eventFromAdapter;
     }
 
-    if (_isExistingEventSyncedWithLowerPriorityAdapters(
+    if (_existingEventHasLowerPriority(
       existingEvent,
       newEventAdapter,
       remoteAdapters,
@@ -49,9 +49,10 @@ class EventResolverImpl implements EventResolver {
     }
   }
 
-  bool _isExistingEventSyncedWithEqualPriorityAdapters(
+  /// The existing event was synced to an adapter with the same priority as the compared adapter.
+  bool _existingEventHasEqualPriority(
     EventModel existingEvent,
-    EventRemoteAdapter newEventAdapter,
+    EventRemoteAdapter comparedAdapter,
     Map<String, EventRemoteAdapter> remoteAdapters,
   ) {
     return existingEvent.synced.entries.any((entry) {
@@ -60,14 +61,15 @@ class EventResolverImpl implements EventResolver {
         throw ArgumentError('Remote Adapter "${entry.key}" not found');
       }
 
-      return existingEventAdapter != newEventAdapter &&
-          existingEventAdapter.priority == newEventAdapter.priority;
+      return existingEventAdapter != comparedAdapter &&
+          existingEventAdapter.priority == comparedAdapter.priority;
     });
   }
 
-  bool _isExistingEventSyncedWithLowerPriorityAdapters(
+  /// The existing event was synced to an adapter with lower priority than the compared adapter.
+  bool _existingEventHasLowerPriority(
     EventModel existingEvent,
-    EventRemoteAdapter newEventAdapter,
+    EventRemoteAdapter comparedAdapter,
     Map<String, EventRemoteAdapter> remoteAdapters,
   ) {
     return existingEvent.synced.entries.any((entry) {
@@ -76,8 +78,8 @@ class EventResolverImpl implements EventResolver {
         throw ArgumentError('Remote Adapter "${entry.key}" not found');
       }
 
-      return existingEventAdapter != newEventAdapter &&
-          existingEventAdapter.priority < newEventAdapter.priority;
+      return existingEventAdapter != comparedAdapter &&
+          existingEventAdapter.priority < comparedAdapter.priority;
     });
   }
 }
