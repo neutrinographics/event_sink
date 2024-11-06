@@ -24,7 +24,6 @@ class EventSorterImpl implements EventSorter {
         final aSynced = a.isSynced();
         final bSynced = b.isSynced();
 
-        // place synced events in front
         if (aSynced && !bSynced) {
           return -1;
         }
@@ -32,33 +31,47 @@ class EventSorterImpl implements EventSorter {
           return 1;
         }
 
-        // sort synced events by order
         if (aSynced && bSynced) {
-          // place higher priority synced events in front
-          final aPriority = Map.fromEntries(remoteAdapters.entries.where(
-            (entry) => a.synced.containsKey(entry.key),
-          )).values.map<int>((e) => e.priority).max;
-          final bPriority = Map.fromEntries(remoteAdapters.entries.where(
-            (entry) => b.synced.containsKey(entry.key),
-          )).values.map<int>((e) => e.priority).max;
+          final aPriority = _getHighestPriority(a, remoteAdapters);
+          final bPriority = _getHighestPriority(b, remoteAdapters);
 
           final priorityCompare = -aPriority.compareTo(bPriority);
+          final orderCompare = a.order.compareTo(b.order);
+
+          if (priorityCompare == 0 && orderCompare == 0) {
+            return -a.createdAt.compareTo(b.createdAt);
+          }
+
           if (priorityCompare == 0) {
-            return a.order.compareTo(b.order);
+            return orderCompare;
           }
 
           return priorityCompare;
         }
 
-        // sort un-synced events by order
         if (!aSynced && !bSynced) {
-          return a.order.compareTo(b.order);
+          final orderCompare = a.order.compareTo(b.order);
+
+          if (orderCompare == 0) {
+            return -a.createdAt.compareTo(b.createdAt);
+          }
+
+          return orderCompare;
         }
 
-        return a.createdAt.compareTo(b.createdAt);
+        return 0;
       },
     );
 
     return events;
+  }
+
+  int _getHighestPriority(
+    EventModel event,
+    Map<String, EventRemoteAdapter> remoteAdapters,
+  ) {
+    return Map.fromEntries(remoteAdapters.entries.where(
+      (entry) => event.synced.containsKey(entry.key),
+    )).values.map<int>((e) => e.priority).max;
   }
 }

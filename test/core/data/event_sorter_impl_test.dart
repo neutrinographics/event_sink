@@ -44,8 +44,7 @@ void main() {
     eventSorter = EventSorterImpl();
   });
 
-  test('should sort events', () {
-    // arrange
+  group('sort', () {
     final tBaseEvent = EventModel.fromJson(jsonDecode(fixture('event.json')));
     const tLoPriorityAdapter = 'first-adapter';
     const tHiPriorityAdapter = 'second-adapter';
@@ -53,38 +52,154 @@ void main() {
       tLoPriorityAdapter: TestAdapter(priority: 1),
       tHiPriorityAdapter: TestAdapter(priority: 2),
     };
-    final tExpectedEvents = <EventModel>[
-      tBaseEvent.copyWith(
-        eventId: 'A',
-        order: 1,
-        synced: {tHiPriorityAdapter: true},
-      ),
-      tBaseEvent.copyWith(
-        eventId: 'B',
-        order: 2,
-        synced: {tHiPriorityAdapter: true},
-      ),
-      tBaseEvent.copyWith(
-        eventId: 'C',
-        order: 1,
-        synced: {tLoPriorityAdapter: true},
-      ),
-      tBaseEvent.copyWith(
-        eventId: 'D',
-        order: 2,
-        synced: {tLoPriorityAdapter: true},
-      ),
-      tBaseEvent.copyWith(eventId: 'E', order: 1),
-      tBaseEvent.copyWith(eventId: 'F', order: 2),
-    ];
-    final tUnorderedEvents = List<EventModel>.from(tExpectedEvents)
-      ..shuffle()
-      ..shuffle();
 
-    // act
-    final result = eventSorter.sort(tUnorderedEvents, tRemoteAdapters);
+    test('should place synced event before un-synced event', () {
+      // arrange
+      final tExpectedEvents = <EventModel>[
+        tBaseEvent.copyWith(
+          eventId: 'A',
+          order: 1,
+          synced: {tHiPriorityAdapter: true},
+        ),
+        tBaseEvent.copyWith(
+          eventId: 'B',
+          order: 1,
+        ),
+      ];
+      final tUnorderedEvents = [
+        tExpectedEvents[1],
+        tExpectedEvents[0],
+      ];
+      // act
+      final result = eventSorter.sort(tUnorderedEvents, tRemoteAdapters);
+      // assert
+      expect(result, tExpectedEvents);
+    });
 
-    // assert
-    expect(result, tExpectedEvents);
+    test(
+        'should place higher priority synced event before lower priority synced event',
+        () {
+      // arrange
+      final tExpectedEvents = <EventModel>[
+        tBaseEvent.copyWith(
+          eventId: 'A',
+          order: 1,
+          synced: {tHiPriorityAdapter: true},
+        ),
+        tBaseEvent.copyWith(
+          eventId: 'B',
+          order: 1,
+          synced: {tLoPriorityAdapter: true},
+        ),
+      ];
+      final tUnorderedEvents = [
+        tExpectedEvents[1],
+        tExpectedEvents[0],
+      ];
+      // act
+      final result = eventSorter.sort(tUnorderedEvents, tRemoteAdapters);
+      // assert
+      expect(result, tExpectedEvents);
+    });
+
+    test('should sort synced events by order', () {
+      // arrange
+      final tExpectedEvents = <EventModel>[
+        tBaseEvent.copyWith(
+          eventId: 'A',
+          order: 1,
+          synced: {tHiPriorityAdapter: true},
+        ),
+        tBaseEvent.copyWith(
+          eventId: 'B',
+          order: 2,
+          synced: {tHiPriorityAdapter: true},
+        ),
+      ];
+      final tUnorderedEvents = [
+        tExpectedEvents[1],
+        tExpectedEvents[0],
+      ];
+      // act
+      final result = eventSorter.sort(tUnorderedEvents, tRemoteAdapters);
+      // assert
+      expect(result, tExpectedEvents);
+    });
+
+    test('should sort un-synced events by order', () {
+      // arrange
+      final tExpectedEvents = <EventModel>[
+        tBaseEvent.copyWith(
+          eventId: 'A',
+          order: 1,
+        ),
+        tBaseEvent.copyWith(
+          eventId: 'B',
+          order: 2,
+        ),
+      ];
+      final tUnorderedEvents = [
+        tExpectedEvents[1],
+        tExpectedEvents[0],
+      ];
+      // act
+      final result = eventSorter.sort(tUnorderedEvents, tRemoteAdapters);
+      // assert
+      expect(result, tExpectedEvents);
+    });
+
+    test(
+        'should sort synced events by createdAt if all other properties are equal',
+        () {
+      // arrange
+      final tExpectedEvents = <EventModel>[
+        tBaseEvent.copyWith(
+          eventId: 'A',
+          order: 1,
+          synced: {tHiPriorityAdapter: true},
+          createdAt: DateTime(2022),
+        ),
+        tBaseEvent.copyWith(
+          eventId: 'B',
+          order: 1,
+          synced: {tHiPriorityAdapter: true},
+          createdAt: DateTime(2021),
+        ),
+      ];
+      final tUnorderedEvents = [
+        tExpectedEvents[1],
+        tExpectedEvents[0],
+      ];
+      // act
+      final result = eventSorter.sort(tUnorderedEvents, tRemoteAdapters);
+      // assert
+      expect(result, tExpectedEvents);
+    });
+
+    test(
+        'should sort un-synced events by createdAt if all other properties are equal',
+        () {
+      // arrange
+      final tExpectedEvents = <EventModel>[
+        tBaseEvent.copyWith(
+          eventId: 'A',
+          order: 1,
+          createdAt: DateTime(2022),
+        ),
+        tBaseEvent.copyWith(
+          eventId: 'B',
+          order: 1,
+          createdAt: DateTime(2021),
+        ),
+      ];
+      final tUnorderedEvents = [
+        tExpectedEvents[1],
+        tExpectedEvents[0],
+      ];
+      // act
+      final result = eventSorter.sort(tUnorderedEvents, tRemoteAdapters);
+      // assert
+      expect(result, tExpectedEvents);
+    });
   });
 }
