@@ -66,10 +66,7 @@ void main() {
           order: 1,
         ),
       ];
-      final tUnorderedEvents = [
-        tExpectedEvents[1],
-        tExpectedEvents[0],
-      ];
+      final tUnorderedEvents = tExpectedEvents.reversed.toList();
       // act
       final result = eventSorter.sort(tUnorderedEvents, tRemoteAdapters);
       // assert
@@ -92,10 +89,7 @@ void main() {
           synced: {tLoPriorityAdapter: true},
         ),
       ];
-      final tUnorderedEvents = [
-        tExpectedEvents[1],
-        tExpectedEvents[0],
-      ];
+      final tUnorderedEvents = tExpectedEvents.reversed.toList();
       // act
       final result = eventSorter.sort(tUnorderedEvents, tRemoteAdapters);
       // assert
@@ -116,10 +110,7 @@ void main() {
           synced: {tHiPriorityAdapter: true},
         ),
       ];
-      final tUnorderedEvents = [
-        tExpectedEvents[1],
-        tExpectedEvents[0],
-      ];
+      final tUnorderedEvents = tExpectedEvents.reversed.toList();
       // act
       final result = eventSorter.sort(tUnorderedEvents, tRemoteAdapters);
       // assert
@@ -138,10 +129,7 @@ void main() {
           order: 2,
         ),
       ];
-      final tUnorderedEvents = [
-        tExpectedEvents[1],
-        tExpectedEvents[0],
-      ];
+      final tUnorderedEvents = tExpectedEvents.reversed.toList();
       // act
       final result = eventSorter.sort(tUnorderedEvents, tRemoteAdapters);
       // assert
@@ -166,10 +154,7 @@ void main() {
           createdAt: DateTime(2021),
         ),
       ];
-      final tUnorderedEvents = [
-        tExpectedEvents[1],
-        tExpectedEvents[0],
-      ];
+      final tUnorderedEvents = tExpectedEvents.reversed.toList();
       // act
       final result = eventSorter.sort(tUnorderedEvents, tRemoteAdapters);
       // assert
@@ -192,10 +177,7 @@ void main() {
           createdAt: DateTime(2021),
         ),
       ];
-      final tUnorderedEvents = [
-        tExpectedEvents[1],
-        tExpectedEvents[0],
-      ];
+      final tUnorderedEvents = tExpectedEvents.reversed.toList();
       // act
       final result = eventSorter.sort(tUnorderedEvents, tRemoteAdapters);
       // assert
