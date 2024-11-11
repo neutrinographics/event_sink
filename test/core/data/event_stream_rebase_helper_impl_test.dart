@@ -12,7 +12,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
 import '../../fixtures/fixture_reader.dart';
-import 'event_rebase_helper_impl_test.mocks.dart';
+import 'event_stream_rebase_helper_impl_test.mocks.dart';
 
 class TestAdapter extends EventRemoteAdapter {
   final int _priority;
