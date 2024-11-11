@@ -28,14 +28,8 @@ abstract class EventSink {
     required String remoteAdapterName,
     required String pool,
   }) {
-    final remoteAdapter = eventRemoteAdapters[remoteAdapterName];
-    if (remoteAdapter == null) {
-      return Future.value(
-          const Left(ServerFailure(message: 'Remote adapter not found')));
-    }
-
     return _controller.sync(
-      remoteAdapter: remoteAdapter,
+      remoteAdapterName: remoteAdapterName,
       pool: pool,
     );
   }

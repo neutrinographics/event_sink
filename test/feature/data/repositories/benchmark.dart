@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:clean_cache/cache/memory_cache.dart';
 import 'package:clock/clock.dart';
 import 'package:event_sink/src/core/data/cache.dart';
+import 'package:event_sink/src/core/data/event_resolver.dart';
+import 'package:event_sink/src/core/data/event_sorter.dart';
 import 'package:event_sink/src/core/data/id_generator.dart';
 import 'package:event_sink/src/core/time/time_info.dart';
 import 'package:event_sink/src/feature/data/local/data_sources/event_local_data_source.dart';
@@ -50,6 +52,7 @@ void main() {
     localDataSource = EventLocalDataSourceImpl(
       eventCache: eventCache,
       poolCache: MemoryCache(),
+      eventSorter: EventSorterImpl(),
     );
     mockRemoteDataSource = MockEventRemoteDataSource();
     IdGeneratorImpl idGenerator = IdGeneratorImpl(const Uuid());
@@ -58,6 +61,7 @@ void main() {
       localDataSource: localDataSource,
       idGenerator: idGenerator,
       timeInfo: timeInfo,
+      eventResolver: EventResolverImpl(),
     );
   });
 

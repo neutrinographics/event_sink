@@ -1,7 +1,7 @@
 import 'package:clean_cache/clean_cache.dart';
 import 'package:collection/collection.dart';
-import 'package:event_sink/src/feature/data/local/models/event_model.dart';
-import 'package:event_sink/src/feature/extensions.dart';
+import 'package:event_sink/event_sink.dart';
+import 'package:event_sink/src/core/data/event_sorter.dart';
 
 import '../models/pool_model.dart';
 
@@ -23,13 +23,18 @@ abstract class EventLocalDataSource {
   Future<void> removeEvent(String eventId);
 
   /// Returns a sorted list of [EventModel]
-  Future<List<EventModel>> getAllEvents();
+  Future<List<EventModel>> getAllEvents(
+    Map<String, EventRemoteAdapter> remoteAdapters,
+  );
 
   /// Returns the number of events in the pool.
   Future<int> getPoolSize(String poolId);
 
   /// Returns a sorted list of events from the pool.
-  Future<List<EventModel>> getPooledEvents(String poolId);
+  Future<List<EventModel>> getPooledEvents(
+    String poolId,
+    Map<String, EventRemoteAdapter> remoteAdapters,
+  );
 
   /// Returns a list of all cached pools.
   Future<List<String>> getPools();
@@ -49,7 +54,13 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
   /// This allows us to manage events from different pools.
   final CleanCache<String, PoolModel> poolCache;
 
-  EventLocalDataSourceImpl({required this.eventCache, required this.poolCache});
+  final EventSorter eventSorter;
+
+  EventLocalDataSourceImpl({
+    required this.eventCache,
+    required this.poolCache,
+    required this.eventSorter,
+  });
 
   @override
   Future<void> addEvent(EventModel model) async {
@@ -100,7 +111,10 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
   }
 
   @override
-  Future<List<EventModel>> getPooledEvents(String poolId) async {
+  Future<List<EventModel>> getPooledEvents(
+    String poolId,
+    Map<String, EventRemoteAdapter> remoteAdapters,
+  ) async {
     final List<EventModel> models = [];
 
     final PoolModel pool = await _readPool(poolId);
@@ -108,7 +122,7 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
       final event = await eventCache.read(id);
       models.add(event);
     }
-    sort(models);
+    eventSorter.sort(models, remoteAdapters);
     return models;
   }
 
@@ -116,9 +130,11 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
   Future<List<String>> getPools() => poolCache.keys();
 
   @override
-  Future<List<EventModel>> getAllEvents() async {
+  Future<List<EventModel>> getAllEvents(
+    Map<String, EventRemoteAdapter> remoteAdapters,
+  ) async {
     final List<EventModel> events = await eventCache.values();
-    sort(events);
+    eventSorter.sort(events, remoteAdapters);
     return events;
   }
 
@@ -164,41 +180,6 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
         ),
       );
     }
-  }
-
-  /// Sorts a list of events.
-  static void sort(List<EventModel> models) {
-    models.sort((a, b) {
-      // TODO: handle the case where an event is synced to multiple remotes
-      final aSynced = a.isSynced();
-      final bSynced = b.isSynced();
-
-      // place synced events in front
-      if (aSynced && !bSynced) {
-        return -1;
-      }
-      if (!aSynced && bSynced) {
-        return 1;
-      }
-      // sort synced events by order
-      if (aSynced && bSynced) {
-        return a.order - b.order;
-      }
-      // sort un-synced events by order
-      if (!aSynced && !bSynced) {
-        return a.order - b.order;
-      }
-
-      // The below sorting rules aren't actually needed.
-      // They are just a sanity check.
-
-      // sort streams by version
-      if (a.streamId == b.streamId) {
-        return a.version - b.version;
-      }
-
-      return a.createdAt.compareTo(b.createdAt);
-    });
   }
 
   @override

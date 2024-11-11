@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:event_sink/event_sink.dart';
 import 'package:event_sink/src/feature/extensions.dart';
 
@@ -32,8 +31,8 @@ class EventSorterImpl implements EventSorter {
         }
 
         if (aSynced && bSynced) {
-          final aPriority = _getHighestPriority(a, remoteAdapters);
-          final bPriority = _getHighestPriority(b, remoteAdapters);
+          final aPriority = a.highestAdapterPriority(remoteAdapters);
+          final bPriority = b.highestAdapterPriority(remoteAdapters);
 
           final priorityCompare = -aPriority.compareTo(bPriority);
           final orderCompare = a.order.compareTo(b.order);
@@ -64,14 +63,5 @@ class EventSorterImpl implements EventSorter {
     );
 
     return events;
-  }
-
-  int _getHighestPriority(
-    EventModel event,
-    Map<String, EventRemoteAdapter> remoteAdapters,
-  ) {
-    return Map.fromEntries(remoteAdapters.entries.where(
-      (entry) => event.synced.containsKey(entry.key),
-    )).values.map<int>((e) => e.priority).max;
   }
 }

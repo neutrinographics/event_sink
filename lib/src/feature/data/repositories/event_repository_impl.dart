@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:dartz/dartz.dart';
+import 'package:event_sink/src/core/data/event_resolver.dart';
 import 'package:event_sink/src/core/data/id_generator.dart';
 import 'package:event_sink/src/core/error/exception.dart';
 import 'package:event_sink/src/core/error/failure.dart';
@@ -16,6 +17,7 @@ import 'package:event_sink/src/feature/extensions.dart';
 
 class EventRepositoryImpl extends EventRepository {
   final EventLocalDataSource localDataSource;
+  final EventResolver eventResolver;
   final IdGenerator idGenerator;
   final TimeInfo timeInfo;
 
@@ -23,6 +25,7 @@ class EventRepositoryImpl extends EventRepository {
 
   EventRepositoryImpl({
     required this.localDataSource,
+    required this.eventResolver,
     required this.idGenerator,
     required this.timeInfo,
   });
@@ -45,28 +48,26 @@ class EventRepositoryImpl extends EventRepository {
     }
 
     List<EventModel> eventsToAdd = [];
-    for (var e in remoteEvents) {
-      final bool hasEvent = await localDataSource.hasEvent(e.eventId);
-      if (!hasEvent) {
-        eventsToAdd.add(
-          EventModel.fromRemote(
-            remoteEvent: e,
-            remoteAdapterName: remoteAdapterName,
-            pool: pool,
-          ).copyWith(createdAt: timeInfo.now()),
+    for (final e in remoteEvents) {
+      final remoteEvent = EventModel.fromRemote(
+        remoteEvent: e,
+        remoteAdapterName: remoteAdapterName,
+        pool: pool,
+      ).copyWith(createdAt: timeInfo.now());
+
+      final localHasEvent = await localDataSource.hasEvent(e.eventId);
+      if (localHasEvent) {
+        final localEvent = await localDataSource.getEvent(e.eventId);
+        final resolvedEvent = eventResolver.resolve(
+          eventFromAdapter: remoteEvent,
+          existingEvent: localEvent,
+          remoteAdapterName: remoteAdapterName,
+          remoteAdapters: _remoteAdapters,
         );
+
+        eventsToAdd.add(resolvedEvent);
       } else {
-        final existingEvent = await localDataSource.getEvent(e.eventId);
-        if (!existingEvent.isSyncedWith(remoteAdapterName)) {
-          eventsToAdd.add(
-            existingEvent.copyWith(
-              synced: Map.fromEntries(existingEvent.synced.entries)
-                ..[remoteAdapterName] = true,
-              // TRICKY: the remote event order may be different from the local order.
-              order: e.order,
-            ),
-          );
-        }
+        eventsToAdd.add(remoteEvent);
       }
     }
 
@@ -87,7 +88,7 @@ class EventRepositoryImpl extends EventRepository {
     List<EventModel> events;
 
     try {
-      events = await localDataSource.getPooledEvents(pool);
+      events = await localDataSource.getPooledEvents(pool, _remoteAdapters);
     } on Exception catch (e, stack) {
       return Left(CacheFailure(message: "$e\n\n$stack"));
     }
@@ -129,7 +130,7 @@ class EventRepositoryImpl extends EventRepository {
   Future<Either<Failure, void>> rebase(String pool) async {
     List<EventModel> events;
     try {
-      events = await localDataSource.getPooledEvents(pool);
+      events = await localDataSource.getPooledEvents(pool, _remoteAdapters);
     } on Exception catch (e, stack) {
       return Left(CacheFailure(message: "$e\n\n$stack"));
     }
@@ -141,6 +142,7 @@ class EventRepositoryImpl extends EventRepository {
       final events = eventGroups[streamId];
       if (events == null || events.isEmpty) continue;
       try {
+        // TODO: replace rebase with [EventRebaseHelper.rebase]
         await _rebaseStream(events);
       } on Exception catch (e, stack) {
         return Left(CacheFailure(message: "$e\n\n$stack"));
@@ -158,8 +160,8 @@ class EventRepositoryImpl extends EventRepository {
   /// This expects [events] to be sorted by version.
   /// This may throw a [CacheException]
   Future<void> _rebaseStream(List<EventModel> events) async {
-    final syncedEvents = [];
-    final unSyncedEvents = [];
+    final syncedEvents = <EventModel>[];
+    final unSyncedEvents = <EventModel>[];
     for (var e in events) {
       // TODO: handle the case where an event is synced to multiple remotes
       if (e.isSynced()) {
@@ -224,7 +226,7 @@ class EventRepositoryImpl extends EventRepository {
   Future<int> _getStreamVersion(String streamId, String pool) async {
     List<EventModel> streamEvents;
 
-    streamEvents = await localDataSource.getPooledEvents(pool);
+    streamEvents = await localDataSource.getPooledEvents(pool, _remoteAdapters);
     streamEvents.removeWhere((element) => element.streamId != streamId);
 
     int lastEventVersion = 0;
@@ -238,7 +240,7 @@ class EventRepositoryImpl extends EventRepository {
   Future<Either<Failure, List<EventStub>>> list(String pool) async {
     List<EventModel> models;
     try {
-      models = await localDataSource.getPooledEvents(pool);
+      models = await localDataSource.getPooledEvents(pool, _remoteAdapters);
     } on Exception catch (e, stack) {
       return Left(CacheFailure(message: "$e\n\n$stack"));
     }
@@ -266,7 +268,7 @@ class EventRepositoryImpl extends EventRepository {
   Future<Either<Failure, void>> markAppliedList(List<EventStub> events) async {
     try {
       final eventIds = events.map((e) => e.eventId).toList();
-      final eventModels = await localDataSource.getAllEvents()
+      final eventModels = await localDataSource.getAllEvents(_remoteAdapters)
         ..retainWhere((element) => eventIds.contains(element.eventId));
 
       final updatedModels =

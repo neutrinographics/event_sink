@@ -45,6 +45,18 @@ class MockEventRemoteAdapter extends _i1.Mock
   }
 
   @override
+  _i3.PullStrategy get pullStrategy => (super.noSuchMethod(
+        Invocation.getter(#pullStrategy),
+        returnValue: _i3.PullStrategy.rebase,
+      ) as _i3.PullStrategy);
+
+  @override
+  int get priority => (super.noSuchMethod(
+        Invocation.getter(#priority),
+        returnValue: 0,
+      ) as int);
+
+  @override
   _i4.Future<List<_i3.RemoteEventModel>> pull() => (super.noSuchMethod(
         Invocation.method(
           #pull,

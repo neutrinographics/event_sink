@@ -1,5 +1,8 @@
 import 'package:clean_cache/cache/memory_cache.dart';
 import 'package:clock/clock.dart';
+import 'package:event_sink/src/core/data/event_resolver.dart';
+import 'package:event_sink/src/core/data/event_sorter.dart';
+import 'package:event_sink/src/core/data/event_stream_rebase_helper.dart';
 
 import 'package:event_sink/src/core/data/id_generator.dart';
 import 'package:event_sink/src/core/network/network.dart';
@@ -48,6 +51,7 @@ Future<void> init() async {
         localDataSource: sl(),
         idGenerator: sl(),
         timeInfo: sl(),
+        eventResolver: sl(),
       ));
 
   // Data sources
@@ -57,6 +61,7 @@ Future<void> init() async {
     () => EventLocalDataSourceImpl(
       eventCache: eventCache,
       poolCache: MemoryCache(),
+      eventSorter: sl(),
     ),
   );
   sl.registerLazySingleton<EventRemoteDataSource>(
@@ -69,6 +74,10 @@ Future<void> init() async {
   sl.registerLazySingleton<TimeInfo>(() => TimeInfoImpl(sl()));
   sl.registerLazySingleton<IdGenerator>(() => IdGeneratorImpl(sl()));
   sl.registerLazySingleton<Network>(() => NetworkImpl(sl()));
+  sl.registerLazySingleton<EventSorter>(() => EventSorterImpl());
+  sl.registerLazySingleton<EventResolver>(() => EventResolverImpl());
+  sl.registerLazySingleton<EventStreamRebaseHelper>(
+      () => EventStreamRebaseHelperImpl(sl()));
 
   // External
   sl.registerLazySingleton(() => const Uuid());
