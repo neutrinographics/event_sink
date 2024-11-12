@@ -60,7 +60,7 @@ void main() {
       secondAdapter: TestAdapter(priority: 2),
     };
 
-    test('should add un-synced events', () async {
+    test('should not change un-synced events', () async {
       // arrange
       final tUnSyncedEvents = [
         baseEvent.copyWith(eventId: 'id_1.1', version: 1),
@@ -115,9 +115,8 @@ void main() {
       verifyNoMoreInteractions(mockEventLocalDataSource);
     });
 
-    test(
-        'should take adapter priority into consideration when rebasing'
-        'synced events', () {
+    test('event with the highest adapter priority should win version conflicts',
+        () {
       // arrange
       final tLoPrioritySyncedEvent = baseEvent.copyWith(
         eventId: 'id_1.1',
