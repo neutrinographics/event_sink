@@ -156,12 +156,10 @@ class MockEventLocalDataSource extends _i1.Mock
       ) as _i3.Future<void>);
 
   @override
-  _i3.Future<List<_i2.EventModel>> getAllEvents(
-          Map<String, _i2.EventRemoteAdapter>? remoteAdapters) =>
-      (super.noSuchMethod(
+  _i3.Future<List<_i2.EventModel>> getAllEvents() => (super.noSuchMethod(
         Invocation.method(
           #getAllEvents,
-          [remoteAdapters],
+          [],
         ),
         returnValue: _i3.Future<List<_i2.EventModel>>.value(<_i2.EventModel>[]),
       ) as _i3.Future<List<_i2.EventModel>>);
@@ -176,17 +174,11 @@ class MockEventLocalDataSource extends _i1.Mock
       ) as _i3.Future<int>);
 
   @override
-  _i3.Future<List<_i2.EventModel>> getPooledEvents(
-    String? poolId,
-    Map<String, _i2.EventRemoteAdapter>? remoteAdapters,
-  ) =>
+  _i3.Future<List<_i2.EventModel>> getPooledEvents(String? poolId) =>
       (super.noSuchMethod(
         Invocation.method(
           #getPooledEvents,
-          [
-            poolId,
-            remoteAdapters,
-          ],
+          [poolId],
         ),
         returnValue: _i3.Future<List<_i2.EventModel>>.value(<_i2.EventModel>[]),
       ) as _i3.Future<List<_i2.EventModel>>);

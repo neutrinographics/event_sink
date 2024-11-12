@@ -17,23 +17,18 @@ import 'package:event_sink/src/feature/extensions.dart';
 
 class EventRepositoryImpl extends EventRepository {
   final EventLocalDataSource localDataSource;
+  final Map<String, EventRemoteAdapter> remoteAdapters;
   final EventResolver eventResolver;
   final IdGenerator idGenerator;
   final TimeInfo timeInfo;
 
-  late Map<String, EventRemoteAdapter> _remoteAdapters;
-
   EventRepositoryImpl({
     required this.localDataSource,
+    required this.remoteAdapters,
     required this.eventResolver,
     required this.idGenerator,
     required this.timeInfo,
   });
-
-  @override
-  void init({required Map<String, EventRemoteAdapter> remoteAdapters}) {
-    _remoteAdapters = remoteAdapters;
-  }
 
   @override
   Future<Either<Failure, void>> fetch({
@@ -62,7 +57,7 @@ class EventRepositoryImpl extends EventRepository {
           eventFromAdapter: remoteEvent,
           existingEvent: localEvent,
           remoteAdapterName: remoteAdapterName,
-          remoteAdapters: _remoteAdapters,
+          remoteAdapters: remoteAdapters,
         );
 
         eventsToAdd.add(resolvedEvent);
@@ -88,7 +83,7 @@ class EventRepositoryImpl extends EventRepository {
     List<EventModel> events;
 
     try {
-      events = await localDataSource.getPooledEvents(pool, _remoteAdapters);
+      events = await localDataSource.getPooledEvents(pool);
     } on Exception catch (e, stack) {
       return Left(CacheFailure(message: "$e\n\n$stack"));
     }
@@ -130,7 +125,7 @@ class EventRepositoryImpl extends EventRepository {
   Future<Either<Failure, void>> rebase(String pool) async {
     List<EventModel> events;
     try {
-      events = await localDataSource.getPooledEvents(pool, _remoteAdapters);
+      events = await localDataSource.getPooledEvents(pool);
     } on Exception catch (e, stack) {
       return Left(CacheFailure(message: "$e\n\n$stack"));
     }
@@ -226,7 +221,7 @@ class EventRepositoryImpl extends EventRepository {
   Future<int> _getStreamVersion(String streamId, String pool) async {
     List<EventModel> streamEvents;
 
-    streamEvents = await localDataSource.getPooledEvents(pool, _remoteAdapters);
+    streamEvents = await localDataSource.getPooledEvents(pool);
     streamEvents.removeWhere((element) => element.streamId != streamId);
 
     int lastEventVersion = 0;
@@ -240,7 +235,7 @@ class EventRepositoryImpl extends EventRepository {
   Future<Either<Failure, List<EventStub>>> list(String pool) async {
     List<EventModel> models;
     try {
-      models = await localDataSource.getPooledEvents(pool, _remoteAdapters);
+      models = await localDataSource.getPooledEvents(pool);
     } on Exception catch (e, stack) {
       return Left(CacheFailure(message: "$e\n\n$stack"));
     }
@@ -268,7 +263,7 @@ class EventRepositoryImpl extends EventRepository {
   Future<Either<Failure, void>> markAppliedList(List<EventStub> events) async {
     try {
       final eventIds = events.map((e) => e.eventId).toList();
-      final eventModels = await localDataSource.getAllEvents(_remoteAdapters)
+      final eventModels = await localDataSource.getAllEvents()
         ..retainWhere((element) => eventIds.contains(element.eventId));
 
       final updatedModels =
@@ -303,7 +298,7 @@ class EventRepositoryImpl extends EventRepository {
   }
 
   EventRemoteAdapter _getRemoteAdapter(String name) {
-    final adapter = _remoteAdapters[name];
+    final adapter = remoteAdapters[name];
     if (adapter == null) {
       throw Exception("Remote adapter not found: $name");
     }

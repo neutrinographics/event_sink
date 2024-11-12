@@ -68,11 +68,8 @@ void main() {
       eventResolver: mockEventResolver,
       idGenerator: mockIdGenerator,
       timeInfo: mockTimeInfo,
+      remoteAdapters: {tRemoteAdapterName: mockEventRemoteAdapter},
     );
-
-    repository.init(remoteAdapters: {
-      tRemoteAdapterName: mockEventRemoteAdapter,
-    });
   });
 
   group('fetch', () {
@@ -220,7 +217,7 @@ void main() {
       () async {
         // arrange
         when(mockIdGenerator.generateId()).thenReturn(tEventId);
-        when(mockEventLocalDataSource.getAllEvents(any))
+        when(mockEventLocalDataSource.getAllEvents())
             .thenAnswer((_) async => tLocalEvents);
         when(mockEventRemoteAdapter.pull()).thenThrow(ServerException());
         // act
@@ -264,7 +261,7 @@ void main() {
       () async {
         // arrange
         when(mockTimeInfo.now()).thenReturn(tTime);
-        when(mockEventLocalDataSource.getPooledEvents(any, any))
+        when(mockEventLocalDataSource.getPooledEvents(any))
             .thenAnswer((_) async => tCachedEvents);
         final remoteEvents = [...tRemoteEvents];
         when(mockEventRemoteAdapter.push(any))
@@ -298,7 +295,7 @@ void main() {
       'should return CacheFailure if the events cannot be read from the cache',
       () async {
         // arrange
-        when(mockEventLocalDataSource.getPooledEvents(any, any))
+        when(mockEventLocalDataSource.getPooledEvents(any))
             .thenThrow(Exception());
         // act
         final result = await repository.push(
@@ -314,7 +311,7 @@ void main() {
       'should return ServerFailure if the upload fails',
       () async {
         // arrange
-        when(mockEventLocalDataSource.getPooledEvents(any, any))
+        when(mockEventLocalDataSource.getPooledEvents(any))
             .thenAnswer((_) async => tCachedEvents);
         when(mockEventRemoteAdapter.push(any)).thenThrow(ServerException());
         // act
@@ -332,7 +329,7 @@ void main() {
       () async {
         // arrange
         when(mockTimeInfo.now()).thenReturn(tTime);
-        when(mockEventLocalDataSource.getPooledEvents(any, any))
+        when(mockEventLocalDataSource.getPooledEvents(any))
             .thenAnswer((_) async => tCachedEvents);
         final remoteEvents = [...tRemoteEvents];
         when(mockEventRemoteAdapter.push(any))
@@ -353,7 +350,7 @@ void main() {
       'should return OutOfSyncFailure if the server has newer events',
       () async {
         // arrange
-        when(mockEventLocalDataSource.getPooledEvents(any, any))
+        when(mockEventLocalDataSource.getPooledEvents(any))
             .thenAnswer((_) async => tCachedEvents);
         when(mockEventRemoteAdapter.push(any)).thenThrow(OutOfSyncException());
         // act
@@ -433,12 +430,12 @@ void main() {
       'should rebase events',
       () async {
         // arrange
-        when(mockEventLocalDataSource.getPooledEvents(any, any))
+        when(mockEventLocalDataSource.getPooledEvents(any))
             .thenAnswer((_) async => tCachedEventsFirst);
         // act
         final result = await repository.rebase(tPool);
         // assert
-        verify(mockEventLocalDataSource.getPooledEvents(any, any));
+        verify(mockEventLocalDataSource.getPooledEvents(any));
         verify(
           mockEventLocalDataSource.addEvents([
             baseEvent.copyWith(streamId: 'first', version: 4, eventId: '1.4'),
@@ -457,13 +454,13 @@ void main() {
         // arrange
         final combinedEvents = tCachedEventsFirst + tCachedEventsSecond;
         combinedEvents.sort((a, b) => a.version - b.version);
-        when(mockEventLocalDataSource.getPooledEvents(any, any)).thenAnswer(
+        when(mockEventLocalDataSource.getPooledEvents(any)).thenAnswer(
           (_) async => combinedEvents,
         );
         // act
         final result = await repository.rebase(tPool);
         // assert
-        verify(mockEventLocalDataSource.getPooledEvents(any, any));
+        verify(mockEventLocalDataSource.getPooledEvents(any));
         verify(
           mockEventLocalDataSource.addEvents([
             baseEvent.copyWith(streamId: 'first', version: 4, eventId: '1.4'),
@@ -497,7 +494,7 @@ void main() {
             version: 32,
           )
         ];
-        when(mockEventLocalDataSource.getPooledEvents(any, any)).thenAnswer(
+        when(mockEventLocalDataSource.getPooledEvents(any)).thenAnswer(
           (_) async => combinedEvents,
         );
         // act
@@ -521,7 +518,7 @@ void main() {
             synced: {tRemoteAdapterName: true},
           )
         ];
-        when(mockEventLocalDataSource.getPooledEvents(any, any)).thenAnswer(
+        when(mockEventLocalDataSource.getPooledEvents(any)).thenAnswer(
           (_) async => syncedEvents,
         );
         // act
@@ -537,12 +534,12 @@ void main() {
       'should return CacheFailure if the events cannot be loaded from cache',
       () async {
         // arrange
-        when(mockEventLocalDataSource.getPooledEvents(any, any))
+        when(mockEventLocalDataSource.getPooledEvents(any))
             .thenThrow(Exception());
         // act
         final result = await repository.rebase(tPool);
         // assert
-        verify(mockEventLocalDataSource.getPooledEvents(any, any));
+        verify(mockEventLocalDataSource.getPooledEvents(any));
         expect(result.swap().toOption().toNullable(), isA<CacheFailure>());
       },
     );
@@ -551,13 +548,13 @@ void main() {
       'should return CacheFailure if the events cannot be saved to cache',
       () async {
         // arrange
-        when(mockEventLocalDataSource.getPooledEvents(any, any))
+        when(mockEventLocalDataSource.getPooledEvents(any))
             .thenAnswer((_) async => tCachedEventsFirst);
         when(mockEventLocalDataSource.addEvents(any)).thenThrow(Exception());
         // act
         final result = await repository.rebase(tPool);
         // assert
-        verify(mockEventLocalDataSource.getPooledEvents(any, any));
+        verify(mockEventLocalDataSource.getPooledEvents(any));
         // assert
         expect(result.swap().toOption().toNullable(), isA<CacheFailure>());
       },
@@ -599,7 +596,7 @@ void main() {
           streamId: tEventModel.streamId,
         );
         when(mockTimeInfo.now()).thenReturn(tTime);
-        when(mockEventLocalDataSource.getPooledEvents(any, any))
+        when(mockEventLocalDataSource.getPooledEvents(any))
             .thenAnswer((_) async => []);
         when(mockIdGenerator.generateId()).thenReturn(tEventId);
         when(mockEventLocalDataSource.getPoolSize(any))
@@ -609,7 +606,7 @@ void main() {
 
         // assert
         expect(result, equals(const Right(null)));
-        verify(mockEventLocalDataSource.getPooledEvents(any, any));
+        verify(mockEventLocalDataSource.getPooledEvents(any));
         verify(mockEventLocalDataSource.addEvent(tEventModel));
       },
     );
@@ -623,7 +620,7 @@ void main() {
           streamId: tEventModel.streamId,
         );
         when(mockTimeInfo.now()).thenReturn(tTime);
-        when(mockEventLocalDataSource.getPooledEvents(any, any))
+        when(mockEventLocalDataSource.getPooledEvents(any))
             .thenAnswer((_) async => tEvents);
         when(mockIdGenerator.generateId()).thenReturn(tEventId);
         when(mockEventLocalDataSource.getPoolSize(any))
@@ -633,7 +630,7 @@ void main() {
 
         // assert
         expect(result, equals(const Right(null)));
-        verify(mockEventLocalDataSource.getPooledEvents(any, any));
+        verify(mockEventLocalDataSource.getPooledEvents(any));
         final newEvent = tEventModel.copyWith(version: 3);
         verify(mockEventLocalDataSource.addEvent(newEvent));
       },
@@ -647,14 +644,14 @@ void main() {
           data: MockEventData(),
           streamId: tEventModel.streamId,
         );
-        when(mockEventLocalDataSource.getPooledEvents(any, any))
+        when(mockEventLocalDataSource.getPooledEvents(any))
             .thenThrow(Exception());
         // act
         final result = await repository.add(event, tPool);
 
         // assert
         expect(result.swap().toOption().toNullable(), isA<CacheFailure>());
-        verify(mockEventLocalDataSource.getPooledEvents(any, any));
+        verify(mockEventLocalDataSource.getPooledEvents(any));
         verifyNever(mockEventLocalDataSource.addEvent(any));
       },
     );
@@ -668,7 +665,7 @@ void main() {
           streamId: tEventModel.streamId,
         );
         when(mockTimeInfo.now()).thenReturn(tTime);
-        when(mockEventLocalDataSource.getPooledEvents(any, any))
+        when(mockEventLocalDataSource.getPooledEvents(any))
             .thenAnswer((_) async => tEvents);
         when(mockIdGenerator.generateId()).thenReturn(tEventId);
         when(mockEventLocalDataSource.getPoolSize(any))
@@ -679,7 +676,7 @@ void main() {
 
         // assert
         expect(result.swap().toOption().toNullable(), isA<CacheFailure>());
-        verify(mockEventLocalDataSource.getPooledEvents(any, any));
+        verify(mockEventLocalDataSource.getPooledEvents(any));
         verify(mockEventLocalDataSource.addEvent(any));
       },
     );
@@ -700,14 +697,14 @@ void main() {
       "Should return CacheFailure if events cannot be read from cache",
       () async {
         // arrange
-        when(mockEventLocalDataSource.getPooledEvents(tPool, any))
+        when(mockEventLocalDataSource.getPooledEvents(tPool))
             .thenThrow(Exception());
         // act
         final result = await repository.list(tPool);
 
         // assert
         expect(result.swap().toOption().toNullable(), isA<CacheFailure>());
-        verify(mockEventLocalDataSource.getPooledEvents(any, any));
+        verify(mockEventLocalDataSource.getPooledEvents(any));
         verifyNever(mockEventLocalDataSource.addEvent(any));
       },
     );
@@ -716,14 +713,14 @@ void main() {
       'Should return a list of events',
       () async {
         // arrange
-        when(mockEventLocalDataSource.getPooledEvents(tPool, any))
+        when(mockEventLocalDataSource.getPooledEvents(tPool))
             .thenAnswer((_) async => tEvents);
         // act
         final result = await repository.list(tPool);
         // assert
         expectEitherEqualsList(
             result, tEvents.map((e) => e.toDomain()).toList());
-        verify(mockEventLocalDataSource.getPooledEvents(any, any));
+        verify(mockEventLocalDataSource.getPooledEvents(any));
       },
     );
   });
@@ -789,13 +786,13 @@ void main() {
       "Should return CacheFailure if events cannot be read from cache",
       () async {
         // arrange
-        when(mockEventLocalDataSource.getAllEvents(any)).thenThrow(Exception());
+        when(mockEventLocalDataSource.getAllEvents()).thenThrow(Exception());
         // act
         final result = await repository.markAppliedList([tEvent]);
 
         // assert
         expect(result.swap().toOption().toNullable(), isA<CacheFailure>());
-        verify(mockEventLocalDataSource.getAllEvents(any));
+        verify(mockEventLocalDataSource.getAllEvents());
         verifyNever(mockEventLocalDataSource.addEvent(any));
       },
     );
@@ -804,7 +801,7 @@ void main() {
       'Should mark a list of events as applied',
       () async {
         // arrange
-        when(mockEventLocalDataSource.getAllEvents(any))
+        when(mockEventLocalDataSource.getAllEvents())
             .thenAnswer((_) async => [tEventModel]);
         // act
         final result = await repository.markAppliedList([tEvent]);
@@ -819,7 +816,7 @@ void main() {
       "Should return CacheFailure if events cannot be marked as applied",
       () async {
         // arrange
-        when(mockEventLocalDataSource.getAllEvents(any))
+        when(mockEventLocalDataSource.getAllEvents())
             .thenAnswer((_) async => [tEventModel]);
         when(mockEventLocalDataSource.addEvents(any)).thenThrow(Exception());
         // act

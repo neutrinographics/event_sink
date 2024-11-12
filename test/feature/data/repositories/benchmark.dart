@@ -53,6 +53,7 @@ void main() {
       eventCache: eventCache,
       poolCache: MemoryCache(),
       eventSorter: EventSorterImpl(),
+      remoteAdapters: {},
     );
     mockRemoteDataSource = MockEventRemoteDataSource();
     IdGeneratorImpl idGenerator = IdGeneratorImpl(const Uuid());
@@ -62,6 +63,7 @@ void main() {
       idGenerator: idGenerator,
       timeInfo: timeInfo,
       eventResolver: EventResolverImpl(),
+      remoteAdapters: {},
     );
   });
 

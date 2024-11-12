@@ -23,18 +23,13 @@ abstract class EventLocalDataSource {
   Future<void> removeEvent(String eventId);
 
   /// Returns a sorted list of [EventModel]
-  Future<List<EventModel>> getAllEvents(
-    Map<String, EventRemoteAdapter> remoteAdapters,
-  );
+  Future<List<EventModel>> getAllEvents();
 
   /// Returns the number of events in the pool.
   Future<int> getPoolSize(String poolId);
 
   /// Returns a sorted list of events from the pool.
-  Future<List<EventModel>> getPooledEvents(
-    String poolId,
-    Map<String, EventRemoteAdapter> remoteAdapters,
-  );
+  Future<List<EventModel>> getPooledEvents(String poolId);
 
   /// Returns a list of all cached pools.
   Future<List<String>> getPools();
@@ -54,11 +49,16 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
   /// This allows us to manage events from different pools.
   final CleanCache<String, PoolModel> poolCache;
 
+  /// Map of event remote adapter names and the adapter instances.
+  final Map<String, EventRemoteAdapter> remoteAdapters;
+
+  /// An [EventSorter] instance to sort events.
   final EventSorter eventSorter;
 
   EventLocalDataSourceImpl({
     required this.eventCache,
     required this.poolCache,
+    required this.remoteAdapters,
     required this.eventSorter,
   });
 
@@ -111,10 +111,7 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
   }
 
   @override
-  Future<List<EventModel>> getPooledEvents(
-    String poolId,
-    Map<String, EventRemoteAdapter> remoteAdapters,
-  ) async {
+  Future<List<EventModel>> getPooledEvents(String poolId) async {
     final List<EventModel> models = [];
 
     final PoolModel pool = await _readPool(poolId);
@@ -130,9 +127,7 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
   Future<List<String>> getPools() => poolCache.keys();
 
   @override
-  Future<List<EventModel>> getAllEvents(
-    Map<String, EventRemoteAdapter> remoteAdapters,
-  ) async {
+  Future<List<EventModel>> getAllEvents() async {
     final List<EventModel> events = await eventCache.values();
     eventSorter.sort(events, remoteAdapters);
     return events;

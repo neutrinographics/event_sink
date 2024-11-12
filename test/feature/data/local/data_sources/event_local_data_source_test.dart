@@ -42,6 +42,11 @@ void main() {
   late MockCleanCache<String, EventModel> mockEventCache;
   late MockCleanCache<String, PoolModel> mockPoolCache;
 
+  final tRemoteAdapters = <String, EventRemoteAdapter>{
+    'adapter-1': TestAdapter(),
+    'adapter-2': TestAdapter(),
+  };
+
   setUp(() {
     mockEventSorter = MockEventSorter();
     mockEventCache = MockCleanCache<String, EventModel>();
@@ -50,13 +55,9 @@ void main() {
       eventCache: mockEventCache,
       poolCache: mockPoolCache,
       eventSorter: mockEventSorter,
+      remoteAdapters: tRemoteAdapters,
     );
   });
-
-  final tRemoteAdapters = <String, EventRemoteAdapter>{
-    'adapter-1': TestAdapter(),
-    'adapter-2': TestAdapter(),
-  };
 
   group('getAllEvents', () {
     const tEventId = "eventId";
@@ -86,7 +87,7 @@ void main() {
       when(mockEventSorter.sort(any, any)).thenAnswer((_) => tEventModels);
 
       // act
-      final result = await dataSource.getAllEvents(tRemoteAdapters);
+      final result = await dataSource.getAllEvents();
       // assert
       verify(mockEventCache.values());
       tEventModels.sort(((a, b) => a.version - b.version));
@@ -326,7 +327,7 @@ void main() {
       when(mockEventSorter.sort(any, any)).thenAnswer((_) => [tEventModel]);
 
       // act
-      final result = await dataSource.getPooledEvents(tPool, tRemoteAdapters);
+      final result = await dataSource.getPooledEvents(tPool);
       // assert
       final expectedModels = [tEventModel];
       expect(result, expectedModels);
