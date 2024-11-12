@@ -55,8 +55,8 @@ class EventRepositoryImpl extends EventRepository {
         pool: pool,
       ).copyWith(createdAt: timeInfo.now());
 
-      final localHasEvent = await localDataSource.hasEvent(e.eventId);
-      if (localHasEvent) {
+      final localEventExists = await localDataSource.hasEvent(e.eventId);
+      if (localEventExists) {
         final localEvent = await localDataSource.getEvent(e.eventId);
         final resolvedEvent = eventResolver.resolve(
           eventFromAdapter: remoteEvent,
