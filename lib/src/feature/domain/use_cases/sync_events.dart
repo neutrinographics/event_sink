@@ -7,12 +7,26 @@ import 'package:event_sink/src/feature/domain/repositories/event_repository.dart
 class SyncEvents extends UseCase<void, SyncEventsParams> {
   final EventRepository eventRepository;
 
+  Failure? _lastPushFailure;
+
   SyncEvents({
     required this.eventRepository,
   });
 
   @override
   Future<Either<Failure, void>> call(SyncEventsParams params) async {
+    return await _syncWithRetry(params);
+  }
+
+  Future<Either<Failure, void>> _syncWithRetry(
+    SyncEventsParams params, {
+    int retryCount = 0,
+    int allowedRetries = 3,
+  }) async {
+    if (retryCount >= allowedRetries) {
+      return Left(_lastPushFailure ?? const ServerFailure());
+    }
+
     // TODO: can be simplified by Either.chain extension
 
     // download events
@@ -49,7 +63,11 @@ class SyncEvents extends UseCase<void, SyncEventsParams> {
       return failureOrPush;
     }
 
-    throw UnimplementedError('Need to handle OutOfSyncFailure');
+    return _syncWithRetry(
+      params,
+      retryCount: retryCount + 1,
+      allowedRetries: allowedRetries,
+    );
   }
 }
 
