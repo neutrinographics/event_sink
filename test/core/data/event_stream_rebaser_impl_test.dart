@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:event_sink/src/annotations/params/remote_adapter.dart';
-import 'package:event_sink/src/core/data/event_stream_rebase_helper.dart';
+import 'package:event_sink/src/core/data/event_stream_rebaser.dart';
 import 'package:event_sink/src/event_remote_adapter.dart';
 import 'package:event_sink/src/feature/data/local/data_sources/event_local_data_source.dart';
 import 'package:event_sink/src/feature/data/local/models/event_model.dart';
@@ -12,7 +12,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
 import '../../fixtures/fixture_reader.dart';
-import 'event_stream_rebase_helper_impl_test.mocks.dart';
+import 'event_stream_rebaser_impl_test.mocks.dart';
 
 class TestAdapter extends EventRemoteAdapter {
   final int _priority;
@@ -44,11 +44,11 @@ class TestAdapter extends EventRemoteAdapter {
 @GenerateMocks([EventLocalDataSource])
 void main() {
   late MockEventLocalDataSource mockEventLocalDataSource;
-  late EventStreamRebaseHelper eventStreamRebase;
+  late EventStreamRebaser eventRebaser;
 
   setUp(() {
     mockEventLocalDataSource = MockEventLocalDataSource();
-    eventStreamRebase = EventStreamRebaseHelperImpl(mockEventLocalDataSource);
+    eventRebaser = EventStreamRebaserImpl(mockEventLocalDataSource);
   });
 
   group('rebase', () {
@@ -68,7 +68,7 @@ void main() {
       ];
 
       // act
-      await eventStreamRebase.rebase(tUnSyncedEvents, tRemoteAdapters);
+      await eventRebaser.rebase(tUnSyncedEvents, tRemoteAdapters);
 
       // assert
       verify(mockEventLocalDataSource.addEvents([]));
@@ -103,7 +103,7 @@ void main() {
       ];
 
       // act
-      eventStreamRebase.rebase(tPoolEvents, tRemoteAdapters);
+      eventRebaser.rebase(tPoolEvents, tRemoteAdapters);
 
       // assert
       final tExpectedEvents = <EventModel>[
@@ -135,7 +135,7 @@ void main() {
       ];
 
       // act
-      eventStreamRebase.rebase(tSyncedEvents, tRemoteAdapters);
+      eventRebaser.rebase(tSyncedEvents, tRemoteAdapters);
 
       // assert
       final tExpectedEvents = <EventModel>[
@@ -156,7 +156,7 @@ void main() {
         when(mockEventLocalDataSource.addEvents(any)).thenThrow(Exception());
         // act & assert
         expect(
-          eventStreamRebase.rebase([], tRemoteAdapters),
+          eventRebaser.rebase([], tRemoteAdapters),
           throwsA(isA<Exception>()),
         );
       },

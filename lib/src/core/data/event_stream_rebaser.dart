@@ -5,7 +5,7 @@ import 'package:event_sink/event_sink.dart';
 import 'package:event_sink/src/feature/data/local/data_sources/event_local_data_source.dart';
 import 'package:event_sink/src/feature/extensions.dart';
 
-abstract class EventStreamRebaseHelper {
+abstract class EventStreamRebaser {
   /// Rebase the local event stream with the remote event stream.
   /// This is akin to a git rebase.
   /// The rebase operation will apply the changes from the remote event stream
@@ -16,8 +16,8 @@ abstract class EventStreamRebaseHelper {
   );
 }
 
-class EventStreamRebaseHelperImpl implements EventStreamRebaseHelper {
-  EventStreamRebaseHelperImpl(
+class EventStreamRebaserImpl implements EventStreamRebaser {
+  EventStreamRebaserImpl(
     this.eventLocalDataSource,
   );
 
