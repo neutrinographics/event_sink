@@ -1,6 +1,5 @@
 import 'package:dartz/dartz.dart';
 import 'package:event_sink/src/core/error/failure.dart';
-import 'package:event_sink/src/event_remote_adapter.dart';
 import 'package:event_sink/src/feature/domain/repositories/event_repository.dart';
 import 'package:event_sink/src/feature/domain/use_cases/sync_events.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -10,30 +9,28 @@ import 'package:mockito/mockito.dart';
 import '../../../test_utils.dart';
 import 'sync_events_test.mocks.dart';
 
-@GenerateMocks([EventRemoteAdapter, EventRepository])
+@GenerateMocks([EventRepository])
 void main() {
-  late MockEventRemoteAdapter mockEventRemoteAdapter;
   late MockEventRepository mockEventRepository;
   late SyncEvents useCase;
 
   late String tPool;
+  late String tRemoteAdapterName;
   late SyncEventsParams tParams;
 
   setUp(() {
-    mockEventRemoteAdapter = MockEventRemoteAdapter();
     mockEventRepository = MockEventRepository();
     useCase = SyncEvents(
       eventRepository: mockEventRepository,
     );
 
     tPool = '1';
+    tRemoteAdapterName = 'test';
     tParams = SyncEventsParams(
-      remoteAdapter: mockEventRemoteAdapter,
+      remoteAdapterName: tRemoteAdapterName,
       pool: tPool,
     );
   });
-
-  const tRemoteAdapterName = 'test';
 
   test(
     'should sync the events',

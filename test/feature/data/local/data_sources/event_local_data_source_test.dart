@@ -1,9 +1,14 @@
 import 'dart:convert';
 
 import 'package:clean_cache/clean_cache.dart';
+import 'package:event_sink/src/annotations/params/remote_adapter.dart';
+import 'package:event_sink/src/core/data/event_sorter.dart';
+import 'package:event_sink/src/event_remote_adapter.dart';
 import 'package:event_sink/src/feature/data/local/data_sources/event_local_data_source.dart';
 import 'package:event_sink/src/feature/data/local/models/event_model.dart';
 import 'package:event_sink/src/feature/data/local/models/pool_model.dart';
+import 'package:event_sink/src/feature/data/remote/models/remote_event_model.dart';
+import 'package:event_sink/src/feature/data/remote/models/remote_new_event_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:mockito/annotations.dart';
@@ -12,18 +17,45 @@ import 'package:mockito/mockito.dart';
 import '../../../../fixtures/fixture_reader.dart';
 import 'event_local_data_source_test.mocks.dart';
 
-@GenerateNiceMocks([MockSpec<CleanCache>()])
+class TestAdapter extends EventRemoteAdapter {
+  @override
+  int get priority => throw UnimplementedError();
+
+  @override
+  Future<List<RemoteEventModel>> pull() {
+    throw UnimplementedError();
+  }
+
+  @override
+  PullStrategy get pullStrategy => throw UnimplementedError();
+
+  @override
+  Future<List<RemoteEventModel>> push(List<RemoteNewEventModel> events) {
+    throw UnimplementedError();
+  }
+}
+
+@GenerateNiceMocks([MockSpec<CleanCache>(), MockSpec<EventSorter>()])
 void main() {
+  late MockEventSorter mockEventSorter;
   late EventLocalDataSourceImpl dataSource;
   late MockCleanCache<String, EventModel> mockEventCache;
   late MockCleanCache<String, PoolModel> mockPoolCache;
 
+  final tRemoteAdapters = <String, EventRemoteAdapter>{
+    'adapter-1': TestAdapter(),
+    'adapter-2': TestAdapter(),
+  };
+
   setUp(() {
+    mockEventSorter = MockEventSorter();
     mockEventCache = MockCleanCache<String, EventModel>();
     mockPoolCache = MockCleanCache<String, PoolModel>();
     dataSource = EventLocalDataSourceImpl(
       eventCache: mockEventCache,
       poolCache: mockPoolCache,
+      eventSorter: mockEventSorter,
+      remoteAdapters: tRemoteAdapters,
     );
   });
 
@@ -52,6 +84,7 @@ void main() {
         tEvent.copyWith(version: 3, order: 3),
       ];
       when(mockEventCache.values()).thenAnswer((_) async => tEventModels);
+      when(mockEventSorter.sort(any, any)).thenAnswer((_) => tEventModels);
 
       // act
       final result = await dataSource.getAllEvents();
@@ -291,6 +324,8 @@ void main() {
             eventIds: [tEventId],
           ));
       when(mockEventCache.read(any)).thenAnswer((_) async => tEventModel);
+      when(mockEventSorter.sort(any, any)).thenAnswer((_) => [tEventModel]);
+
       // act
       final result = await dataSource.getPooledEvents(tPool);
       // assert
@@ -338,44 +373,6 @@ void main() {
         verify(mockPoolCache.exists(tPoolId));
         verifyNoMoreInteractions(mockPoolCache);
         verifyNoMoreInteractions(mockEventCache);
-      },
-    );
-  });
-
-  group('sort', () {
-    final tEventModel = EventModel(
-      eventId: 'event-id',
-      streamId: 'stream-1',
-      version: 1,
-      order: 1,
-      name: "create-group",
-      createdAt: DateTime.now(),
-      data: {
-        "group_stream_id": 'group-id',
-      },
-      pool: '1',
-    );
-
-    test(
-      'should sort a list of events',
-      () async {
-        // arrange
-        final tModels = [
-          tEventModel,
-          tEventModel.copyWith(streamId: 'stream-2'),
-          tEventModel.copyWith(version: 3, order: 3),
-          tEventModel.copyWith(version: 2, order: 2),
-        ];
-        // act
-        EventLocalDataSourceImpl.sort(tModels);
-        // assert
-        final expectedModels = [
-          tEventModel,
-          tEventModel.copyWith(streamId: 'stream-2'),
-          tEventModel.copyWith(version: 2, order: 2),
-          tEventModel.copyWith(version: 3, order: 3),
-        ];
-        expect(tModels, expectedModels);
       },
     );
   });

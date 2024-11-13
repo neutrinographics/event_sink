@@ -3,11 +3,14 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i3;
+import 'dart:async' as _i4;
 
-import 'package:event_sink/event_sink.dart' as _i2;
 import 'package:event_sink/src/feature/data/remote/data_sources/event_remote_data_source.dart'
-    as _i4;
+    as _i3;
+import 'package:event_sink/src/feature/data/remote/models/remote_event_model.dart'
+    as _i2;
+import 'package:event_sink/src/feature/data/remote/models/remote_new_event_model.dart'
+    as _i5;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -34,49 +37,17 @@ class _FakeRemoteEventModel_0 extends _i1.SmartFake
         );
 }
 
-/// A class which mocks [EventRemoteAdapter].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockEventRemoteAdapter extends _i1.Mock
-    implements _i2.EventRemoteAdapter {
-  MockEventRemoteAdapter() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  _i3.Future<List<_i2.RemoteEventModel>> pull() => (super.noSuchMethod(
-        Invocation.method(
-          #pull,
-          [],
-        ),
-        returnValue: _i3.Future<List<_i2.RemoteEventModel>>.value(
-            <_i2.RemoteEventModel>[]),
-      ) as _i3.Future<List<_i2.RemoteEventModel>>);
-
-  @override
-  _i3.Future<List<_i2.RemoteEventModel>> push(
-          List<_i2.RemoteNewEventModel>? events) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #push,
-          [events],
-        ),
-        returnValue: _i3.Future<List<_i2.RemoteEventModel>>.value(
-            <_i2.RemoteEventModel>[]),
-      ) as _i3.Future<List<_i2.RemoteEventModel>>);
-}
-
 /// A class which mocks [EventRemoteDataSource].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockEventRemoteDataSource extends _i1.Mock
-    implements _i4.EventRemoteDataSource {
+    implements _i3.EventRemoteDataSource {
   MockEventRemoteDataSource() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i3.Future<List<_i2.RemoteEventModel>> getEvents({
+  _i4.Future<List<_i2.RemoteEventModel>> getEvents({
     required Uri? host,
     required String? token,
   }) =>
@@ -89,13 +60,13 @@ class MockEventRemoteDataSource extends _i1.Mock
             #token: token,
           },
         ),
-        returnValue: _i3.Future<List<_i2.RemoteEventModel>>.value(
+        returnValue: _i4.Future<List<_i2.RemoteEventModel>>.value(
             <_i2.RemoteEventModel>[]),
-      ) as _i3.Future<List<_i2.RemoteEventModel>>);
+      ) as _i4.Future<List<_i2.RemoteEventModel>>);
 
   @override
-  _i3.Future<_i2.RemoteEventModel> createEvent(
-    _i2.RemoteNewEventModel? event, {
+  _i4.Future<_i2.RemoteEventModel> createEvent(
+    _i5.RemoteNewEventModel? event, {
     required Uri? host,
     required String? token,
   }) =>
@@ -109,7 +80,7 @@ class MockEventRemoteDataSource extends _i1.Mock
           },
         ),
         returnValue:
-            _i3.Future<_i2.RemoteEventModel>.value(_FakeRemoteEventModel_0(
+            _i4.Future<_i2.RemoteEventModel>.value(_FakeRemoteEventModel_0(
           this,
           Invocation.method(
             #createEvent,
@@ -120,5 +91,5 @@ class MockEventRemoteDataSource extends _i1.Mock
             },
           ),
         )),
-      ) as _i3.Future<_i2.RemoteEventModel>);
+      ) as _i4.Future<_i2.RemoteEventModel>);
 }

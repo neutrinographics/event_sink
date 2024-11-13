@@ -25,11 +25,11 @@ class EventController {
 
   /// Synchronizes events with the server
   Future<Either<Failure, void>> sync({
-    required EventRemoteAdapter remoteAdapter,
+    required String remoteAdapterName,
     required String pool,
   }) =>
       _syncEvents(SyncEventsParams(
-        remoteAdapter: remoteAdapter,
+        remoteAdapterName: remoteAdapterName,
         pool: pool,
       ));
 

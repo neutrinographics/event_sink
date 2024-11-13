@@ -6,6 +6,8 @@
 import 'dart:async' as _i2;
 
 import 'package:clean_cache/clean_cache.dart' as _i3;
+import 'package:event_sink/event_sink.dart' as _i6;
+import 'package:event_sink/src/core/data/event_sorter.dart' as _i5;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i4;
 
@@ -154,4 +156,26 @@ class MockCleanCache<K, T> extends _i1.Mock implements _i3.CleanCache<K, T> {
         returnValue: _i2.Future<void>.value(),
         returnValueForMissingStub: _i2.Future<void>.value(),
       ) as _i2.Future<void>);
+}
+
+/// A class which mocks [EventSorter].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockEventSorter extends _i1.Mock implements _i5.EventSorter {
+  @override
+  List<_i6.EventModel> sort(
+    List<_i6.EventModel>? events,
+    Map<String, _i6.EventRemoteAdapter>? remoteAdapters,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #sort,
+          [
+            events,
+            remoteAdapters,
+          ],
+        ),
+        returnValue: <_i6.EventModel>[],
+        returnValueForMissingStub: <_i6.EventModel>[],
+      ) as List<_i6.EventModel>);
 }

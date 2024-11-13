@@ -1,9 +1,13 @@
 import 'package:clean_cache/cache/memory_cache.dart';
 import 'package:clock/clock.dart';
+import 'package:event_sink/src/core/data/event_resolver.dart';
+import 'package:event_sink/src/core/data/event_sorter.dart';
+import 'package:event_sink/src/core/data/event_stream_rebaser.dart';
 
 import 'package:event_sink/src/core/data/id_generator.dart';
 import 'package:event_sink/src/core/network/network.dart';
 import 'package:event_sink/src/core/time/time_info.dart';
+import 'package:event_sink/src/event_remote_adapter.dart';
 import 'package:event_sink/src/feature/data/local/data_sources/event_local_data_source.dart';
 import 'package:event_sink/src/feature/data/local/models/event_model.dart';
 import 'package:event_sink/src/feature/data/remote/data_sources/event_remote_data_source.dart';
@@ -26,7 +30,9 @@ import 'core/data/cache.dart';
 // instance of any calling code that also uses GetIt.
 final sl = GetIt.asNewInstance();
 
-Future<void> init() async {
+Future<void> init({
+  required Map<String, EventRemoteAdapter> remoteAdapters,
+}) async {
   // Controllers
   sl.registerFactory(() => EventController(
         syncEvents: sl(),
@@ -34,6 +40,10 @@ Future<void> init() async {
         addEvent: sl(),
         clearCache: sl(),
       ));
+
+  // Remote adapters
+  sl.registerLazySingleton<Map<String, EventRemoteAdapter>>(
+      () => remoteAdapters);
 
   // Use cases
   sl.registerLazySingleton(() => ClearCache(eventRepository: sl()));
@@ -46,8 +56,10 @@ Future<void> init() async {
   // Repositories
   sl.registerLazySingleton<EventRepository>(() => EventRepositoryImpl(
         localDataSource: sl(),
+        remoteAdapters: sl(),
         idGenerator: sl(),
         timeInfo: sl(),
+        eventResolver: sl(),
       ));
 
   // Data sources
@@ -57,6 +69,8 @@ Future<void> init() async {
     () => EventLocalDataSourceImpl(
       eventCache: eventCache,
       poolCache: MemoryCache(),
+      remoteAdapters: sl(),
+      eventSorter: sl(),
     ),
   );
   sl.registerLazySingleton<EventRemoteDataSource>(
@@ -69,6 +83,10 @@ Future<void> init() async {
   sl.registerLazySingleton<TimeInfo>(() => TimeInfoImpl(sl()));
   sl.registerLazySingleton<IdGenerator>(() => IdGeneratorImpl(sl()));
   sl.registerLazySingleton<Network>(() => NetworkImpl(sl()));
+  sl.registerLazySingleton<EventSorter>(() => EventSorterImpl());
+  sl.registerLazySingleton<EventResolver>(() => EventResolverImpl());
+  sl.registerLazySingleton<EventStreamRebaser>(
+      () => EventStreamRebaserImpl(sl()));
 
   // External
   sl.registerLazySingleton(() => const Uuid());

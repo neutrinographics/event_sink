@@ -14,12 +14,6 @@ import 'package:event_sink/src/feature/domain/entities/event_stub.dart';
 /// 2. rebase un-synced events onto new ones from the server
 /// 3. push all un-synced events to the server.
 abstract class EventRepository {
-  /// Initializes the repository with the remote adapters that it can use.
-  /// This should called once at the start of the application.
-  void init({
-    required Map<String, EventRemoteAdapter> remoteAdapters,
-  });
-
   /// Downloads events from a remote adapter and stores it in the device
   /// event cache.
   Future<Either<Failure, void>> fetch({
