@@ -40,10 +40,28 @@ class EventStreamRebaserImpl implements EventStreamRebaser {
       }
     }
 
-    int lastSyncedVersion = 0;
+    final rebasedSyncedEvents = _processSyncedEvents(
+      syncedEvents,
+      remoteAdapters,
+    );
+    final rebasedUnSyncedEvents = _processUnSyncedEvents(
+      unSyncedEvents,
+      rebasedSyncedEvents.isNotEmpty ? rebasedSyncedEvents.last.version : 0,
+    );
 
-    // process synced events
+    eventLocalDataSource.addEvents([
+      ...rebasedSyncedEvents,
+      ...rebasedUnSyncedEvents,
+    ]);
+  }
+
+  List<EventModel> _processSyncedEvents(
+    List<EventModel> syncedEvents,
+    Map<String, EventRemoteAdapter> remoteAdapters,
+  ) {
+    int lastSyncedVersion = 0;
     final syncedEventsToAdd = <EventModel>[];
+
     if (syncedEvents.isNotEmpty) {
       final syncedEventByPriorities = groupBy(syncedEvents, (event) {
         return event.highestAdapterPriority(remoteAdapters);
@@ -72,7 +90,13 @@ class EventStreamRebaserImpl implements EventStreamRebaser {
       }
     }
 
-    // process un-synced events
+    return syncedEventsToAdd;
+  }
+
+  List<EventModel> _processUnSyncedEvents(
+    List<EventModel> unSyncedEvents,
+    int lastSyncedVersion,
+  ) {
     int lastVersion = lastSyncedVersion;
     final unSyncedEventsToAdd = <EventModel>[];
     for (final unSyncedEvent in unSyncedEvents) {
@@ -83,7 +107,6 @@ class EventStreamRebaserImpl implements EventStreamRebaser {
       lastVersion = updatedEvent.version;
     }
 
-    eventLocalDataSource.addEvents(syncedEventsToAdd);
-    eventLocalDataSource.addEvents(unSyncedEventsToAdd);
+    return unSyncedEventsToAdd;
   }
 }

@@ -71,7 +71,6 @@ void main() {
       await eventRebaser.rebase(tUnSyncedEvents, tRemoteAdapters);
 
       // assert
-      verify(mockEventLocalDataSource.addEvents([]));
       verify(mockEventLocalDataSource.addEvents(tUnSyncedEvents));
       verifyNoMoreInteractions(mockEventLocalDataSource);
     });
@@ -110,8 +109,10 @@ void main() {
         tFirstUnSyncedEvent.copyWith(version: 2),
         tSecondUnSyncedEvent.copyWith(version: 3),
       ];
-      verify(mockEventLocalDataSource.addEvents(tSyncedEvents));
-      verify(mockEventLocalDataSource.addEvents(tExpectedEvents));
+      verify(mockEventLocalDataSource.addEvents([
+        ...tSyncedEvents,
+        ...tExpectedEvents,
+      ]));
       verifyNoMoreInteractions(mockEventLocalDataSource);
     });
 
@@ -144,7 +145,6 @@ void main() {
         ),
       ];
       verify(mockEventLocalDataSource.addEvents(tExpectedEvents));
-      verify(mockEventLocalDataSource.addEvents([]));
       verifyNoMoreInteractions(mockEventLocalDataSource);
     });
 
