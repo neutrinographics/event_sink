@@ -16,6 +16,7 @@ import 'package:event_sink/src/feature/domain/repositories/event_repository.dart
 import 'package:event_sink/src/feature/domain/use_cases/add_event.dart';
 import 'package:event_sink/src/feature/domain/use_cases/apply_events.dart';
 import 'package:event_sink/src/feature/domain/use_cases/clear_cache.dart';
+import 'package:event_sink/src/feature/domain/use_cases/list_events.dart';
 import 'package:event_sink/src/feature/domain/use_cases/sync_events.dart';
 import 'package:event_sink/src/event_controller.dart';
 import 'package:get_it/get_it.dart';
@@ -39,6 +40,7 @@ Future<void> init({
         applyEvents: sl(),
         addEvent: sl(),
         clearCache: sl(),
+        listEvents: sl(),
       ));
 
   // Remote adapters
@@ -52,6 +54,7 @@ Future<void> init({
         eventRepository: sl(),
       ));
   sl.registerLazySingleton(() => AddEvent(eventRepository: sl()));
+  sl.registerLazySingleton(() => ListEvents(eventRepository: sl()));
 
   // Repositories
   sl.registerLazySingleton<EventRepository>(() => EventRepositoryImpl(

@@ -1,8 +1,10 @@
 import 'package:dartz/dartz.dart';
 import 'package:event_sink/event_sink.dart';
+import 'package:event_sink/src/feature/domain/entities/event_stub.dart';
 import 'package:event_sink/src/feature/domain/use_cases/add_event.dart';
 import 'package:event_sink/src/feature/domain/use_cases/apply_events.dart';
 import 'package:event_sink/src/feature/domain/use_cases/clear_cache.dart';
+import 'package:event_sink/src/feature/domain/use_cases/list_events.dart';
 import 'package:event_sink/src/feature/domain/use_cases/sync_events.dart';
 
 // this is sort of in the position of a bloc.
@@ -12,16 +14,19 @@ class EventController {
   final ApplyEvents _applyEvents;
   final AddEvent _addEvent;
   final ClearCache _clearCache;
+  final ListEvents _listEvents;
 
   EventController({
     required SyncEvents syncEvents,
     required ApplyEvents applyEvents,
     required AddEvent addEvent,
     required ClearCache clearCache,
+    required ListEvents listEvents,
   })  : _syncEvents = syncEvents,
         _applyEvents = applyEvents,
         _addEvent = addEvent,
-        _clearCache = clearCache;
+        _clearCache = clearCache,
+        _listEvents = listEvents;
 
   /// Synchronizes events with the server
   Future<Either<Failure, void>> sync({
@@ -51,4 +56,7 @@ class EventController {
 
   Future<Either<Failure, void>> deletePoolCache(String pool) async =>
       _clearCache(ClearCacheParams(pool: pool));
+
+  Future<Either<Failure, List<EventStub>>> list(String pool) =>
+      _listEvents(ListEventsParams(pool: pool));
 }

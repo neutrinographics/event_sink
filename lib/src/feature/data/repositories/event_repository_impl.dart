@@ -83,6 +83,7 @@ class EventRepositoryImpl extends EventRepository {
     List<EventModel> events;
 
     try {
+      // TODO: (opendoor) need to expose this method in this repository
       events = await localDataSource.getPooledEvents(pool);
     } on Exception catch (e, stack) {
       return Left(CacheFailure(message: "$e\n\n$stack"));

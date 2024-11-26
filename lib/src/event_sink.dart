@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:event_sink/event_sink.dart';
 import 'package:event_sink/src/event_controller.dart';
+import 'package:event_sink/src/feature/domain/entities/event_stub.dart';
 import 'injection_container.dart' as ic;
 
 typedef EventDataGenerator = EventData Function(Map<String, dynamic>);
@@ -35,6 +36,9 @@ abstract class EventSink {
   /// Adds an event to the pool.
   Future<Either<Failure, void>> add(EventInfo<EventData> event, String pool) =>
       _controller.add(event, pool);
+
+  Future<Either<Failure, List<EventStub>>> list(String pool) =>
+      _controller.list(pool);
 
   /// Applies any un-processed events.
   Future<Either<Failure, void>> apply(String pool) => _controller
