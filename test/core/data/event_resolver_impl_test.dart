@@ -24,7 +24,7 @@ class TestAdapter extends EventRemoteAdapter {
   }
 
   @override
-  Future<List<RemoteEventModel>> push(List<RemoteNewEventModel> events) {
+  Future<List<RemoteEventModel>> push(List<RemoteEventModel> events) {
     throw UnimplementedError();
   }
 }

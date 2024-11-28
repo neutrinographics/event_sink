@@ -274,9 +274,9 @@ void main() {
         // assert
         for (var e in tCachedEvents) {
           if (e.isSyncedWith(tRemoteAdapterName) == true) {
-            verifyNever(mockEventRemoteAdapter.push([e.toNewRemote()]));
+            verifyNever(mockEventRemoteAdapter.push([e.toRemote()]));
           } else {
-            verify(mockEventRemoteAdapter.push([e.toNewRemote()]));
+            verify(mockEventRemoteAdapter.push([e.toRemote()]));
           }
         }
         // verify events were updated with their remote id
@@ -721,6 +721,48 @@ void main() {
         expectEitherEqualsList(
             result, tEvents.map((e) => e.toDomain()).toList());
         verify(mockEventLocalDataSource.getPooledEvents(any));
+      },
+    );
+  });
+
+  group('listEvents', () {
+    const tPool = '1';
+    final baseEvent = EventModel.fromJson(json.decode(fixture('event.json')));
+
+    final tEvents = [
+      baseEvent.copyWith(streamId: 'first', version: 8),
+      baseEvent.copyWith(streamId: 'first', version: 9),
+      baseEvent.copyWith(streamId: 'first', version: 10),
+      baseEvent.copyWith(streamId: 'first', version: 11, applied: true),
+    ];
+
+    test(
+      "Should return CacheFailure if events cannot be read from cache",
+      () async {
+        // arrange
+        when(mockEventLocalDataSource.getPooledEvents(any))
+            .thenThrow(Exception());
+        // act
+        final result = await repository.listEvents(tPool);
+
+        // assert
+        expect(result.swap().toOption().toNullable(), isA<CacheFailure>());
+        verify(mockEventLocalDataSource.getPooledEvents(tPool));
+        verifyNever(mockEventLocalDataSource.addEvent(any));
+      },
+    );
+
+    test(
+      'Should return a list of events',
+      () async {
+        // arrange
+        when(mockEventLocalDataSource.getPooledEvents(any))
+            .thenAnswer((_) async => tEvents);
+        // act
+        final result = await repository.listEvents(tPool);
+        // assert
+        expect(result, equals(Right(tEvents)));
+        verify(mockEventLocalDataSource.getPooledEvents(tPool));
       },
     );
   });

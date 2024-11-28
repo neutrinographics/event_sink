@@ -6,7 +6,6 @@ import 'package:event_sink/src/event_remote_adapter.dart';
 import 'package:event_sink/src/feature/data/local/data_sources/event_local_data_source.dart';
 import 'package:event_sink/src/feature/data/local/models/event_model.dart';
 import 'package:event_sink/src/feature/data/remote/models/remote_event_model.dart';
-import 'package:event_sink/src/feature/data/remote/models/remote_new_event_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -36,7 +35,7 @@ class TestAdapter extends EventRemoteAdapter {
   }
 
   @override
-  Future<List<RemoteEventModel>> push(List<RemoteNewEventModel> events) {
+  Future<List<RemoteEventModel>> push(List<RemoteEventModel> events) {
     throw UnimplementedError();
   }
 }

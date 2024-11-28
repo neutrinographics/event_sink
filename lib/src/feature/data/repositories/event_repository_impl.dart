@@ -95,7 +95,7 @@ class EventRepositoryImpl extends EventRepository {
       try {
         // TODO: refactor this to use a batch push
         final syncedEvent =
-            await _getRemoteAdapter(remoteAdapterName).push([e.toNewRemote()]);
+            await _getRemoteAdapter(remoteAdapterName).push([e.toRemote()]);
 
         eventsToAdd.add(
           EventModel.fromRemote(
@@ -233,6 +233,7 @@ class EventRepositoryImpl extends EventRepository {
   }
 
   @override
+  // TODO: rename this so it doesn't get confused with listEvents method
   Future<Either<Failure, List<EventStub>>> list(String pool) async {
     List<EventModel> models;
     try {
@@ -247,6 +248,16 @@ class EventRepositoryImpl extends EventRepository {
     }
 
     return Right(events);
+  }
+
+  @override
+  Future<Either<Failure, List<EventModel>>> listEvents(String pool) async {
+    try {
+      final events = await localDataSource.getPooledEvents(pool);
+      return Right(events);
+    } on Exception catch (e, stack) {
+      return Left(CacheFailure(message: "$e\n\n$stack"));
+    }
   }
 
   @override

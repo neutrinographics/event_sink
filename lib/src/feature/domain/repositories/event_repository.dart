@@ -35,8 +35,11 @@ abstract class EventRepository {
   /// or synced to the server.
   Future<Either<Failure, void>> add(EventInfo<EventData> event, String pool);
 
-  /// Returns a sorted list of events
+  /// Returns a sorted list of events (stub)
   Future<Either<Failure, List<EventStub>>> list(String pool);
+
+  /// Returns locally cached list of events
+  Future<Either<Failure, List<EventModel>>> listEvents(String pool);
 
   /// Marks an event as having been reduced into the graph.
   Future<Either<Failure, void>> markApplied(EventStub event);

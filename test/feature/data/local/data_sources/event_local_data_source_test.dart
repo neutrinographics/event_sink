@@ -8,7 +8,6 @@ import 'package:event_sink/src/feature/data/local/data_sources/event_local_data_
 import 'package:event_sink/src/feature/data/local/models/event_model.dart';
 import 'package:event_sink/src/feature/data/local/models/pool_model.dart';
 import 'package:event_sink/src/feature/data/remote/models/remote_event_model.dart';
-import 'package:event_sink/src/feature/data/remote/models/remote_new_event_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:mockito/annotations.dart';
@@ -30,7 +29,7 @@ class TestAdapter extends EventRemoteAdapter {
   PullStrategy get pullStrategy => throw UnimplementedError();
 
   @override
-  Future<List<RemoteEventModel>> push(List<RemoteNewEventModel> events) {
+  Future<List<RemoteEventModel>> push(List<RemoteEventModel> events) {
     throw UnimplementedError();
   }
 }
