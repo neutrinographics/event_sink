@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:event_sink/src/feature/domain/entities/event_stub.dart';
+import 'package:event_sink/event_sink.dart';
 import 'package:event_sink/src/feature/domain/repositories/event_repository.dart';
 import 'package:event_sink/src/feature/domain/use_cases/list_events.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -26,14 +26,14 @@ void main() {
       // arrange
       const tPool = '1';
       const tParams = ListEventsParams(pool: tPool);
-      const tEvents = <EventStub>[];
-      when(mockEventRepository.list(tPool))
+      const tEvents = <EventModel>[];
+      when(mockEventRepository.listEvents(tPool))
           .thenAnswer((_) async => const Right(tEvents));
       // act
       final result = await useCase(tParams);
       // assert
       expect(result, const Right(tEvents));
-      verify(mockEventRepository.list(tPool));
+      verify(mockEventRepository.listEvents(tPool));
       verifyNoMoreInteractions(mockEventRepository);
     },
   );

@@ -1,6 +1,5 @@
 import 'package:dartz/dartz.dart';
 import 'package:event_sink/event_sink.dart';
-import 'package:event_sink/src/feature/domain/entities/event_stub.dart';
 import 'package:event_sink/src/feature/domain/use_cases/add_event.dart';
 import 'package:event_sink/src/feature/domain/use_cases/apply_events.dart';
 import 'package:event_sink/src/feature/domain/use_cases/clear_cache.dart';
@@ -57,6 +56,6 @@ class EventController {
   Future<Either<Failure, void>> deletePoolCache(String pool) async =>
       _clearCache(ClearCacheParams(pool: pool));
 
-  Future<Either<Failure, List<EventStub>>> list(String pool) =>
+  Future<Either<Failure, List<EventModel>>> listEvents(String pool) =>
       _listEvents(ListEventsParams(pool: pool));
 }

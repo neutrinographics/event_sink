@@ -2,10 +2,10 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:event_sink/src/core/domain/usecase.dart';
 import 'package:event_sink/src/core/error/failure.dart';
-import 'package:event_sink/src/feature/domain/entities/event_stub.dart';
+import 'package:event_sink/src/feature/data/local/models/event_model.dart';
 import 'package:event_sink/src/feature/domain/repositories/event_repository.dart';
 
-class ListEvents extends UseCase<List<EventStub>, ListEventsParams> {
+class ListEvents extends UseCase<List<EventModel>, ListEventsParams> {
   ListEvents({
     required this.eventRepository,
   });
@@ -13,8 +13,8 @@ class ListEvents extends UseCase<List<EventStub>, ListEventsParams> {
   final EventRepository eventRepository;
 
   @override
-  Future<Either<Failure, List<EventStub>>> call(ListEventsParams params) {
-    return eventRepository.list(params.pool);
+  Future<Either<Failure, List<EventModel>>> call(ListEventsParams params) {
+    return eventRepository.listEvents(params.pool);
   }
 }
 
