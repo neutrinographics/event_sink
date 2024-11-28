@@ -14,5 +14,5 @@ abstract class EventRemoteAdapter {
 
   /// Pushes events to the remote source.
   /// Returns the newly created remote events.
-  Future<List<RemoteEventModel>> push(List<RemoteNewEventModel> events);
+  Future<List<RemoteEventModel>> push(List<RemoteEventModel> events);
 }

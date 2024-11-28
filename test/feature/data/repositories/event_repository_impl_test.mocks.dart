@@ -80,7 +80,7 @@ class MockEventRemoteAdapter extends _i1.Mock
 
   @override
   _i3.Future<List<_i2.RemoteEventModel>> push(
-          List<_i2.RemoteNewEventModel>? events) =>
+          List<_i2.RemoteEventModel>? events) =>
       (super.noSuchMethod(
         Invocation.method(
           #push,

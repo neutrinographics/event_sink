@@ -95,7 +95,7 @@ class EventRepositoryImpl extends EventRepository {
       try {
         // TODO: refactor this to use a batch push
         final syncedEvent =
-            await _getRemoteAdapter(remoteAdapterName).push([e.toNewRemote()]);
+            await _getRemoteAdapter(remoteAdapterName).push([e.toRemote()]);
 
         eventsToAdd.add(
           EventModel.fromRemote(

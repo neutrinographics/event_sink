@@ -274,9 +274,9 @@ void main() {
         // assert
         for (var e in tCachedEvents) {
           if (e.isSyncedWith(tRemoteAdapterName) == true) {
-            verifyNever(mockEventRemoteAdapter.push([e.toNewRemote()]));
+            verifyNever(mockEventRemoteAdapter.push([e.toRemote()]));
           } else {
-            verify(mockEventRemoteAdapter.push([e.toNewRemote()]));
+            verify(mockEventRemoteAdapter.push([e.toRemote()]));
           }
         }
         // verify events were updated with their remote id

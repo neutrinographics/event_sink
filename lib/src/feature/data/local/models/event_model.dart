@@ -66,6 +66,18 @@ class EventModel extends HiveObject with _$EventModel {
     );
   }
 
+  RemoteEventModel toRemote() {
+    return RemoteEventModel(
+      eventId: eventId,
+      streamId: streamId,
+      version: version,
+      order: order,
+      name: name,
+      data: data,
+      createdAt: createdAt,
+    );
+  }
+
   RemoteNewEventModel toNewRemote() {
     return RemoteNewEventModel(
       eventId: eventId,
