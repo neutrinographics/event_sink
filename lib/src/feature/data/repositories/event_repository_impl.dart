@@ -83,34 +83,41 @@ class EventRepositoryImpl extends EventRepository {
     List<EventModel> events;
 
     try {
-      // TODO: (opendoor) need to expose this method in this repository
       events = await localDataSource.getPooledEvents(pool);
     } on Exception catch (e, stack) {
       return Left(CacheFailure(message: "$e\n\n$stack"));
     }
 
-    List<EventModel> eventsToAdd = [];
-    for (var e in events) {
-      if (e.isSyncedWith(remoteAdapterName)) continue;
-      try {
-        // TODO: refactor this to use a batch push
-        final syncedEvent =
-            await _getRemoteAdapter(remoteAdapterName).push([e.toRemote()]);
+    final eventsToAdd = <EventModel>[];
 
-        eventsToAdd.add(
-          EventModel.fromRemote(
-            remoteEvent: syncedEvent.first,
-            remoteAdapterName: remoteAdapterName,
-            pool: pool,
-          ).copyWith(applied: e.applied, createdAt: timeInfo.now()),
+    try {
+      final eventsToPush = events
+          .where((e) => !e.isSyncedWith(remoteAdapterName))
+          .map((e) => e.toRemote())
+          .toList();
+      final pushedEvents =
+          await _getRemoteAdapter(remoteAdapterName).push(eventsToPush);
+
+      final remotePushedEvents = pushedEvents.map((pushedEvent) {
+        final isApplied = events
+            .firstWhere((event) => event.eventId == pushedEvent.eventId)
+            .applied;
+        return EventModel.fromRemote(
+          remoteEvent: pushedEvent,
+          remoteAdapterName: remoteAdapterName,
+          pool: pool,
+        ).copyWith(
+          applied: isApplied,
+          createdAt: timeInfo.now(),
         );
-      } on OutOfSyncException catch (e) {
-        return Left(OutOfSyncFailure(message: e.message));
-      } on ServerException catch (e) {
-        return Left(ServerFailure(message: e.message));
-      } on Exception catch (e, stack) {
-        return Left(CacheFailure(message: "$e\n\n$stack"));
-      }
+      });
+      eventsToAdd.addAll(remotePushedEvents);
+    } on OutOfSyncException catch (e) {
+      return Left(OutOfSyncFailure(message: e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message));
+    } on Exception catch (e, stack) {
+      return Left(CacheFailure(message: "$e\n\n$stack"));
     }
 
     try {
