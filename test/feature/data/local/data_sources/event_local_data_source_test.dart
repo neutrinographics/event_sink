@@ -21,7 +21,7 @@ class TestAdapter extends EventRemoteAdapter {
   int get priority => throw UnimplementedError();
 
   @override
-  Future<List<RemoteEventModel>> pull() {
+  Future<List<RemoteEventModel>> pull(String pool) {
     throw UnimplementedError();
   }
 
@@ -29,7 +29,10 @@ class TestAdapter extends EventRemoteAdapter {
   PullStrategy get pullStrategy => throw UnimplementedError();
 
   @override
-  Future<List<RemoteEventModel>> push(List<RemoteEventModel> events) {
+  Future<List<RemoteEventModel>> push(
+    String pool,
+    List<RemoteEventModel> events,
+  ) {
     throw UnimplementedError();
   }
 }
