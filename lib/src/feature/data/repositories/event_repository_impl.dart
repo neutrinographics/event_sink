@@ -37,7 +37,7 @@ class EventRepositoryImpl extends EventRepository {
   }) async {
     List<RemoteEventModel> remoteEvents;
     try {
-      remoteEvents = await _getRemoteAdapter(remoteAdapterName).pull();
+      remoteEvents = await _getRemoteAdapter(remoteAdapterName).pull(pool);
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     }
@@ -96,7 +96,7 @@ class EventRepositoryImpl extends EventRepository {
           .map((e) => e.toRemote())
           .toList();
       final pushedEvents =
-          await _getRemoteAdapter(remoteAdapterName).push(eventsToPush);
+          await _getRemoteAdapter(remoteAdapterName).push(pool, eventsToPush);
 
       final remotePushedEvents = pushedEvents.map((pushedEvent) {
         final isApplied = events

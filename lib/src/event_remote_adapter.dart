@@ -10,9 +10,12 @@ abstract class EventRemoteAdapter {
 
   /// Pulls events from the remote source
   /// then apply [pullStrategy].
-  Future<List<RemoteEventModel>> pull();
+  Future<List<RemoteEventModel>> pull(String pool);
 
   /// Pushes events to the remote source.
   /// Returns the newly created remote events.
-  Future<List<RemoteEventModel>> push(List<RemoteEventModel> events);
+  Future<List<RemoteEventModel>> push(
+    String pool,
+    List<RemoteEventModel> events,
+  );
 }
