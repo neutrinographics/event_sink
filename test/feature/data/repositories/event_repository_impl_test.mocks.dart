@@ -8,7 +8,8 @@ import 'dart:async' as _i3;
 import 'package:event_sink/event_sink.dart' as _i2;
 import 'package:event_sink/src/core/data/event_resolver.dart' as _i5;
 import 'package:event_sink/src/core/data/id_generator.dart' as _i6;
-import 'package:event_sink/src/core/time/time_info.dart' as _i8;
+import 'package:event_sink/src/core/hash_generator.dart' as _i8;
+import 'package:event_sink/src/core/time/time_info.dart' as _i9;
 import 'package:event_sink/src/feature/data/local/data_sources/event_local_data_source.dart'
     as _i4;
 import 'package:mockito/mockito.dart' as _i1;
@@ -69,11 +70,17 @@ class MockEventRemoteAdapter extends _i1.Mock
       ) as int);
 
   @override
-  _i3.Future<List<_i2.RemoteEventModel>> pull(String? pool) =>
+  _i3.Future<List<_i2.RemoteEventModel>> pull(
+    String? pool,
+    String? stateHash,
+  ) =>
       (super.noSuchMethod(
         Invocation.method(
           #pull,
-          [pool],
+          [
+            pool,
+            stateHash,
+          ],
         ),
         returnValue: _i3.Future<List<_i2.RemoteEventModel>>.value(
             <_i2.RemoteEventModel>[]),
@@ -285,10 +292,34 @@ class MockIdGenerator extends _i1.Mock implements _i6.IdGenerator {
       ) as String);
 }
 
+/// A class which mocks [HashGenerator].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockHashGenerator extends _i1.Mock implements _i8.HashGenerator {
+  MockHashGenerator() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  String generateHash(String? data) => (super.noSuchMethod(
+        Invocation.method(
+          #generateHash,
+          [data],
+        ),
+        returnValue: _i7.dummyValue<String>(
+          this,
+          Invocation.method(
+            #generateHash,
+            [data],
+          ),
+        ),
+      ) as String);
+}
+
 /// A class which mocks [TimeInfo].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockTimeInfo extends _i1.Mock implements _i8.TimeInfo {
+class MockTimeInfo extends _i1.Mock implements _i9.TimeInfo {
   MockTimeInfo() {
     _i1.throwOnMissingStub(this);
   }

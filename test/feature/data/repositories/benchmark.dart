@@ -7,6 +7,7 @@ import 'package:event_sink/src/core/data/cache.dart';
 import 'package:event_sink/src/core/data/event_resolver.dart';
 import 'package:event_sink/src/core/data/event_sorter.dart';
 import 'package:event_sink/src/core/data/id_generator.dart';
+import 'package:event_sink/src/core/hash_generator.dart';
 import 'package:event_sink/src/core/time/time_info.dart';
 import 'package:event_sink/src/feature/data/local/data_sources/event_local_data_source.dart';
 import 'package:event_sink/src/feature/data/local/models/event_model.dart';
@@ -57,10 +58,12 @@ void main() {
     );
     mockRemoteDataSource = MockEventRemoteDataSource();
     IdGeneratorImpl idGenerator = IdGeneratorImpl(const Uuid());
+    HashGenerator hashGenerator = const HashGeneratorImpl();
     TimeInfoImpl timeInfo = TimeInfoImpl(const Clock());
     repository = EventRepositoryImpl(
       localDataSource: localDataSource,
       idGenerator: idGenerator,
+      hashGenerator: hashGenerator,
       timeInfo: timeInfo,
       eventResolver: EventResolverImpl(),
       remoteAdapters: {},
