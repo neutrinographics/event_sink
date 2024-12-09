@@ -5,6 +5,7 @@ import 'package:event_sink/src/core/data/event_sorter.dart';
 import 'package:event_sink/src/core/data/event_stream_rebaser.dart';
 
 import 'package:event_sink/src/core/data/id_generator.dart';
+import 'package:event_sink/src/core/hash_generator.dart';
 import 'package:event_sink/src/core/network/network.dart';
 import 'package:event_sink/src/core/time/time_info.dart';
 import 'package:event_sink/src/event_remote_adapter.dart';
@@ -61,6 +62,7 @@ Future<void> init({
         localDataSource: sl(),
         remoteAdapters: sl(),
         idGenerator: sl(),
+        hashGenerator: sl(),
         timeInfo: sl(),
         eventResolver: sl(),
       ));
@@ -92,6 +94,7 @@ Future<void> init({
       () => EventStreamRebaserImpl(sl()));
 
   // External
+  sl.registerLazySingleton(() => const HashGeneratorImpl());
   sl.registerLazySingleton(() => const Uuid());
   sl.registerLazySingleton(() => const Clock());
   sl.registerLazySingleton(() => http.Client());

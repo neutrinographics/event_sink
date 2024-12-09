@@ -26,7 +26,7 @@ class TestAdapter extends EventRemoteAdapter {
   PullStrategy get pullStrategy => _pullStrategy;
 
   @override
-  Future<List<RemoteEventModel>> pull(String pool) {
+  Future<List<RemoteEventModel>> pull(String pool, String stateHash) {
     throw UnimplementedError();
   }
 

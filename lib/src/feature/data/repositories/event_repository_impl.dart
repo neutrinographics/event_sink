@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:collection/collection.dart';
 import 'package:dartz/dartz.dart';
 import 'package:event_sink/src/core/data/event_resolver.dart';
 import 'package:event_sink/src/core/data/id_generator.dart';
 import 'package:event_sink/src/core/error/exception.dart';
 import 'package:event_sink/src/core/error/failure.dart';
+import 'package:event_sink/src/core/hash_generator.dart';
 import 'package:event_sink/src/core/time/time_info.dart';
 import 'package:event_sink/src/event_data.dart';
 import 'package:event_sink/src/event_remote_adapter.dart';
@@ -20,6 +23,7 @@ class EventRepositoryImpl extends EventRepository {
   final Map<String, EventRemoteAdapter> remoteAdapters;
   final EventResolver eventResolver;
   final IdGenerator idGenerator;
+  final HashGenerator hashGenerator;
   final TimeInfo timeInfo;
 
   EventRepositoryImpl({
@@ -27,6 +31,7 @@ class EventRepositoryImpl extends EventRepository {
     required this.remoteAdapters,
     required this.eventResolver,
     required this.idGenerator,
+    required this.hashGenerator,
     required this.timeInfo,
   });
 
@@ -37,7 +42,15 @@ class EventRepositoryImpl extends EventRepository {
   }) async {
     List<RemoteEventModel> remoteEvents;
     try {
-      remoteEvents = await _getRemoteAdapter(remoteAdapterName).pull(pool);
+      final pooledEvents = await localDataSource.getPooledEvents(pool);
+      final stateHash = hashGenerator.generateHash(
+          jsonEncode(pooledEvents.map((e) => e.toJson()).toList()));
+      remoteEvents = await _getRemoteAdapter(remoteAdapterName).pull(
+        pool,
+        stateHash,
+      );
+    } on CacheException catch (e) {
+      return Left(CacheFailure(message: e.message));
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     }

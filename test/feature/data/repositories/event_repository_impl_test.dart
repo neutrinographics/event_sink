@@ -5,6 +5,7 @@ import 'package:event_sink/src/core/data/event_resolver.dart';
 import 'package:event_sink/src/core/data/id_generator.dart';
 import 'package:event_sink/src/core/error/exception.dart';
 import 'package:event_sink/src/core/error/failure.dart';
+import 'package:event_sink/src/core/hash_generator.dart';
 import 'package:event_sink/src/core/time/time_info.dart';
 import 'package:event_sink/src/event_data.dart';
 import 'package:event_sink/src/event_remote_adapter.dart';
@@ -24,10 +25,11 @@ import '../../../test_utils.dart';
 import 'event_repository_impl_test.mocks.dart';
 
 class MockEvent extends EventInfo<MockEventData> {
-  const MockEvent(
-      {required super.streamId,
-      required MockEventData super.data,
-      super.name = 'add_member'});
+  const MockEvent({
+    required super.streamId,
+    required MockEventData super.data,
+    super.name = 'add_member',
+  });
 
   @override
   List<Object?> get props => [streamId, name, data];
@@ -45,6 +47,7 @@ class MockEventData implements EventData {
   EventLocalDataSource,
   EventResolver,
   IdGenerator,
+  HashGenerator,
   TimeInfo,
 ])
 void main() {
@@ -53,6 +56,7 @@ void main() {
   late MockEventRemoteAdapter mockEventRemoteAdapter;
   late MockEventLocalDataSource mockEventLocalDataSource;
   late MockIdGenerator mockIdGenerator;
+  late MockHashGenerator mockHashGenerator;
   late MockTimeInfo mockTimeInfo;
 
   const String tRemoteAdapterName = 'test';
@@ -62,14 +66,18 @@ void main() {
     mockEventRemoteAdapter = MockEventRemoteAdapter();
     mockEventLocalDataSource = MockEventLocalDataSource();
     mockIdGenerator = MockIdGenerator();
+    mockHashGenerator = MockHashGenerator();
     mockTimeInfo = MockTimeInfo();
     repository = EventRepositoryImpl(
       localDataSource: mockEventLocalDataSource,
       eventResolver: mockEventResolver,
       idGenerator: mockIdGenerator,
+      hashGenerator: mockHashGenerator,
       timeInfo: mockTimeInfo,
       remoteAdapters: {tRemoteAdapterName: mockEventRemoteAdapter},
     );
+
+    when(mockHashGenerator.generateHash(any)).thenReturn('hash');
   });
 
   group('fetch', () {
@@ -105,10 +113,12 @@ void main() {
       'should download events from remote adapter',
       () async {
         // arrange
-        when(mockEventRemoteAdapter.pull(any))
+        when(mockEventRemoteAdapter.pull(any, any))
             .thenAnswer((_) async => tRemoteEvents);
         when(mockEventLocalDataSource.hasEvent(any))
             .thenAnswer((_) async => false);
+        when(mockEventLocalDataSource.getPooledEvents(any))
+            .thenAnswer((_) async => tLocalEvents);
         when(mockTimeInfo.now()).thenReturn(tToday);
         // act
         final result = await repository.fetch(
@@ -116,7 +126,7 @@ void main() {
           pool: tPool,
         );
         // assert
-        verify(mockEventRemoteAdapter.pull(any));
+        verify(mockEventRemoteAdapter.pull(any, any));
         expect(result, equals(const Right(null)));
       },
     );
@@ -124,10 +134,12 @@ void main() {
     test('should cache remote event if it doesn\'t exists in the cache',
         () async {
       // arrange
-      when(mockEventRemoteAdapter.pull(any))
+      when(mockEventRemoteAdapter.pull(any, any))
           .thenAnswer((_) async => tRemoteEvents);
       when(mockEventLocalDataSource.hasEvent(any))
           .thenAnswer((_) async => false);
+      when(mockEventLocalDataSource.getPooledEvents(any))
+          .thenAnswer((_) async => tLocalEvents);
       when(mockTimeInfo.now()).thenReturn(tToday);
       when(mockIdGenerator.generateId()).thenReturn(tEventId);
       // act
@@ -159,12 +171,14 @@ void main() {
         pool: tPool,
       );
 
-      when(mockEventRemoteAdapter.pull(any))
+      when(mockEventRemoteAdapter.pull(any, any))
           .thenAnswer((_) async => [tRemoteEvent]);
       when(mockEventLocalDataSource.hasEvent(any))
           .thenAnswer((_) async => true);
       when(mockEventLocalDataSource.getEvent(any))
           .thenAnswer((_) async => tCachedEvent);
+      when(mockEventLocalDataSource.getPooledEvents(any))
+          .thenAnswer((_) async => tLocalEvents);
       when(mockEventResolver.resolve(
         existingEvent: anyNamed('existingEvent'),
         eventFromAdapter: anyNamed('eventFromAdapter'),
@@ -194,10 +208,12 @@ void main() {
       'should return CacheFailure if the events cannot be stored',
       () async {
         // arrange
-        when(mockEventRemoteAdapter.pull(any))
+        when(mockEventRemoteAdapter.pull(any, any))
             .thenAnswer((_) async => tRemoteEvents);
         when(mockEventLocalDataSource.hasEvent(any))
             .thenAnswer((_) async => false);
+        when(mockEventLocalDataSource.getPooledEvents(any))
+            .thenAnswer((_) async => tLocalEvents);
         when(mockTimeInfo.now()).thenReturn(tToday);
         when(mockEventLocalDataSource.addEvents(any)).thenThrow(Exception());
 
@@ -219,7 +235,10 @@ void main() {
         when(mockIdGenerator.generateId()).thenReturn(tEventId);
         when(mockEventLocalDataSource.getAllEvents())
             .thenAnswer((_) async => tLocalEvents);
-        when(mockEventRemoteAdapter.pull(any)).thenThrow(ServerException());
+        when(mockEventLocalDataSource.getPooledEvents(any))
+            .thenAnswer((_) async => tLocalEvents);
+        when(mockEventRemoteAdapter.pull(any, any))
+            .thenThrow(ServerException());
         // act
         final result = await repository.fetch(
           remoteAdapterName: tRemoteAdapterName,
@@ -227,9 +246,23 @@ void main() {
         );
         // assert
         expect(result, equals(const Left(ServerFailure())));
-        verify(mockEventRemoteAdapter.pull(any));
+        verify(mockEventRemoteAdapter.pull(any, any));
       },
     );
+
+    test('should return CacheFailure if the events cannot be read from cache',
+        () async {
+      // arrange
+      when(mockEventLocalDataSource.getPooledEvents(any))
+          .thenThrow(CacheException());
+      // act
+      final result = await repository.fetch(
+        remoteAdapterName: tRemoteAdapterName,
+        pool: tPool,
+      );
+      // assert
+      expect(result, equals(const Left(CacheFailure())));
+    });
   });
 
   group('push', () {

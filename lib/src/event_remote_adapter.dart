@@ -8,9 +8,12 @@ abstract class EventRemoteAdapter {
   /// higher number means higher priority
   int get priority;
 
-  /// Pulls events from the remote source
-  /// then apply [pullStrategy].
-  Future<List<RemoteEventModel>> pull(String pool);
+  /// Pulls events from the remote source [pool] with
+  /// hashed current events [stateHash] then apply [pullStrategy].
+  Future<List<RemoteEventModel>> pull(
+    String pool,
+    String stateHash,
+  );
 
   /// Pushes events to the remote source.
   /// Returns the newly created remote events.
