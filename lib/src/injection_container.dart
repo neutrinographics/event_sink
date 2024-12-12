@@ -3,11 +3,11 @@ import 'package:clock/clock.dart';
 import 'package:event_sink/src/core/data/event_resolver.dart';
 import 'package:event_sink/src/core/data/event_sorter.dart';
 import 'package:event_sink/src/core/data/event_stream_rebaser.dart';
-
 import 'package:event_sink/src/core/data/id_generator.dart';
 import 'package:event_sink/src/core/hash_generator.dart';
 import 'package:event_sink/src/core/network/network.dart';
 import 'package:event_sink/src/core/time/time_info.dart';
+import 'package:event_sink/src/event_controller.dart';
 import 'package:event_sink/src/event_remote_adapter.dart';
 import 'package:event_sink/src/feature/data/local/data_sources/event_local_data_source.dart';
 import 'package:event_sink/src/feature/data/local/models/event_model.dart';
@@ -19,10 +19,9 @@ import 'package:event_sink/src/feature/domain/use_cases/apply_events.dart';
 import 'package:event_sink/src/feature/domain/use_cases/clear_cache.dart';
 import 'package:event_sink/src/feature/domain/use_cases/list_events.dart';
 import 'package:event_sink/src/feature/domain/use_cases/sync_events.dart';
-import 'package:event_sink/src/event_controller.dart';
 import 'package:get_it/get_it.dart';
-import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
+import 'package:uuid/uuid.dart';
 
 import 'core/data/cache.dart';
 
@@ -94,7 +93,7 @@ Future<void> init({
       () => EventStreamRebaserImpl(sl()));
 
   // External
-  sl.registerLazySingleton(() => const HashGeneratorImpl());
+  sl.registerLazySingleton<HashGenerator>(() => const HashGeneratorImpl());
   sl.registerLazySingleton(() => const Uuid());
   sl.registerLazySingleton(() => const Clock());
   sl.registerLazySingleton(() => http.Client());
