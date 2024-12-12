@@ -5,7 +5,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive/hive.dart';
 
 part 'event_model.freezed.dart';
-
 part 'event_model.g.dart';
 
 /// Represents a event
@@ -51,6 +50,7 @@ class EventModel extends HiveObject with _$EventModel {
     required RemoteEventModel remoteEvent,
     required String remoteAdapterName,
     required String pool,
+    required Map<String, bool> synced,
   }) {
     return EventModel(
       eventId: remoteEvent.eventId,
@@ -58,7 +58,7 @@ class EventModel extends HiveObject with _$EventModel {
       createdAt: DateTime.now(),
       streamId: remoteEvent.streamId,
       version: remoteEvent.version,
-      synced: {remoteAdapterName: true},
+      synced: Map.from(synced)..addAll({remoteAdapterName: true}),
       order: remoteEvent.order,
       data: remoteEvent.data,
       name: remoteEvent.name,
