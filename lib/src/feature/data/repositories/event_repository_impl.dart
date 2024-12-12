@@ -41,8 +41,9 @@ class EventRepositoryImpl extends EventRepository {
     required String pool,
   }) async {
     List<RemoteEventModel> remoteEvents;
+    List<EventModel> pooledEvents;
     try {
-      final pooledEvents = await localDataSource.getPooledEvents(pool);
+      pooledEvents = await localDataSource.getPooledEvents(pool);
       final stateHash = hashGenerator.generateHash(
           jsonEncode(pooledEvents.map((e) => e.toJson()).toList()));
       remoteEvents = await _getRemoteAdapter(remoteAdapterName).pull(
@@ -57,10 +58,13 @@ class EventRepositoryImpl extends EventRepository {
 
     List<EventModel> eventsToAdd = [];
     for (final e in remoteEvents) {
+      final synced =
+          pooledEvents.where((p) => p.eventId == e.eventId).firstOrNull?.synced;
       final remoteEvent = EventModel.fromRemote(
         remoteEvent: e,
         remoteAdapterName: remoteAdapterName,
         pool: pool,
+        synced: synced ?? {},
       ).copyWith(createdAt: timeInfo.now());
 
       final localEventExists = await localDataSource.hasEvent(e.eventId);
@@ -115,10 +119,15 @@ class EventRepositoryImpl extends EventRepository {
         final isApplied = events
             .firstWhere((event) => event.eventId == pushedEvent.eventId)
             .applied;
+        final synced = events
+            .where((e) => e.eventId == pushedEvent.eventId)
+            .firstOrNull
+            ?.synced;
         return EventModel.fromRemote(
           remoteEvent: pushedEvent,
           remoteAdapterName: remoteAdapterName,
           pool: pool,
+          synced: synced ?? {},
         ).copyWith(
           applied: isApplied,
           createdAt: timeInfo.now(),

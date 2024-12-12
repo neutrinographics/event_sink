@@ -16,7 +16,6 @@ import 'package:event_sink/src/feature/data/repositories/event_repository_impl.d
 import 'package:event_sink/src/feature/domain/entities/event_info.dart';
 import 'package:event_sink/src/feature/extensions.dart';
 import 'package:flutter_test/flutter_test.dart';
-
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
@@ -88,10 +87,11 @@ void main() {
     final baseRemoteEvent =
         RemoteEventModel.fromJson(json.decode(fixture('remote_event.json')));
     final baseLocalEvent = EventModel.fromRemote(
-            remoteEvent: baseRemoteEvent,
-            remoteAdapterName: tRemoteAdapterName,
-            pool: '1')
-        .copyWith(synced: {tRemoteAdapterName: false}, createdAt: tToday);
+      remoteEvent: baseRemoteEvent,
+      remoteAdapterName: tRemoteAdapterName,
+      pool: '1',
+      synced: {tRemoteAdapterName: false},
+    ).copyWith(createdAt: tToday);
     final tSyncedLocalEvent = baseLocalEvent.copyWith(
         eventId: 'synced', order: 1, synced: {tRemoteAdapterName: true});
     final List<EventModel> tLocalEvents = [
@@ -154,6 +154,7 @@ void main() {
             remoteEvent: e,
             remoteAdapterName: tRemoteAdapterName,
             pool: tPool,
+            synced: {tRemoteAdapterName: true},
           ).copyWith(createdAt: tToday);
         },
       ).toList();
@@ -169,6 +170,7 @@ void main() {
         remoteEvent: tRemoteEvent,
         remoteAdapterName: tRemoteAdapterName,
         pool: tPool,
+        synced: {tRemoteAdapterName: true},
       );
 
       when(mockEventRemoteAdapter.pull(any, any))
