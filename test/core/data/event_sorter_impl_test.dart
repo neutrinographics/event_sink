@@ -61,7 +61,7 @@ void main() {
         tBaseEvent.copyWith(
           eventId: 'A',
           order: 1,
-          synced: {tHiPriorityAdapter: true},
+          synced: [tHiPriorityAdapter],
         ),
         tBaseEvent.copyWith(
           eventId: 'B',
@@ -83,12 +83,12 @@ void main() {
         tBaseEvent.copyWith(
           eventId: 'A',
           order: 1,
-          synced: {tHiPriorityAdapter: true},
+          synced: [tHiPriorityAdapter],
         ),
         tBaseEvent.copyWith(
           eventId: 'B',
           order: 1,
-          synced: {tLoPriorityAdapter: true},
+          synced: [tLoPriorityAdapter],
         ),
       ];
       final tUnorderedEvents = tExpectedEvents.reversed.toList();
@@ -104,12 +104,12 @@ void main() {
         tBaseEvent.copyWith(
           eventId: 'A',
           order: 1,
-          synced: {tHiPriorityAdapter: true},
+          synced: [tHiPriorityAdapter],
         ),
         tBaseEvent.copyWith(
           eventId: 'B',
           order: 2,
-          synced: {tHiPriorityAdapter: true},
+          synced: [tHiPriorityAdapter],
         ),
       ];
       final tUnorderedEvents = tExpectedEvents.reversed.toList();
@@ -146,13 +146,13 @@ void main() {
         tBaseEvent.copyWith(
           eventId: 'A',
           order: 1,
-          synced: {tHiPriorityAdapter: true},
+          synced: [tHiPriorityAdapter],
           createdAt: DateTime(2022),
         ),
         tBaseEvent.copyWith(
           eventId: 'B',
           order: 1,
-          synced: {tHiPriorityAdapter: true},
+          synced: [tHiPriorityAdapter],
           createdAt: DateTime(2021),
         ),
       ];

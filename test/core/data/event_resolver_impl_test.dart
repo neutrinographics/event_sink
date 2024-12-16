@@ -58,11 +58,11 @@ void main() {
         () {
       // arrange
       final existingEvent = event.copyWith(
-        synced: {}, // <-- not synced
+        synced: [], // <-- not synced
         version: 1,
       );
       final eventFromAdapter = event.copyWith(
-        synced: {firstAdapter: true},
+        synced: [firstAdapter],
         version: 2,
       );
       final remoteAdapters = {
@@ -84,31 +84,34 @@ void main() {
         () {
       // arrange
       final existingEvent = event.copyWith(
-        synced: {
-          secondAdapter: true, // <-- a lower priority adapter
-        },
+        synced: [
+          firstAdapter, // <-- a lower priority adapter
+        ],
         version: 1,
       );
       final eventFromAdapter = event.copyWith(
-        synced: {
-          firstAdapter: true,
-        },
+        synced: [
+          secondAdapter,
+        ],
         version: 2,
       );
       final remoteAdapters = {
-        firstAdapter: TestAdapter(priority: 1),
+        firstAdapter: TestAdapter(priority: 0),
         // a lower priority adapter
-        secondAdapter: TestAdapter(priority: 0),
+        secondAdapter: TestAdapter(priority: 1),
       };
       // act
       final result = eventResolver.resolve(
         existingEvent: existingEvent,
         eventFromAdapter: eventFromAdapter,
-        remoteAdapterName: firstAdapter,
+        remoteAdapterName: secondAdapter,
         remoteAdapters: remoteAdapters,
       );
       // assert
-      expect(result, eventFromAdapter);
+      final tExpectedEvent = eventFromAdapter.copyWith(
+        synced: [firstAdapter, secondAdapter],
+      );
+      expect(result, tExpectedEvent);
     });
 
     test('should throw an error if the adapter for the new event was not found',
@@ -116,9 +119,9 @@ void main() {
       // arrange
       const nonExistedAdapter = 'non-existed';
       final existingEvent = event.copyWith(
-        synced: {
-          nonExistedAdapter: true,
-        },
+        synced: [
+          nonExistedAdapter,
+        ],
         version: 1,
       );
       final remoteAdapters = {
@@ -144,9 +147,9 @@ void main() {
       // arrange
       const nonExistedAdapter = 'non-existed';
       final existingEvent = event.copyWith(
-        synced: {
-          nonExistedAdapter: true,
-        },
+        synced: [
+          nonExistedAdapter,
+        ],
         version: 1,
       );
       final remoteAdapters = {
@@ -170,15 +173,15 @@ void main() {
         () {
       // arrange
       final existingEvent = event.copyWith(
-        synced: {
-          firstAdapter: true, // <-- a higher priority adapter
-        },
+        synced: [
+          firstAdapter, // <-- a higher priority adapter
+        ],
         version: 1,
       );
       final eventFromAdapter = event.copyWith(
-        synced: {
-          secondAdapter: true,
-        },
+        synced: [
+          secondAdapter,
+        ],
         version: 2,
       );
       final remoteAdapters = {
@@ -193,7 +196,10 @@ void main() {
         remoteAdapters: remoteAdapters,
       );
       // assert
-      expect(result, existingEvent);
+      final tExpectedEvent = existingEvent.copyWith(
+        synced: [firstAdapter, secondAdapter],
+      );
+      expect(result, tExpectedEvent);
     });
 
     test(
@@ -201,15 +207,15 @@ void main() {
         () {
       // arrange
       final existingEvent = event.copyWith(
-        synced: {
-          firstAdapter: true,
-        },
+        synced: [
+          firstAdapter,
+        ],
         version: 1,
       );
       final eventFromAdapter = event.copyWith(
-        synced: {
-          secondAdapter: true,
-        },
+        synced: [
+          secondAdapter,
+        ],
         version: 2,
       );
       final remoteAdapters = {
@@ -224,7 +230,10 @@ void main() {
         remoteAdapters: remoteAdapters,
       );
       // assert
-      expect(result, eventFromAdapter);
+      final tExpectedEvent = eventFromAdapter.copyWith(
+        synced: [firstAdapter, secondAdapter],
+      );
+      expect(result, tExpectedEvent);
     });
   });
 }

@@ -19,7 +19,7 @@ class EventModelImplAdapter extends TypeAdapter<_$EventModelImpl> {
     return _$EventModelImpl(
       eventId: fields[0] as String,
       order: fields[1] as int,
-      synced: (fields[2] as Map).cast<String, bool>(),
+      synced: (fields[2] as List).cast<String>(),
       applied: fields[3] as bool,
       streamId: fields[4] as String,
       version: fields[5] as int,
@@ -75,10 +75,10 @@ _$EventModelImpl _$$EventModelImplFromJson(Map<String, dynamic> json) =>
     _$EventModelImpl(
       eventId: json['event_id'] as String,
       order: (json['sort_order'] as num).toInt(),
-      synced: (json['synced'] as Map<String, dynamic>?)?.map(
-            (k, e) => MapEntry(k, e as bool),
-          ) ??
-          const {},
+      synced: (json['synced'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const <String>[],
       applied: json['applied'] as bool? ?? false,
       streamId: json['stream_id'] as String,
       version: (json['version'] as num).toInt(),

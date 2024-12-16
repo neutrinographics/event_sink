@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:collection/collection.dart';
 import 'package:dartz/dartz.dart';
 import 'package:event_sink/src/core/data/event_resolver.dart';
@@ -42,9 +40,9 @@ class EventRepositoryImpl extends EventRepository {
   }) async {
     List<RemoteEventModel> remoteEvents;
     try {
-      final pooledEvents = await localDataSource.getPooledEvents(pool);
-      final stateHash = hashGenerator.generateHash(
-          jsonEncode(pooledEvents.map((e) => e.toJson()).toList()));
+      List<EventModel> pooledEvents =
+          await localDataSource.getPooledEvents(pool);
+      final stateHash = pooledEvents.asHash(hashGenerator);
       remoteEvents = await _getRemoteAdapter(remoteAdapterName).pull(
         pool,
         stateHash,
@@ -59,24 +57,11 @@ class EventRepositoryImpl extends EventRepository {
     for (final e in remoteEvents) {
       final remoteEvent = EventModel.fromRemote(
         remoteEvent: e,
-        remoteAdapterName: remoteAdapterName,
         pool: pool,
+        remoteAdapterName: remoteAdapterName,
       ).copyWith(createdAt: timeInfo.now());
-
-      final localEventExists = await localDataSource.hasEvent(e.eventId);
-      if (localEventExists) {
-        final localEvent = await localDataSource.getEvent(e.eventId);
-        final resolvedEvent = eventResolver.resolve(
-          eventFromAdapter: remoteEvent,
-          existingEvent: localEvent,
-          remoteAdapterName: remoteAdapterName,
-          remoteAdapters: remoteAdapters,
-        );
-
-        eventsToAdd.add(resolvedEvent);
-      } else {
-        eventsToAdd.add(remoteEvent);
-      }
+      final resolvedEvent = await _resolveEvent(remoteEvent, remoteAdapterName);
+      eventsToAdd.add(resolvedEvent);
     }
 
     try {
@@ -93,10 +78,10 @@ class EventRepositoryImpl extends EventRepository {
     required String remoteAdapterName,
     required String pool,
   }) async {
-    List<EventModel> events;
+    List<EventModel> pooledEvents;
 
     try {
-      events = await localDataSource.getPooledEvents(pool);
+      pooledEvents = await localDataSource.getPooledEvents(pool);
     } on Exception catch (e, stack) {
       return Left(CacheFailure(message: "$e\n\n$stack"));
     }
@@ -104,26 +89,38 @@ class EventRepositoryImpl extends EventRepository {
     final eventsToAdd = <EventModel>[];
 
     try {
-      final eventsToPush = events
+      final eventsToPush = pooledEvents
           .where((e) => !e.isSyncedWith(remoteAdapterName))
           .map((e) => e.toRemote())
           .toList();
       final pushedEvents =
           await _getRemoteAdapter(remoteAdapterName).push(pool, eventsToPush);
 
-      final remotePushedEvents = pushedEvents.map((pushedEvent) {
-        final isApplied = events
+      final pushEvents = pushedEvents.map((pushedEvent) async {
+        final isApplied = pooledEvents
             .firstWhere((event) => event.eventId == pushedEvent.eventId)
             .applied;
-        return EventModel.fromRemote(
+        final pooledEvent = pooledEvents
+            .where((p) => p.eventId == pushedEvent.eventId)
+            .firstOrNull;
+        final synced =
+            pooledEvent != null ? pooledEvent.synced.toSet() : <String>{};
+        synced.add(remoteAdapterName);
+        final remoteEvent = EventModel.fromRemote(
           remoteEvent: pushedEvent,
-          remoteAdapterName: remoteAdapterName,
           pool: pool,
-        ).copyWith(
+          remoteAdapterName: remoteAdapterName,
+        );
+        final resolvedEvent = await _resolveEvent(
+          remoteEvent,
+          remoteAdapterName,
+        );
+        return resolvedEvent.copyWith(
           applied: isApplied,
           createdAt: timeInfo.now(),
         );
       });
+      final remotePushedEvents = await Future.wait(pushEvents);
       eventsToAdd.addAll(remotePushedEvents);
     } on OutOfSyncException catch (e) {
       return Left(OutOfSyncFailure(message: e.message));
@@ -326,6 +323,30 @@ class EventRepositoryImpl extends EventRepository {
       return const Right(null);
     } on Exception catch (e, stack) {
       return Left(CacheFailure(message: "$e\n\n$stack"));
+    }
+  }
+
+  Future<EventModel> _resolveEvent(
+    EventModel eventFromAdapter,
+    String remoteAdapterName,
+  ) async {
+    final localEventExists =
+        await localDataSource.hasEvent(eventFromAdapter.eventId);
+    if (localEventExists) {
+      final localEvent =
+          await localDataSource.getEvent(eventFromAdapter.eventId);
+      final resolvedEvent = eventResolver.resolve(
+        eventFromAdapter: eventFromAdapter,
+        existingEvent: localEvent,
+        remoteAdapterName: remoteAdapterName,
+        remoteAdapters: remoteAdapters,
+      );
+
+      // synced to many
+      return resolvedEvent;
+    } else {
+      // synced to one
+      return eventFromAdapter;
     }
   }
 

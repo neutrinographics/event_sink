@@ -95,7 +95,7 @@ void main() {
         baseEvent.copyWith(
           eventId: 'id_1.1',
           version: 1,
-          synced: {firstAdapter: true},
+          synced: [firstAdapter],
         ),
       ];
       final tPoolEvents = [
@@ -124,12 +124,12 @@ void main() {
       final tLoPrioritySyncedEvent = baseEvent.copyWith(
         eventId: 'id_1.1',
         version: 1,
-        synced: {firstAdapter: true},
+        synced: [firstAdapter],
       );
       final tHiPrioritySyncedEvent = baseEvent.copyWith(
         eventId: 'id_2.1',
         version: 1,
-        synced: {secondAdapter: true},
+        synced: [secondAdapter],
       );
       final tSyncedEvents = <EventModel>[
         tLoPrioritySyncedEvent,
