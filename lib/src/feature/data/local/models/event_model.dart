@@ -48,18 +48,16 @@ class EventModel extends HiveObject with _$EventModel {
 
   factory EventModel.fromRemote({
     required RemoteEventModel remoteEvent,
-    required String remoteAdapterName,
     required String pool,
-    required List<String> synced,
+    required Set<String> synced,
   }) {
-    final newSynced = synced.toSet()..add(remoteAdapterName);
     return EventModel(
       eventId: remoteEvent.eventId,
       applied: false,
       createdAt: DateTime.now(),
       streamId: remoteEvent.streamId,
       version: remoteEvent.version,
-      synced: newSynced.toList(),
+      synced: synced.toList(),
       order: remoteEvent.order,
       data: remoteEvent.data,
       name: remoteEvent.name,

@@ -92,9 +92,8 @@ void main() {
         RemoteEventModel.fromJson(json.decode(fixture('remote_event.json')));
     final baseLocalEvent = EventModel.fromRemote(
       remoteEvent: baseRemoteEvent,
-      remoteAdapterName: tRemoteAdapterName,
       pool: '1',
-      synced: [],
+      synced: {tRemoteAdapterName},
     ).copyWith(createdAt: tToday);
     final tSyncedLocalEvent = baseLocalEvent
         .copyWith(eventId: 'synced', order: 1, synced: [tRemoteAdapterName]);
@@ -157,9 +156,8 @@ void main() {
         (e) {
           return EventModel.fromRemote(
             remoteEvent: e,
-            remoteAdapterName: tRemoteAdapterName,
             pool: tPool,
-            synced: [tRemoteAdapterName],
+            synced: {tRemoteAdapterName},
           ).copyWith(createdAt: tToday);
         },
       ).toList();
@@ -193,9 +191,8 @@ void main() {
             ..add(tAnotherRemoteAdapterName);
           return EventModel.fromRemote(
             remoteEvent: e,
-            remoteAdapterName: tRemoteAdapterName,
             pool: tPool,
-            synced: synced.toList(),
+            synced: synced,
           ).copyWith(createdAt: tToday);
         },
       ).toList();
@@ -209,9 +206,8 @@ void main() {
       final tRemoteEvent = baseRemoteEvent.copyWith(eventId: '1');
       final tExpectedEvent = EventModel.fromRemote(
         remoteEvent: tRemoteEvent,
-        remoteAdapterName: tRemoteAdapterName,
         pool: tPool,
-        synced: [tRemoteAdapterName],
+        synced: {tRemoteAdapterName},
       );
 
       when(mockEventRemoteAdapter.pull(any, any))

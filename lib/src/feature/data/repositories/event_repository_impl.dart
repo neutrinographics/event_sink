@@ -56,13 +56,15 @@ class EventRepositoryImpl extends EventRepository {
 
     List<EventModel> eventsToAdd = [];
     for (final e in remoteEvents) {
+      final pooledEvent =
+          pooledEvents.where((p) => p.eventId == e.eventId).firstOrNull;
       final synced =
-          pooledEvents.where((p) => p.eventId == e.eventId).firstOrNull?.synced;
+          pooledEvent != null ? pooledEvent.synced.toSet() : <String>{};
+      synced.add(remoteAdapterName);
       final remoteEvent = EventModel.fromRemote(
         remoteEvent: e,
-        remoteAdapterName: remoteAdapterName,
         pool: pool,
-        synced: synced ?? [],
+        synced: synced,
       ).copyWith(createdAt: timeInfo.now());
 
       final localEventExists = await localDataSource.hasEvent(e.eventId);
@@ -95,10 +97,10 @@ class EventRepositoryImpl extends EventRepository {
     required String remoteAdapterName,
     required String pool,
   }) async {
-    List<EventModel> events;
+    List<EventModel> pooledEvents;
 
     try {
-      events = await localDataSource.getPooledEvents(pool);
+      pooledEvents = await localDataSource.getPooledEvents(pool);
     } on Exception catch (e, stack) {
       return Left(CacheFailure(message: "$e\n\n$stack"));
     }
@@ -106,7 +108,7 @@ class EventRepositoryImpl extends EventRepository {
     final eventsToAdd = <EventModel>[];
 
     try {
-      final eventsToPush = events
+      final eventsToPush = pooledEvents
           .where((e) => !e.isSyncedWith(remoteAdapterName))
           .map((e) => e.toRemote())
           .toList();
@@ -114,18 +116,19 @@ class EventRepositoryImpl extends EventRepository {
           await _getRemoteAdapter(remoteAdapterName).push(pool, eventsToPush);
 
       final remotePushedEvents = pushedEvents.map((pushedEvent) {
-        final isApplied = events
+        final isApplied = pooledEvents
             .firstWhere((event) => event.eventId == pushedEvent.eventId)
             .applied;
-        final synced = events
-            .where((e) => e.eventId == pushedEvent.eventId)
-            .firstOrNull
-            ?.synced;
+        final pooledEvent = pooledEvents
+            .where((p) => p.eventId == pushedEvent.eventId)
+            .firstOrNull;
+        final synced =
+            pooledEvent != null ? pooledEvent.synced.toSet() : <String>{};
+        synced.add(remoteAdapterName);
         return EventModel.fromRemote(
           remoteEvent: pushedEvent,
-          remoteAdapterName: remoteAdapterName,
           pool: pool,
-          synced: synced ?? [],
+          synced: synced,
         ).copyWith(
           applied: isApplied,
           createdAt: timeInfo.now(),
