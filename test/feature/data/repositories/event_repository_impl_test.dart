@@ -59,6 +59,7 @@ void main() {
   late MockTimeInfo mockTimeInfo;
 
   const String tRemoteAdapterName = 'test';
+  const String tAnotherRemoteAdapterName = 'test-2';
 
   setUp(() {
     mockEventResolver = MockEventResolver();
@@ -73,7 +74,10 @@ void main() {
       idGenerator: mockIdGenerator,
       hashGenerator: mockHashGenerator,
       timeInfo: mockTimeInfo,
-      remoteAdapters: {tRemoteAdapterName: mockEventRemoteAdapter},
+      remoteAdapters: {
+        tRemoteAdapterName: mockEventRemoteAdapter,
+        tAnotherRemoteAdapterName: mockEventRemoteAdapter,
+      },
     );
 
     when(mockHashGenerator.generateHash(any)).thenReturn('hash');
@@ -98,15 +102,16 @@ void main() {
       tSyncedLocalEvent,
       baseLocalEvent.copyWith(eventId: 'un-synced'),
       baseLocalEvent.copyWith(
-          eventId: 'synced',
-          order: 9,
-          synced: [tRemoteAdapterName],
-          streamId: 'a-different-stream'),
+        eventId: 'another-synced',
+        order: 9,
+        synced: [tRemoteAdapterName],
+        streamId: 'a-different-stream',
+      ),
     ];
     final List<RemoteEventModel> tRemoteEvents = [
       baseRemoteEvent.copyWith(order: 1, eventId: 'synced'),
-      baseRemoteEvent.copyWith(order: 2, eventId: '2'),
-      baseRemoteEvent.copyWith(order: 3, eventId: 'un-synced'),
+      baseRemoteEvent.copyWith(order: 2, eventId: 'un-synced'),
+      baseRemoteEvent.copyWith(order: 3, eventId: 'another-synced'),
     ];
 
     test(
@@ -155,6 +160,42 @@ void main() {
             remoteAdapterName: tRemoteAdapterName,
             pool: tPool,
             synced: [tRemoteAdapterName],
+          ).copyWith(createdAt: tToday);
+        },
+      ).toList();
+      verify(mockEventLocalDataSource.addEvents(tExpectedEvents));
+      expect(result, equals(const Right(null)));
+    });
+
+    test('should retain previous synced property', () async {
+      // arrange
+      when(mockEventRemoteAdapter.pull(any, any))
+          .thenAnswer((_) async => tRemoteEvents);
+      when(mockEventLocalDataSource.hasEvent(any))
+          .thenAnswer((_) async => false);
+      when(mockEventLocalDataSource.getPooledEvents(any))
+          .thenAnswer((_) async => tLocalEvents);
+      when(mockTimeInfo.now()).thenReturn(tToday);
+
+      // act
+      final result = await repository.fetch(
+        remoteAdapterName: tAnotherRemoteAdapterName,
+        pool: tPool,
+      );
+
+      // assert
+      final tExpectedEvents = tRemoteEvents.map<EventModel>(
+        (e) {
+          final synced = tLocalEvents
+              .firstWhere((event) => event.eventId == e.eventId)
+              .synced
+              .toSet()
+            ..add(tAnotherRemoteAdapterName);
+          return EventModel.fromRemote(
+            remoteEvent: e,
+            remoteAdapterName: tRemoteAdapterName,
+            pool: tPool,
+            synced: synced.toList(),
           ).copyWith(createdAt: tToday);
         },
       ).toList();
