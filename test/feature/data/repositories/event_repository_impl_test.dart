@@ -90,17 +90,17 @@ void main() {
       remoteEvent: baseRemoteEvent,
       remoteAdapterName: tRemoteAdapterName,
       pool: '1',
-      synced: {tRemoteAdapterName: false},
+      synced: [],
     ).copyWith(createdAt: tToday);
-    final tSyncedLocalEvent = baseLocalEvent.copyWith(
-        eventId: 'synced', order: 1, synced: {tRemoteAdapterName: true});
+    final tSyncedLocalEvent = baseLocalEvent
+        .copyWith(eventId: 'synced', order: 1, synced: [tRemoteAdapterName]);
     final List<EventModel> tLocalEvents = [
       tSyncedLocalEvent,
       baseLocalEvent.copyWith(eventId: 'un-synced'),
       baseLocalEvent.copyWith(
           eventId: 'synced',
           order: 9,
-          synced: {tRemoteAdapterName: true},
+          synced: [tRemoteAdapterName],
           streamId: 'a-different-stream'),
     ];
     final List<RemoteEventModel> tRemoteEvents = [
@@ -154,7 +154,7 @@ void main() {
             remoteEvent: e,
             remoteAdapterName: tRemoteAdapterName,
             pool: tPool,
-            synced: {tRemoteAdapterName: true},
+            synced: [tRemoteAdapterName],
           ).copyWith(createdAt: tToday);
         },
       ).toList();
@@ -170,7 +170,7 @@ void main() {
         remoteEvent: tRemoteEvent,
         remoteAdapterName: tRemoteAdapterName,
         pool: tPool,
-        synced: {tRemoteAdapterName: true},
+        synced: [tRemoteAdapterName],
       );
 
       when(mockEventRemoteAdapter.pull(any, any))
@@ -275,9 +275,7 @@ void main() {
     final List<EventModel> tCachedEvents = [
       baseEvent,
       baseEvent.copyWith(
-          synced: {tRemoteAdapterName: true},
-          order: 1,
-          streamId: "synced-stream"),
+          synced: [tRemoteAdapterName], order: 1, streamId: "synced-stream"),
     ];
     final List<RemoteEventModel> tRemoteEvents = [
       RemoteEventModel(
@@ -318,7 +316,7 @@ void main() {
         verify(
           mockEventLocalDataSource.addEvents(
             [
-              baseEvent.copyWith(order: 2, synced: {tRemoteAdapterName: true})
+              baseEvent.copyWith(order: 2, synced: [tRemoteAdapterName])
             ],
           ),
         );
@@ -414,19 +412,19 @@ void main() {
       baseEvent.copyWith(
           streamId: 'first',
           order: 11,
-          synced: {tRemoteAdapterName: true},
+          synced: [tRemoteAdapterName],
           version: 1,
           eventId: '1.1'),
       baseEvent.copyWith(
           streamId: 'first',
           order: 12,
-          synced: {tRemoteAdapterName: true},
+          synced: [tRemoteAdapterName],
           version: 2,
           eventId: '1.2'),
       baseEvent.copyWith(
           streamId: 'first',
           order: 13,
-          synced: {tRemoteAdapterName: true},
+          synced: [tRemoteAdapterName],
           version: 3,
           eventId: '1.3'),
     ];
@@ -442,19 +440,19 @@ void main() {
       baseEvent.copyWith(
           streamId: 'second',
           order: 21,
-          synced: {tRemoteAdapterName: true},
+          synced: [tRemoteAdapterName],
           version: 1,
           eventId: '2.1'),
       baseEvent.copyWith(
           streamId: 'second',
           order: 22,
-          synced: {tRemoteAdapterName: true},
+          synced: [tRemoteAdapterName],
           version: 2,
           eventId: '2.2'),
       baseEvent.copyWith(
           streamId: 'second',
           order: 23,
-          synced: {tRemoteAdapterName: true},
+          synced: [tRemoteAdapterName],
           version: 3,
           eventId: '2.3'),
     ];
@@ -552,7 +550,7 @@ void main() {
           baseEvent.copyWith(
             version: 32,
             order: 1,
-            synced: {tRemoteAdapterName: true},
+            synced: [tRemoteAdapterName],
           )
         ];
         when(mockEventLocalDataSource.getPooledEvents(any)).thenAnswer(

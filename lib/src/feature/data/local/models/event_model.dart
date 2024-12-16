@@ -20,8 +20,8 @@ class EventModel extends HiveObject with _$EventModel {
     /// The order in which the event should be applied.
     @JsonKey(name: 'sort_order') @HiveField(1) required int order,
 
-    /// Indicates if the event has been synced to the server.
-    @HiveField(2) @Default({}) Map<String, bool> synced,
+    /// List of remote adapters that have synced this event.
+    @HiveField(2) @Default(<String>[]) List<String> synced,
 
     /// Indicates the event has already been applied to the local aggregate.
     @HiveField(3) @Default(false) bool applied,
@@ -50,15 +50,16 @@ class EventModel extends HiveObject with _$EventModel {
     required RemoteEventModel remoteEvent,
     required String remoteAdapterName,
     required String pool,
-    required Map<String, bool> synced,
+    required List<String> synced,
   }) {
+    final newSynced = synced.toSet()..add(remoteAdapterName);
     return EventModel(
       eventId: remoteEvent.eventId,
       applied: false,
       createdAt: DateTime.now(),
       streamId: remoteEvent.streamId,
       version: remoteEvent.version,
-      synced: Map.from(synced)..addAll({remoteAdapterName: true}),
+      synced: newSynced.toList(),
       order: remoteEvent.order,
       data: remoteEvent.data,
       name: remoteEvent.name,

@@ -30,9 +30,9 @@ mixin _$EventModel {
   @HiveField(1)
   int get order => throw _privateConstructorUsedError;
 
-  /// Indicates if the event has been synced to the server.
+  /// List of remote adapters that have synced this event.
   @HiveField(2)
-  Map<String, bool> get synced => throw _privateConstructorUsedError;
+  List<String> get synced => throw _privateConstructorUsedError;
 
   /// Indicates the event has already been applied to the local aggregate.
   @HiveField(3)
@@ -81,7 +81,7 @@ abstract class $EventModelCopyWith<$Res> {
   $Res call(
       {@JsonKey(name: 'event_id') @HiveField(0) String eventId,
       @JsonKey(name: 'sort_order') @HiveField(1) int order,
-      @HiveField(2) Map<String, bool> synced,
+      @HiveField(2) List<String> synced,
       @HiveField(3) bool applied,
       @JsonKey(name: 'stream_id') @HiveField(4) String streamId,
       @HiveField(5) int version,
@@ -129,7 +129,7 @@ class _$EventModelCopyWithImpl<$Res, $Val extends EventModel>
       synced: null == synced
           ? _value.synced
           : synced // ignore: cast_nullable_to_non_nullable
-              as Map<String, bool>,
+              as List<String>,
       applied: null == applied
           ? _value.applied
           : applied // ignore: cast_nullable_to_non_nullable
@@ -173,7 +173,7 @@ abstract class _$$EventModelImplCopyWith<$Res>
   $Res call(
       {@JsonKey(name: 'event_id') @HiveField(0) String eventId,
       @JsonKey(name: 'sort_order') @HiveField(1) int order,
-      @HiveField(2) Map<String, bool> synced,
+      @HiveField(2) List<String> synced,
       @HiveField(3) bool applied,
       @JsonKey(name: 'stream_id') @HiveField(4) String streamId,
       @HiveField(5) int version,
@@ -219,7 +219,7 @@ class __$$EventModelImplCopyWithImpl<$Res>
       synced: null == synced
           ? _value._synced
           : synced // ignore: cast_nullable_to_non_nullable
-              as Map<String, bool>,
+              as List<String>,
       applied: null == applied
           ? _value.applied
           : applied // ignore: cast_nullable_to_non_nullable
@@ -259,7 +259,7 @@ class _$EventModelImpl extends _EventModel {
   _$EventModelImpl(
       {@JsonKey(name: 'event_id') @HiveField(0) required this.eventId,
       @JsonKey(name: 'sort_order') @HiveField(1) required this.order,
-      @HiveField(2) final Map<String, bool> synced = const {},
+      @HiveField(2) final List<String> synced = const <String>[],
       @HiveField(3) this.applied = false,
       @JsonKey(name: 'stream_id') @HiveField(4) required this.streamId,
       @HiveField(5) required this.version,
@@ -286,17 +286,17 @@ class _$EventModelImpl extends _EventModel {
   @HiveField(1)
   final int order;
 
-  /// Indicates if the event has been synced to the server.
-  final Map<String, bool> _synced;
+  /// List of remote adapters that have synced this event.
+  final List<String> _synced;
 
-  /// Indicates if the event has been synced to the server.
+  /// List of remote adapters that have synced this event.
   @override
   @JsonKey()
   @HiveField(2)
-  Map<String, bool> get synced {
-    if (_synced is EqualUnmodifiableMapView) return _synced;
+  List<String> get synced {
+    if (_synced is EqualUnmodifiableListView) return _synced;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_synced);
+    return EqualUnmodifiableListView(_synced);
   }
 
   /// Indicates the event has already been applied to the local aggregate.
@@ -401,7 +401,7 @@ abstract class _EventModel extends EventModel {
   factory _EventModel(
       {@JsonKey(name: 'event_id') @HiveField(0) required final String eventId,
       @JsonKey(name: 'sort_order') @HiveField(1) required final int order,
-      @HiveField(2) final Map<String, bool> synced,
+      @HiveField(2) final List<String> synced,
       @HiveField(3) final bool applied,
       @JsonKey(name: 'stream_id') @HiveField(4) required final String streamId,
       @HiveField(5) required final int version,
@@ -429,10 +429,10 @@ abstract class _EventModel extends EventModel {
   @HiveField(1)
   int get order;
 
-  /// Indicates if the event has been synced to the server.
+  /// List of remote adapters that have synced this event.
   @override
   @HiveField(2)
-  Map<String, bool> get synced;
+  List<String> get synced;
 
   /// Indicates the event has already been applied to the local aggregate.
   @override

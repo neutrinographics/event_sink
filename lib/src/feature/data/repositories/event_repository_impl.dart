@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:collection/collection.dart';
 import 'package:dartz/dartz.dart';
 import 'package:event_sink/src/core/data/event_resolver.dart';
@@ -44,8 +42,8 @@ class EventRepositoryImpl extends EventRepository {
     List<EventModel> pooledEvents;
     try {
       pooledEvents = await localDataSource.getPooledEvents(pool);
-      final stateHash = hashGenerator.generateHash(
-          jsonEncode(pooledEvents.map((e) => e.toJson()).toList()));
+      final stateHash =
+          hashGenerator.generateHash(pooledEvents.getHashableJson());
       remoteEvents = await _getRemoteAdapter(remoteAdapterName).pull(
         pool,
         stateHash,
@@ -64,7 +62,7 @@ class EventRepositoryImpl extends EventRepository {
         remoteEvent: e,
         remoteAdapterName: remoteAdapterName,
         pool: pool,
-        synced: synced ?? {},
+        synced: synced ?? [],
       ).copyWith(createdAt: timeInfo.now());
 
       final localEventExists = await localDataSource.hasEvent(e.eventId);
@@ -127,7 +125,7 @@ class EventRepositoryImpl extends EventRepository {
           remoteEvent: pushedEvent,
           remoteAdapterName: remoteAdapterName,
           pool: pool,
-          synced: synced ?? {},
+          synced: synced ?? [],
         ).copyWith(
           applied: isApplied,
           createdAt: timeInfo.now(),

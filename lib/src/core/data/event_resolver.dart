@@ -55,10 +55,10 @@ class EventResolverImpl implements EventResolver {
     EventRemoteAdapter comparedAdapter,
     Map<String, EventRemoteAdapter> remoteAdapters,
   ) {
-    return existingEvent.synced.entries.any((entry) {
-      final existingEventAdapter = remoteAdapters[entry.key];
+    return existingEvent.synced.any((adapterName) {
+      final existingEventAdapter = remoteAdapters[adapterName];
       if (existingEventAdapter == null) {
-        throw ArgumentError('Remote Adapter "${entry.key}" not found');
+        throw ArgumentError('Remote Adapter "$adapterName" not found');
       }
 
       return existingEventAdapter != comparedAdapter &&
@@ -72,10 +72,10 @@ class EventResolverImpl implements EventResolver {
     EventRemoteAdapter comparedAdapter,
     Map<String, EventRemoteAdapter> remoteAdapters,
   ) {
-    return existingEvent.synced.entries.any((entry) {
-      final existingEventAdapter = remoteAdapters[entry.key];
+    return existingEvent.synced.any((adapterName) {
+      final existingEventAdapter = remoteAdapters[adapterName];
       if (existingEventAdapter == null) {
-        throw ArgumentError('Remote Adapter "${entry.key}" not found');
+        throw ArgumentError('Remote Adapter "$adapterName" not found');
       }
 
       return existingEventAdapter != comparedAdapter &&

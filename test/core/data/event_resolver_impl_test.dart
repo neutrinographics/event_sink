@@ -58,11 +58,11 @@ void main() {
         () {
       // arrange
       final existingEvent = event.copyWith(
-        synced: {}, // <-- not synced
+        synced: [], // <-- not synced
         version: 1,
       );
       final eventFromAdapter = event.copyWith(
-        synced: {firstAdapter: true},
+        synced: [firstAdapter],
         version: 2,
       );
       final remoteAdapters = {
@@ -84,15 +84,15 @@ void main() {
         () {
       // arrange
       final existingEvent = event.copyWith(
-        synced: {
-          secondAdapter: true, // <-- a lower priority adapter
-        },
+        synced: [
+          secondAdapter, // <-- a lower priority adapter
+        ],
         version: 1,
       );
       final eventFromAdapter = event.copyWith(
-        synced: {
-          firstAdapter: true,
-        },
+        synced: [
+          firstAdapter,
+        ],
         version: 2,
       );
       final remoteAdapters = {
@@ -116,9 +116,9 @@ void main() {
       // arrange
       const nonExistedAdapter = 'non-existed';
       final existingEvent = event.copyWith(
-        synced: {
-          nonExistedAdapter: true,
-        },
+        synced: [
+          nonExistedAdapter,
+        ],
         version: 1,
       );
       final remoteAdapters = {
@@ -144,9 +144,9 @@ void main() {
       // arrange
       const nonExistedAdapter = 'non-existed';
       final existingEvent = event.copyWith(
-        synced: {
-          nonExistedAdapter: true,
-        },
+        synced: [
+          nonExistedAdapter,
+        ],
         version: 1,
       );
       final remoteAdapters = {
@@ -170,15 +170,15 @@ void main() {
         () {
       // arrange
       final existingEvent = event.copyWith(
-        synced: {
-          firstAdapter: true, // <-- a higher priority adapter
-        },
+        synced: [
+          firstAdapter, // <-- a higher priority adapter
+        ],
         version: 1,
       );
       final eventFromAdapter = event.copyWith(
-        synced: {
-          secondAdapter: true,
-        },
+        synced: [
+          secondAdapter,
+        ],
         version: 2,
       );
       final remoteAdapters = {
@@ -201,15 +201,15 @@ void main() {
         () {
       // arrange
       final existingEvent = event.copyWith(
-        synced: {
-          firstAdapter: true,
-        },
+        synced: [
+          firstAdapter,
+        ],
         version: 1,
       );
       final eventFromAdapter = event.copyWith(
-        synced: {
-          secondAdapter: true,
-        },
+        synced: [
+          secondAdapter,
+        ],
         version: 2,
       );
       final remoteAdapters = {
