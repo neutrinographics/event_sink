@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
+import 'package:event_sink/src/core/hash_generator.dart';
 import 'package:event_sink/src/event_remote_adapter.dart';
 
 import 'data/local/models/event_model.dart';
@@ -23,13 +24,14 @@ extension EventModelX on EventModel {
 }
 
 extension EventModelsX on Iterable<EventModel> {
-  String getHashableJson() {
-    return jsonEncode(
+  String asHash(HashGenerator generator) {
+    final eventsJson = jsonEncode(
       map((e) => {
             'eventId': e.eventId,
             'version': e.version,
             'order': e.order,
           }).toList(),
     );
+    return generator.generateHash(eventsJson);
   }
 }

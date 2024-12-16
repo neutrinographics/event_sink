@@ -42,8 +42,7 @@ class EventRepositoryImpl extends EventRepository {
     List<EventModel> pooledEvents;
     try {
       pooledEvents = await localDataSource.getPooledEvents(pool);
-      final stateHash =
-          hashGenerator.generateHash(pooledEvents.getHashableJson());
+      final stateHash = pooledEvents.asHash(hashGenerator);
       remoteEvents = await _getRemoteAdapter(remoteAdapterName).pull(
         pool,
         stateHash,
