@@ -39,9 +39,9 @@ class EventRepositoryImpl extends EventRepository {
     required String pool,
   }) async {
     List<RemoteEventModel> remoteEvents;
-    // List<EventModel> pooledEvents;
     try {
-      List<EventModel> pooledEvents = await localDataSource.getPooledEvents(pool);
+      List<EventModel> pooledEvents =
+          await localDataSource.getPooledEvents(pool);
       final stateHash = pooledEvents.asHash(hashGenerator);
       remoteEvents = await _getRemoteAdapter(remoteAdapterName).pull(
         pool,
@@ -60,24 +60,8 @@ class EventRepositoryImpl extends EventRepository {
         pool: pool,
         remoteAdapterName: remoteAdapterName,
       ).copyWith(createdAt: timeInfo.now());
-
-      // TODO: move this into a function.
-      final localEventExists = await localDataSource.hasEvent(e.eventId);
-      if (localEventExists) {
-        final localEvent = await localDataSource.getEvent(e.eventId);
-        final resolvedEvent = eventResolver.resolve(
-          eventFromAdapter: remoteEvent,
-          existingEvent: localEvent,
-          remoteAdapterName: remoteAdapterName,
-          remoteAdapters: remoteAdapters,
-        );
-
-        // synced to many
-        eventsToAdd.add(resolvedEvent);
-      } else {
-        // synced to one
-        eventsToAdd.add(remoteEvent);
-      }
+      final resolvedEvent = await _resolveEvent(remoteEvent, remoteAdapterName);
+      eventsToAdd.add(resolvedEvent);
     }
 
     try {
@@ -112,7 +96,7 @@ class EventRepositoryImpl extends EventRepository {
       final pushedEvents =
           await _getRemoteAdapter(remoteAdapterName).push(pool, eventsToPush);
 
-      final remotePushedEvents = pushedEvents.map((pushedEvent) {
+      final pushEvents = pushedEvents.map((pushedEvent) async {
         final isApplied = pooledEvents
             .firstWhere((event) => event.eventId == pushedEvent.eventId)
             .applied;
@@ -127,17 +111,16 @@ class EventRepositoryImpl extends EventRepository {
           pool: pool,
           remoteAdapterName: remoteAdapterName,
         );
-        final resolvedEvent = eventResolver.resolve(
-          eventFromAdapter: remoteEvent,
-          existingEvent: pooledEvent!, // TODO: fix this (see "move this into a function above")
-          remoteAdapterName: remoteAdapterName,
-          remoteAdapters: remoteAdapters,
+        final resolvedEvent = await _resolveEvent(
+          remoteEvent,
+          remoteAdapterName,
         );
         return resolvedEvent.copyWith(
           applied: isApplied,
           createdAt: timeInfo.now(),
         );
       });
+      final remotePushedEvents = await Future.wait(pushEvents);
       eventsToAdd.addAll(remotePushedEvents);
     } on OutOfSyncException catch (e) {
       return Left(OutOfSyncFailure(message: e.message));
@@ -340,6 +323,30 @@ class EventRepositoryImpl extends EventRepository {
       return const Right(null);
     } on Exception catch (e, stack) {
       return Left(CacheFailure(message: "$e\n\n$stack"));
+    }
+  }
+
+  Future<EventModel> _resolveEvent(
+    EventModel eventFromAdapter,
+    String remoteAdapterName,
+  ) async {
+    final localEventExists =
+        await localDataSource.hasEvent(eventFromAdapter.eventId);
+    if (localEventExists) {
+      final localEvent =
+          await localDataSource.getEvent(eventFromAdapter.eventId);
+      final resolvedEvent = eventResolver.resolve(
+        eventFromAdapter: eventFromAdapter,
+        existingEvent: localEvent,
+        remoteAdapterName: remoteAdapterName,
+        remoteAdapters: remoteAdapters,
+      );
+
+      // synced to many
+      return resolvedEvent;
+    } else {
+      // synced to one
+      return eventFromAdapter;
     }
   }
 
