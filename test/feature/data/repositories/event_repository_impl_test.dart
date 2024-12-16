@@ -333,7 +333,7 @@ void main() {
     test('should cache remote event if it doesn\'t exists in the cache',
         () async {
       // arrange
-      when(mockEventRemoteAdapter.pull(any, any))
+      when(mockEventRemoteAdapter.push(any, any))
           .thenAnswer((_) async => tRemoteEvents);
       when(mockEventLocalDataSource.hasEvent(any))
           .thenAnswer((_) async => false);
@@ -342,7 +342,7 @@ void main() {
       when(mockTimeInfo.now()).thenReturn(tTime);
       when(mockIdGenerator.generateId()).thenReturn(tEventId);
       // act
-      final result = await repository.fetch(
+      final result = await repository.push(
         remoteAdapterName: tFirstAdapter,
         pool: tPool,
       );
@@ -362,15 +362,18 @@ void main() {
 
     test('should resolve conflicts if the event exists in the cache', () async {
       // arrange
-      final tCachedEvent = baseLocalEvent.copyWith(eventId: '1');
-      final tRemoteEvent = baseRemoteEvent.copyWith(eventId: '1');
+      final tCachedEvent = baseLocalEvent.copyWith(eventId: 'synced');
+      final tRemoteEvent = baseRemoteEvent.copyWith(eventId: 'synced');
       final tExpectedEvent = EventModel.fromRemote(
         remoteEvent: tRemoteEvent,
         pool: tPool,
         remoteAdapterName: tFirstAdapter,
+      ).copyWith(
+        applied: tCachedEvent.applied,
+        createdAt: tTime,
       );
 
-      when(mockEventRemoteAdapter.pull(any, any))
+      when(mockEventRemoteAdapter.push(any, any))
           .thenAnswer((_) async => [tRemoteEvent]);
       when(mockEventLocalDataSource.hasEvent(any))
           .thenAnswer((_) async => true);
@@ -387,7 +390,7 @@ void main() {
       when(mockTimeInfo.now()).thenReturn(tTime);
 
       // act
-      final result = await repository.fetch(
+      final result = await repository.push(
         remoteAdapterName: tFirstAdapter,
         pool: tPool,
       );
