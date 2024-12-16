@@ -39,9 +39,9 @@ class EventRepositoryImpl extends EventRepository {
     required String pool,
   }) async {
     List<RemoteEventModel> remoteEvents;
-    List<EventModel> pooledEvents;
+    // List<EventModel> pooledEvents;
     try {
-      pooledEvents = await localDataSource.getPooledEvents(pool);
+      List<EventModel> pooledEvents = await localDataSource.getPooledEvents(pool);
       final stateHash = pooledEvents.asHash(hashGenerator);
       remoteEvents = await _getRemoteAdapter(remoteAdapterName).pull(
         pool,
@@ -55,17 +55,13 @@ class EventRepositoryImpl extends EventRepository {
 
     List<EventModel> eventsToAdd = [];
     for (final e in remoteEvents) {
-      final pooledEvent =
-          pooledEvents.where((p) => p.eventId == e.eventId).firstOrNull;
-      final synced =
-          pooledEvent != null ? pooledEvent.synced.toSet() : <String>{};
-      synced.add(remoteAdapterName);
       final remoteEvent = EventModel.fromRemote(
         remoteEvent: e,
         pool: pool,
-        synced: synced,
+        remoteAdapterName: remoteAdapterName,
       ).copyWith(createdAt: timeInfo.now());
 
+      // TODO: move this into a function.
       final localEventExists = await localDataSource.hasEvent(e.eventId);
       if (localEventExists) {
         final localEvent = await localDataSource.getEvent(e.eventId);
@@ -76,8 +72,10 @@ class EventRepositoryImpl extends EventRepository {
           remoteAdapters: remoteAdapters,
         );
 
+        // synced to many
         eventsToAdd.add(resolvedEvent);
       } else {
+        // synced to one
         eventsToAdd.add(remoteEvent);
       }
     }
@@ -124,11 +122,18 @@ class EventRepositoryImpl extends EventRepository {
         final synced =
             pooledEvent != null ? pooledEvent.synced.toSet() : <String>{};
         synced.add(remoteAdapterName);
-        return EventModel.fromRemote(
+        final remoteEvent = EventModel.fromRemote(
           remoteEvent: pushedEvent,
           pool: pool,
-          synced: synced,
-        ).copyWith(
+          remoteAdapterName: remoteAdapterName,
+        );
+        final resolvedEvent = eventResolver.resolve(
+          eventFromAdapter: remoteEvent,
+          existingEvent: pooledEvent!, // TODO: fix this (see "move this into a function above")
+          remoteAdapterName: remoteAdapterName,
+          remoteAdapters: remoteAdapters,
+        );
+        return resolvedEvent.copyWith(
           applied: isApplied,
           createdAt: timeInfo.now(),
         );

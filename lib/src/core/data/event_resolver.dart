@@ -30,44 +30,27 @@ class EventResolverImpl implements EventResolver {
       return eventFromAdapter;
     }
 
-    if (_existingEventHasEqualPriority(
-      existingEvent,
-      newEventAdapter,
-      remoteAdapters,
-    )) {
-      return eventFromAdapter;
-    }
+    final syncedAdapters = <String>{};
+    syncedAdapters.addAll(existingEvent.synced);
+    syncedAdapters.addAll(eventFromAdapter.synced);
 
-    if (_existingEventHasLowerPriority(
+    if (_existingEventHasLowerOrEqualPriority(
       existingEvent,
       newEventAdapter,
       remoteAdapters,
     )) {
-      return eventFromAdapter;
+      return eventFromAdapter.copyWith(
+        synced: syncedAdapters.toList(),
+      );
     } else {
-      return existingEvent;
+      return existingEvent.copyWith(
+        synced: syncedAdapters.toList(),
+      );
     }
-  }
-
-  /// The existing event was synced to an adapter with the same priority as the compared adapter.
-  bool _existingEventHasEqualPriority(
-    EventModel existingEvent,
-    EventRemoteAdapter comparedAdapter,
-    Map<String, EventRemoteAdapter> remoteAdapters,
-  ) {
-    return existingEvent.synced.any((adapterName) {
-      final existingEventAdapter = remoteAdapters[adapterName];
-      if (existingEventAdapter == null) {
-        throw ArgumentError('Remote Adapter "$adapterName" not found');
-      }
-
-      return existingEventAdapter != comparedAdapter &&
-          existingEventAdapter.priority == comparedAdapter.priority;
-    });
   }
 
   /// The existing event was synced to an adapter with lower priority than the compared adapter.
-  bool _existingEventHasLowerPriority(
+  bool _existingEventHasLowerOrEqualPriority(
     EventModel existingEvent,
     EventRemoteAdapter comparedAdapter,
     Map<String, EventRemoteAdapter> remoteAdapters,
@@ -79,7 +62,7 @@ class EventResolverImpl implements EventResolver {
       }
 
       return existingEventAdapter != comparedAdapter &&
-          existingEventAdapter.priority < comparedAdapter.priority;
+          existingEventAdapter.priority <= comparedAdapter.priority;
     });
   }
 }

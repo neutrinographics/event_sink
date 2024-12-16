@@ -85,30 +85,33 @@ void main() {
       // arrange
       final existingEvent = event.copyWith(
         synced: [
-          secondAdapter, // <-- a lower priority adapter
+          firstAdapter, // <-- a lower priority adapter
         ],
         version: 1,
       );
       final eventFromAdapter = event.copyWith(
         synced: [
-          firstAdapter,
+          secondAdapter,
         ],
         version: 2,
       );
       final remoteAdapters = {
-        firstAdapter: TestAdapter(priority: 1),
+        firstAdapter: TestAdapter(priority: 0),
         // a lower priority adapter
-        secondAdapter: TestAdapter(priority: 0),
+        secondAdapter: TestAdapter(priority: 1),
       };
       // act
       final result = eventResolver.resolve(
         existingEvent: existingEvent,
         eventFromAdapter: eventFromAdapter,
-        remoteAdapterName: firstAdapter,
+        remoteAdapterName: secondAdapter,
         remoteAdapters: remoteAdapters,
       );
       // assert
-      expect(result, eventFromAdapter);
+      final tExpectedEvent = eventFromAdapter.copyWith(
+        synced: [firstAdapter, secondAdapter],
+      );
+      expect(result, tExpectedEvent);
     });
 
     test('should throw an error if the adapter for the new event was not found',
@@ -193,7 +196,10 @@ void main() {
         remoteAdapters: remoteAdapters,
       );
       // assert
-      expect(result, existingEvent);
+      final tExpectedEvent = existingEvent.copyWith(
+        synced: [firstAdapter, secondAdapter],
+      );
+      expect(result, tExpectedEvent);
     });
 
     test(
@@ -224,7 +230,10 @@ void main() {
         remoteAdapters: remoteAdapters,
       );
       // assert
-      expect(result, eventFromAdapter);
+      final tExpectedEvent = eventFromAdapter.copyWith(
+        synced: [firstAdapter, secondAdapter],
+      );
+      expect(result, tExpectedEvent);
     });
   });
 }
