@@ -93,8 +93,9 @@ class EventRepositoryImpl extends EventRepository {
           .where((e) => !e.isSyncedWith(remoteAdapterName))
           .map((e) => e.toRemote())
           .toList();
-      final pushedEvents =
-          await _getRemoteAdapter(remoteAdapterName).push(pool, eventsToPush);
+      final stateHash = pooledEvents.asHash(hashGenerator);
+      final pushedEvents = await _getRemoteAdapter(remoteAdapterName)
+          .push(pool, stateHash, eventsToPush);
 
       final pushEvents = pushedEvents.map((pushedEvent) async {
         final isApplied = pooledEvents

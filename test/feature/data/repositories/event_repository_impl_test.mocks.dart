@@ -89,6 +89,7 @@ class MockEventRemoteAdapter extends _i1.Mock
   @override
   _i3.Future<List<_i2.RemoteEventModel>> push(
     String? pool,
+    String? stateHash,
     List<_i2.RemoteEventModel>? events,
   ) =>
       (super.noSuchMethod(
@@ -96,6 +97,7 @@ class MockEventRemoteAdapter extends _i1.Mock
           #push,
           [
             pool,
+            stateHash,
             events,
           ],
         ),

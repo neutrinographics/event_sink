@@ -33,6 +33,7 @@ class TestAdapter extends EventRemoteAdapter {
   @override
   Future<List<RemoteEventModel>> push(
     String pool,
+    String stateHash,
     List<RemoteEventModel> events,
   ) {
     throw UnimplementedError();
