@@ -303,7 +303,7 @@ void main() {
             .thenAnswer((_) async => tCachedEvents);
         when(mockEventLocalDataSource.hasEvent(any))
             .thenAnswer((_) async => false);
-        when(mockEventRemoteAdapter.push(any, any))
+        when(mockEventRemoteAdapter.push(any, any, any))
             .thenAnswer((_) async => [remoteEvents.removeAt(0)]);
         // act
         final result = await repository.push(
@@ -313,9 +313,9 @@ void main() {
         // assert
         for (var e in tCachedEvents) {
           if (e.isSyncedWith(tFirstAdapter) == true) {
-            verifyNever(mockEventRemoteAdapter.push(any, [e.toRemote()]));
+            verifyNever(mockEventRemoteAdapter.push(any, any, [e.toRemote()]));
           } else {
-            verify(mockEventRemoteAdapter.push(any, [e.toRemote()]));
+            verify(mockEventRemoteAdapter.push(any, any, [e.toRemote()]));
           }
         }
         // verify events were updated with their remote id
@@ -333,7 +333,7 @@ void main() {
     test('should cache remote event if it doesn\'t exists in the cache',
         () async {
       // arrange
-      when(mockEventRemoteAdapter.push(any, any))
+      when(mockEventRemoteAdapter.push(any, any, any))
           .thenAnswer((_) async => tRemoteEvents);
       when(mockEventLocalDataSource.hasEvent(any))
           .thenAnswer((_) async => false);
@@ -373,7 +373,7 @@ void main() {
         createdAt: tTime,
       );
 
-      when(mockEventRemoteAdapter.push(any, any))
+      when(mockEventRemoteAdapter.push(any, any, any))
           .thenAnswer((_) async => [tRemoteEvent]);
       when(mockEventLocalDataSource.hasEvent(any))
           .thenAnswer((_) async => true);
@@ -428,7 +428,7 @@ void main() {
         // arrange
         when(mockEventLocalDataSource.getPooledEvents(any))
             .thenAnswer((_) async => tCachedEvents);
-        when(mockEventRemoteAdapter.push(any, any))
+        when(mockEventRemoteAdapter.push(any, any, any))
             .thenThrow(ServerException());
         // act
         final result = await repository.push(
@@ -450,7 +450,7 @@ void main() {
             .thenAnswer((_) async => tCachedEvents);
         when(mockEventLocalDataSource.hasEvent(any))
             .thenAnswer((_) async => false);
-        when(mockEventRemoteAdapter.push(any, any))
+        when(mockEventRemoteAdapter.push(any, any, any))
             .thenAnswer((_) async => [remoteEvents.removeAt(0)]);
         when(mockEventLocalDataSource.addEvents(any)).thenThrow(Exception());
 
@@ -470,7 +470,7 @@ void main() {
         // arrange
         when(mockEventLocalDataSource.getPooledEvents(any))
             .thenAnswer((_) async => tCachedEvents);
-        when(mockEventRemoteAdapter.push(any, any))
+        when(mockEventRemoteAdapter.push(any, any, any))
             .thenThrow(OutOfSyncException());
         // act
         final result = await repository.push(

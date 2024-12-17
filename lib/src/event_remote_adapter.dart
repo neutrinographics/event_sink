@@ -19,6 +19,7 @@ abstract class EventRemoteAdapter {
   /// Returns the newly created remote events.
   Future<List<RemoteEventModel>> push(
     String pool,
+    String stateHash,
     List<RemoteEventModel> events,
   );
 }
