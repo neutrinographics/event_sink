@@ -8,6 +8,7 @@ import 'dart:async' as _i2;
 import 'package:clean_cache/clean_cache.dart' as _i3;
 import 'package:event_sink/event_sink.dart' as _i6;
 import 'package:event_sink/src/core/data/event_sorter.dart' as _i5;
+import 'package:event_sink/src/core/hash_generator.dart' as _i7;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i4;
 
@@ -178,4 +179,31 @@ class MockEventSorter extends _i1.Mock implements _i5.EventSorter {
         returnValue: <_i6.EventModel>[],
         returnValueForMissingStub: <_i6.EventModel>[],
       ) as List<_i6.EventModel>);
+}
+
+/// A class which mocks [HashGenerator].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockHashGenerator extends _i1.Mock implements _i7.HashGenerator {
+  @override
+  String generateHash(String? data) => (super.noSuchMethod(
+        Invocation.method(
+          #generateHash,
+          [data],
+        ),
+        returnValue: _i4.dummyValue<String>(
+          this,
+          Invocation.method(
+            #generateHash,
+            [data],
+          ),
+        ),
+        returnValueForMissingStub: _i4.dummyValue<String>(
+          this,
+          Invocation.method(
+            #generateHash,
+            [data],
+          ),
+        ),
+      ) as String);
 }

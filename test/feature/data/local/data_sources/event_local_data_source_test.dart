@@ -3,13 +3,13 @@ import 'dart:convert';
 import 'package:clean_cache/clean_cache.dart';
 import 'package:event_sink/src/annotations/params/remote_adapter.dart';
 import 'package:event_sink/src/core/data/event_sorter.dart';
+import 'package:event_sink/src/core/hash_generator.dart';
 import 'package:event_sink/src/event_remote_adapter.dart';
 import 'package:event_sink/src/feature/data/local/data_sources/event_local_data_source.dart';
 import 'package:event_sink/src/feature/data/local/models/event_model.dart';
 import 'package:event_sink/src/feature/data/local/models/pool_model.dart';
 import 'package:event_sink/src/feature/data/remote/models/remote_event_model.dart';
 import 'package:flutter_test/flutter_test.dart';
-
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
@@ -38,12 +38,17 @@ class TestAdapter extends EventRemoteAdapter {
   }
 }
 
-@GenerateNiceMocks([MockSpec<CleanCache>(), MockSpec<EventSorter>()])
+@GenerateNiceMocks([
+  MockSpec<CleanCache>(),
+  MockSpec<EventSorter>(),
+  MockSpec<HashGenerator>(),
+])
 void main() {
   late MockEventSorter mockEventSorter;
   late EventLocalDataSourceImpl dataSource;
   late MockCleanCache<String, EventModel> mockEventCache;
   late MockCleanCache<String, PoolModel> mockPoolCache;
+  late MockHashGenerator mockHashGenerator;
 
   final tRemoteAdapters = <String, EventRemoteAdapter>{
     'adapter-1': TestAdapter(),
@@ -54,11 +59,13 @@ void main() {
     mockEventSorter = MockEventSorter();
     mockEventCache = MockCleanCache<String, EventModel>();
     mockPoolCache = MockCleanCache<String, PoolModel>();
+    mockHashGenerator = MockHashGenerator();
     dataSource = EventLocalDataSourceImpl(
       eventCache: mockEventCache,
       poolCache: mockPoolCache,
       eventSorter: mockEventSorter,
       remoteAdapters: tRemoteAdapters,
+      hashGenerator: mockHashGenerator,
     );
   });
 
@@ -378,5 +385,36 @@ void main() {
         verifyNoMoreInteractions(mockEventCache);
       },
     );
+  });
+
+  group('getRootHash', () {
+    test('should return the root hash', () async {
+      // arrange
+      const tHash = 'root-hash';
+      final tEventModels = [
+        EventModel(
+          eventId: 'event-1',
+          streamId: '175794e2-83a6-4f9a-b873-d43484e2c0b5',
+          version: 1,
+          order: 1,
+          name: "create-group",
+          createdAt: DateTime.now(),
+          data: {
+            "group_stream_id": "3304ABE8-D744-48CE-8FC6-2FEA19E6B4D8",
+          },
+          pool: '1',
+        )
+      ];
+      when(mockEventCache.values()).thenAnswer((_) async => tEventModels);
+      when(mockEventSorter.sort(any, any)).thenAnswer((_) => tEventModels);
+      when(mockHashGenerator.generateHash(any)).thenReturn(tHash);
+      // act
+      final result = await dataSource.getRootHash();
+      // assert
+      expect(result, tHash);
+      verify(mockEventCache.values());
+      verify(mockEventSorter.sort(tEventModels, any));
+      verify(mockHashGenerator.generateHash(any));
+    });
   });
 }

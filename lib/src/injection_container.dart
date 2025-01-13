@@ -75,6 +75,7 @@ Future<void> init({
       poolCache: MemoryCache(),
       remoteAdapters: sl(),
       eventSorter: sl(),
+      hashGenerator: sl(),
     ),
   );
   sl.registerLazySingleton<EventRemoteDataSource>(
