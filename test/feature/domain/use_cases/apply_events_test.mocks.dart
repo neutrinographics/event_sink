@@ -248,6 +248,32 @@ class MockEventRepository extends _i1.Mock implements _i3.EventRepository {
           ),
         )),
       ) as _i4.Future<_i2.Either<_i5.Failure, void>>);
+
+  @override
+  _i4.Future<_i2.Either<_i5.Failure, String>> getStreamRootHash(
+    String? pool,
+    String? streamId,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getStreamRootHash,
+          [
+            pool,
+            streamId,
+          ],
+        ),
+        returnValue: _i4.Future<_i2.Either<_i5.Failure, String>>.value(
+            _FakeEither_0<_i5.Failure, String>(
+          this,
+          Invocation.method(
+            #getStreamRootHash,
+            [
+              pool,
+              streamId,
+            ],
+          ),
+        )),
+      ) as _i4.Future<_i2.Either<_i5.Failure, String>>);
 }
 
 /// A class which mocks [TestEventHandler].
