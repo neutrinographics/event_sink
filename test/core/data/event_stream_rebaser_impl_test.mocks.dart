@@ -153,4 +153,14 @@ class MockEventLocalDataSource extends _i1.Mock
         returnValue: _i4.Future<void>.value(),
         returnValueForMissingStub: _i4.Future<void>.value(),
       ) as _i4.Future<void>);
+
+  @override
+  _i4.Future<List<String>> listStreamHashes(String? streamId) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #listStreamHashes,
+          [streamId],
+        ),
+        returnValue: _i4.Future<List<String>>.value(<String>[]),
+      ) as _i4.Future<List<String>>);
 }

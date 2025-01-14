@@ -226,6 +226,16 @@ class MockEventLocalDataSource extends _i1.Mock
         returnValue: _i3.Future<void>.value(),
         returnValueForMissingStub: _i3.Future<void>.value(),
       ) as _i3.Future<void>);
+
+  @override
+  _i3.Future<List<String>> listStreamHashes(String? streamId) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #listStreamHashes,
+          [streamId],
+        ),
+        returnValue: _i3.Future<List<String>>.value(<String>[]),
+      ) as _i3.Future<List<String>>);
 }
 
 /// A class which mocks [EventResolver].

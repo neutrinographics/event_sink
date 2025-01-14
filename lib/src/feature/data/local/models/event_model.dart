@@ -1,6 +1,8 @@
+import 'package:event_sink/src/core/hash_generator.dart';
 import 'package:event_sink/src/feature/data/remote/models/remote_event_model.dart';
 import 'package:event_sink/src/feature/data/remote/models/remote_new_event_model.dart';
 import 'package:event_sink/src/feature/domain/entities/event_stub.dart';
+import 'package:event_sink/src/feature/extensions.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive/hive.dart';
 
@@ -42,6 +44,9 @@ class EventModel extends HiveObject with _$EventModel {
     /// Custom event data
     @HiveField(9) required Map<String, dynamic> data,
   }) = _EventModel;
+
+  /// The hash of the event
+  String hash(HashGenerator generator) => asHash(generator);
 
   factory EventModel.fromJson(Map<String, dynamic> json) =>
       _$EventModelFromJson(json);

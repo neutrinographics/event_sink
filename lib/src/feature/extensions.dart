@@ -21,6 +21,17 @@ extension EventModelX on EventModel {
       (entry) => synced.contains(entry.key),
     )).values.map<int>((e) => e.priority).max;
   }
+
+  String asHash(HashGenerator generator) {
+    final eventsJson = jsonEncode(
+      {
+        'eventId': eventId,
+        'version': version,
+        'order': order,
+      },
+    );
+    return generator.generateHash(eventsJson);
+  }
 }
 
 extension EventModelsX on Iterable<EventModel> {
