@@ -388,32 +388,38 @@ void main() {
   });
 
   group('getRootHash', () {
+    const tEventId = "event-1";
+    const tPool = '1';
+    const tStreamId = '175794e2-83a6-4f9a-b873-d43484e2c0b5';
+    final createdAt = DateTime.now();
+    final tEventModel = EventModel(
+      eventId: tEventId,
+      streamId: tStreamId,
+      version: 1,
+      order: 1,
+      name: "create-group",
+      createdAt: createdAt,
+      data: {
+        "group_stream_id": "3304ABE8-D744-48CE-8FC6-2FEA19E6B4D8",
+      },
+      pool: tPool,
+    );
+
     test('should return the root hash', () async {
       // arrange
       const tHash = 'root-hash';
-      final tEventModels = [
-        EventModel(
-          eventId: 'event-1',
-          streamId: '175794e2-83a6-4f9a-b873-d43484e2c0b5',
-          version: 1,
-          order: 1,
-          name: "create-group",
-          createdAt: DateTime.now(),
-          data: {
-            "group_stream_id": "3304ABE8-D744-48CE-8FC6-2FEA19E6B4D8",
-          },
-          pool: '1',
-        )
-      ];
-      when(mockEventCache.values()).thenAnswer((_) async => tEventModels);
-      when(mockEventSorter.sort(any, any)).thenAnswer((_) => tEventModels);
+      when(mockPoolCache.exists(any)).thenAnswer((_) async => true);
+      when(mockPoolCache.read(any)).thenAnswer((_) async => PoolModel(
+            id: tPool,
+            eventIds: [tEventId],
+          ));
+      when(mockEventCache.read(any)).thenAnswer((_) async => tEventModel);
+      when(mockEventSorter.sort(any, any)).thenAnswer((_) => [tEventModel]);
       when(mockHashGenerator.generateHash(any)).thenReturn(tHash);
       // act
-      final result = await dataSource.getRootHash();
+      final result = await dataSource.getStreamRootHash(tStreamId);
       // assert
       expect(result, tHash);
-      verify(mockEventCache.values());
-      verify(mockEventSorter.sort(tEventModels, any));
       verify(mockHashGenerator.generateHash(any));
     });
   });

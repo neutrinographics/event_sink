@@ -42,8 +42,8 @@ abstract class EventLocalDataSource {
   /// Clears the cache in a single pool.
   Future<void> clearPool(String poolId);
 
-  /// Returns the hash of all events combined.
-  Future<String> getRootHash();
+  /// Returns the hash of all events in a stream.
+  Future<String> getStreamRootHash(String streamId);
 }
 
 class EventLocalDataSourceImpl extends EventLocalDataSource {
@@ -210,8 +210,9 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
   }
 
   @override
-  Future<String> getRootHash() async {
-    final events = await getAllEvents();
-    return events.asHash(hashGenerator);
+  Future<String> getStreamRootHash(String streamId) async {
+    final events = await getPooledEvents('open_door');
+    final eventsInStream = events.where((e) => e.streamId == streamId);
+    return eventsInStream.asHash(hashGenerator);
   }
 }
