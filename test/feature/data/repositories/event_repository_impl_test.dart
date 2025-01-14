@@ -11,6 +11,7 @@ import 'package:event_sink/src/event_data.dart';
 import 'package:event_sink/src/event_remote_adapter.dart';
 import 'package:event_sink/src/feature/data/local/data_sources/event_local_data_source.dart';
 import 'package:event_sink/src/feature/data/local/models/event_model.dart';
+import 'package:event_sink/src/feature/data/local/models/stream_hash.dart';
 import 'package:event_sink/src/feature/data/remote/models/remote_event_model.dart';
 import 'package:event_sink/src/feature/data/repositories/event_repository_impl.dart';
 import 'package:event_sink/src/feature/domain/entities/event_info.dart';
@@ -1081,6 +1082,44 @@ void main() {
         // assert
         expect(result.swap().toOption().toNullable(), isA<CacheFailure>());
         verify(mockEventLocalDataSource.getStreamRootHash(tPool, tStreamId));
+        verifyNoMoreInteractions(mockEventLocalDataSource);
+      },
+    );
+  });
+
+  group('listStreamHashes', () {
+    const tStreamId = 'streamId';
+
+    test(
+      'should return list of hashes',
+      () async {
+        // arrange
+        const tHashes = [
+          StreamHash(eventId: '1', hash: 'hash1'),
+          StreamHash(eventId: '2', hash: 'hash2'),
+        ];
+        when(mockEventLocalDataSource.listStreamHashes(any))
+            .thenAnswer((_) async => tHashes);
+        // act
+        final result = await repository.listStreamHashes(tStreamId);
+        // assert
+        expect(result, const Right(tHashes));
+        verify(mockEventLocalDataSource.listStreamHashes(tStreamId));
+        verifyNoMoreInteractions(mockEventLocalDataSource);
+      },
+    );
+
+    test(
+      'should return CacheFailure if getting hashes fails',
+      () async {
+        // arrange
+        when(mockEventLocalDataSource.listStreamHashes(any))
+            .thenThrow(Exception());
+        // act
+        final result = await repository.listStreamHashes(tStreamId);
+        // assert
+        expect(result.swap().toOption().toNullable(), isA<CacheFailure>());
+        verify(mockEventLocalDataSource.listStreamHashes(tStreamId));
         verifyNoMoreInteractions(mockEventLocalDataSource);
       },
     );

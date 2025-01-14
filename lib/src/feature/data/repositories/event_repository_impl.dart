@@ -10,6 +10,7 @@ import 'package:event_sink/src/event_data.dart';
 import 'package:event_sink/src/event_remote_adapter.dart';
 import 'package:event_sink/src/feature/data/local/data_sources/event_local_data_source.dart';
 import 'package:event_sink/src/feature/data/local/models/event_model.dart';
+import 'package:event_sink/src/feature/data/local/models/stream_hash.dart';
 import 'package:event_sink/src/feature/data/remote/models/remote_event_model.dart';
 import 'package:event_sink/src/feature/domain/entities/event_info.dart';
 import 'package:event_sink/src/feature/domain/entities/event_stub.dart';
@@ -373,5 +374,17 @@ class EventRepositoryImpl extends EventRepository {
       throw Exception("Remote adapter not found: $name");
     }
     return adapter;
+  }
+
+  @override
+  Future<Either<Failure, List<StreamHash>>> listStreamHashes(
+    String streamId,
+  ) async {
+    try {
+      final hashes = await localDataSource.listStreamHashes(streamId);
+      return Right(hashes);
+    } on Exception catch (e, stack) {
+      return Left(CacheFailure(message: "$e\n\n$stack"));
+    }
   }
 }

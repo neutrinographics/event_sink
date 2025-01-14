@@ -7,12 +7,14 @@ import 'dart:async' as _i4;
 
 import 'package:dartz/dartz.dart' as _i2;
 import 'package:event_sink/event_sink.dart' as _i5;
+import 'package:event_sink/src/feature/data/local/models/stream_hash.dart'
+    as _i7;
 import 'package:event_sink/src/feature/domain/entities/event_stub.dart' as _i6;
 import 'package:event_sink/src/feature/domain/repositories/event_repository.dart'
     as _i3;
 import 'package:mockito/mockito.dart' as _i1;
 
-import 'apply_events_test.dart' as _i7;
+import 'apply_events_test.dart' as _i8;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -274,12 +276,31 @@ class MockEventRepository extends _i1.Mock implements _i3.EventRepository {
           ),
         )),
       ) as _i4.Future<_i2.Either<_i5.Failure, String>>);
+
+  @override
+  _i4.Future<_i2.Either<_i5.Failure, List<_i7.StreamHash>>> listStreamHashes(
+          String? streamId) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #listStreamHashes,
+          [streamId],
+        ),
+        returnValue:
+            _i4.Future<_i2.Either<_i5.Failure, List<_i7.StreamHash>>>.value(
+                _FakeEither_0<_i5.Failure, List<_i7.StreamHash>>(
+          this,
+          Invocation.method(
+            #listStreamHashes,
+            [streamId],
+          ),
+        )),
+      ) as _i4.Future<_i2.Either<_i5.Failure, List<_i7.StreamHash>>>);
 }
 
 /// A class which mocks [TestEventHandler].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockTestEventHandler extends _i1.Mock implements _i7.TestEventHandler {
+class MockTestEventHandler extends _i1.Mock implements _i8.TestEventHandler {
   MockTestEventHandler() {
     _i1.throwOnMissingStub(this);
   }
@@ -288,7 +309,7 @@ class MockTestEventHandler extends _i1.Mock implements _i7.TestEventHandler {
   _i4.Future<void> call(
     String? streamId,
     String? pool,
-    _i7.TestEventData? data,
+    _i8.TestEventData? data,
   ) =>
       (super.noSuchMethod(
         Invocation.method(

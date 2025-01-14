@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:event_sink/event_sink.dart';
+import 'package:event_sink/src/feature/data/local/models/stream_hash.dart';
 import 'package:event_sink/src/feature/domain/entities/event_stub.dart';
 
 /// This is the contract for reading and writing [Event]s to the repository.
@@ -58,4 +59,7 @@ abstract class EventRepository {
     String pool,
     String streamId,
   );
+
+  /// Returns list of event's ID and hash within a stream.
+  Future<Either<Failure, List<StreamHash>>> listStreamHashes(String streamId);
 }
