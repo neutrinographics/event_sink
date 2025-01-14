@@ -327,6 +327,22 @@ class EventRepositoryImpl extends EventRepository {
     }
   }
 
+  @override
+  Future<Either<Failure, String>> getStreamRootHash(
+    String pool,
+    String streamId,
+  ) async {
+    try {
+      final hashResult = await localDataSource.getStreamRootHash(
+        pool,
+        streamId,
+      );
+      return Right(hashResult);
+    } on Exception catch (e, stack) {
+      return Left(CacheFailure(message: "$e\n\n$stack"));
+    }
+  }
+
   Future<EventModel> _resolveEvent(
     EventModel eventFromAdapter,
     String remoteAdapterName,
