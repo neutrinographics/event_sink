@@ -387,7 +387,7 @@ void main() {
     );
   });
 
-  group('getRootHash', () {
+  group('getStreamRootHash', () {
     const tEventId = "event-1";
     const tPool = '1';
     const tStreamId = '175794e2-83a6-4f9a-b873-d43484e2c0b5';
@@ -405,7 +405,7 @@ void main() {
       pool: tPool,
     );
 
-    test('should return the root hash', () async {
+    test('should return a stream root hash', () async {
       // arrange
       const tHash = 'root-hash';
       when(mockPoolCache.exists(any)).thenAnswer((_) async => true);
@@ -419,8 +419,15 @@ void main() {
       // act
       final result = await dataSource.getStreamRootHash(tPool, tStreamId);
       // assert
+      final tExpectedHashParam = jsonEncode([
+        {
+          'eventId': tEventModel.eventId,
+          'version': tEventModel.version,
+          'order': tEventModel.order,
+        }
+      ]);
       expect(result, tHash);
-      verify(mockHashGenerator.generateHash(any));
+      verify(mockHashGenerator.generateHash(tExpectedHashParam));
     });
   });
 }
