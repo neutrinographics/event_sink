@@ -8,6 +8,7 @@ import 'package:event_sink/src/event_remote_adapter.dart';
 import 'package:event_sink/src/feature/data/local/data_sources/event_local_data_source.dart';
 import 'package:event_sink/src/feature/data/local/models/event_model.dart';
 import 'package:event_sink/src/feature/data/local/models/pool_model.dart';
+import 'package:event_sink/src/feature/data/local/models/stream_hash.dart';
 import 'package:event_sink/src/feature/data/remote/models/remote_event_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -428,6 +429,42 @@ void main() {
       ]);
       expect(result, tHash);
       verify(mockHashGenerator.generateHash(tExpectedHashParam));
+    });
+  });
+
+  group('listStreamHashes', () {
+    const tHash = 'hash';
+    const tEventId = "event-1";
+    const tStreamId = 'open_door';
+    const tPool = '1';
+    final createdAt = DateTime.now();
+    final tEventModel = EventModel(
+      eventId: tEventId,
+      streamId: tStreamId,
+      version: 1,
+      order: 1,
+      name: "create-group",
+      createdAt: createdAt,
+      data: {
+        "group_stream_id": "3304ABE8-D744-48CE-8FC6-2FEA19E6B4D8",
+      },
+      pool: tPool,
+    );
+
+    test('should return a list of stream hashes', () async {
+      // arrange
+      when(mockHashGenerator.generateHash(any)).thenReturn(tHash);
+      when(mockPoolCache.exists(any)).thenAnswer((_) async => true);
+      when(mockPoolCache.read(any)).thenAnswer((_) async => PoolModel(
+            id: tPool,
+            eventIds: [tEventId],
+          ));
+      when(mockEventCache.read(any)).thenAnswer((_) async => tEventModel);
+      when(mockEventSorter.sort(any, any)).thenAnswer((_) => [tEventModel]);
+      // act
+      final result = await dataSource.listStreamHashes(tPool, tStreamId);
+      // assert
+      expect(result, [const StreamHash(eventId: tEventId, hash: tHash)]);
     });
   });
 }
