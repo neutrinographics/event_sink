@@ -278,11 +278,16 @@ class MockEventRepository extends _i1.Mock implements _i3.EventRepository {
 
   @override
   _i4.Future<_i2.Either<_i5.Failure, List<_i7.StreamHash>>> listStreamHashes(
-          String? streamId) =>
+    String? pool,
+    String? streamId,
+  ) =>
       (super.noSuchMethod(
         Invocation.method(
           #listStreamHashes,
-          [streamId],
+          [
+            pool,
+            streamId,
+          ],
         ),
         returnValue:
             _i4.Future<_i2.Either<_i5.Failure, List<_i7.StreamHash>>>.value(
@@ -290,7 +295,10 @@ class MockEventRepository extends _i1.Mock implements _i3.EventRepository {
           this,
           Invocation.method(
             #listStreamHashes,
-            [streamId],
+            [
+              pool,
+              streamId,
+            ],
           ),
         )),
       ) as _i4.Future<_i2.Either<_i5.Failure, List<_i7.StreamHash>>>);

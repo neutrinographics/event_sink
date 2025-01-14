@@ -1088,6 +1088,7 @@ void main() {
   });
 
   group('listStreamHashes', () {
+    const tPool = 'poolId';
     const tStreamId = 'streamId';
 
     test(
@@ -1098,13 +1099,13 @@ void main() {
           StreamHash(eventId: '1', hash: 'hash1'),
           StreamHash(eventId: '2', hash: 'hash2'),
         ];
-        when(mockEventLocalDataSource.listStreamHashes(any))
+        when(mockEventLocalDataSource.listStreamHashes(any, any))
             .thenAnswer((_) async => tHashes);
         // act
-        final result = await repository.listStreamHashes(tStreamId);
+        final result = await repository.listStreamHashes(tPool, tStreamId);
         // assert
         expect(result, const Right(tHashes));
-        verify(mockEventLocalDataSource.listStreamHashes(tStreamId));
+        verify(mockEventLocalDataSource.listStreamHashes(tPool, tStreamId));
         verifyNoMoreInteractions(mockEventLocalDataSource);
       },
     );
@@ -1113,13 +1114,13 @@ void main() {
       'should return CacheFailure if getting hashes fails',
       () async {
         // arrange
-        when(mockEventLocalDataSource.listStreamHashes(any))
+        when(mockEventLocalDataSource.listStreamHashes(any, any))
             .thenThrow(Exception());
         // act
-        final result = await repository.listStreamHashes(tStreamId);
+        final result = await repository.listStreamHashes(tPool, tStreamId);
         // assert
         expect(result.swap().toOption().toNullable(), isA<CacheFailure>());
-        verify(mockEventLocalDataSource.listStreamHashes(tStreamId));
+        verify(mockEventLocalDataSource.listStreamHashes(tPool, tStreamId));
         verifyNoMoreInteractions(mockEventLocalDataSource);
       },
     );

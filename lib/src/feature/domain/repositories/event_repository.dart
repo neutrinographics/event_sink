@@ -61,5 +61,8 @@ abstract class EventRepository {
   );
 
   /// Returns list of event's ID and hash within a stream.
-  Future<Either<Failure, List<StreamHash>>> listStreamHashes(String streamId);
+  Future<Either<Failure, List<StreamHash>>> listStreamHashes(
+    String pool,
+    String streamId,
+  );
 }

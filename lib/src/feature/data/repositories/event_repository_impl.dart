@@ -378,10 +378,11 @@ class EventRepositoryImpl extends EventRepository {
 
   @override
   Future<Either<Failure, List<StreamHash>>> listStreamHashes(
+    String pool,
     String streamId,
   ) async {
     try {
-      final hashes = await localDataSource.listStreamHashes(streamId);
+      final hashes = await localDataSource.listStreamHashes(pool, streamId);
       return Right(hashes);
     } on Exception catch (e, stack) {
       return Left(CacheFailure(message: "$e\n\n$stack"));
