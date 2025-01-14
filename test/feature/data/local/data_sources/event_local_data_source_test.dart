@@ -462,7 +462,7 @@ void main() {
       when(mockEventCache.read(any)).thenAnswer((_) async => tEventModel);
       when(mockEventSorter.sort(any, any)).thenAnswer((_) => [tEventModel]);
       // act
-      final result = await dataSource.listStreamHashes(tStreamId);
+      final result = await dataSource.listStreamHashes(tPool, tStreamId);
       // assert
       expect(result, [const StreamHash(eventId: tEventId, hash: tHash)]);
     });
