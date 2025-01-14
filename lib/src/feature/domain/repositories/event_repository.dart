@@ -52,4 +52,10 @@ abstract class EventRepository {
 
   /// Clear the local cache of the pool.
   Future<Either<Failure, void>> clearPoolCache(String pool);
+
+  /// Returns the hash of all events in a stream.
+  Future<Either<Failure, String>> getStreamRootHash(
+    String pool,
+    String streamId,
+  );
 }

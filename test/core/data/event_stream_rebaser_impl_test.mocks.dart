@@ -156,16 +156,26 @@ class MockEventLocalDataSource extends _i1.Mock
       ) as _i4.Future<void>);
 
   @override
-  _i4.Future<String> getRootHash() => (super.noSuchMethod(
+  _i4.Future<String> getStreamRootHash(
+    String? poolId,
+    String? streamId,
+  ) =>
+      (super.noSuchMethod(
         Invocation.method(
-          #getRootHash,
-          [],
+          #getStreamRootHash,
+          [
+            poolId,
+            streamId,
+          ],
         ),
         returnValue: _i4.Future<String>.value(_i5.dummyValue<String>(
           this,
           Invocation.method(
-            #getRootHash,
-            [],
+            #getStreamRootHash,
+            [
+              poolId,
+              streamId,
+            ],
           ),
         )),
       ) as _i4.Future<String>);

@@ -1049,4 +1049,40 @@ void main() {
       },
     );
   });
+
+  group('getStreamRootHash', () {
+    const tPool = '1';
+    const tStreamId = 'streamId';
+
+    test(
+      'should return root hash',
+      () async {
+        // arrange
+        const tHash = 'hash';
+        when(mockEventLocalDataSource.getStreamRootHash(any, any))
+            .thenAnswer((_) async => tHash);
+        // act
+        final result = await repository.getStreamRootHash(tPool, tStreamId);
+        // assert
+        expect(result, const Right(tHash));
+        verify(mockEventLocalDataSource.getStreamRootHash(tPool, tStreamId));
+        verifyNoMoreInteractions(mockEventLocalDataSource);
+      },
+    );
+
+    test(
+      'should return CacheFailure if getting root hash fails',
+      () async {
+        // arrange
+        when(mockEventLocalDataSource.getStreamRootHash(any, any))
+            .thenThrow(Exception());
+        // act
+        final result = await repository.getStreamRootHash(tPool, tStreamId);
+        // assert
+        expect(result.swap().toOption().toNullable(), isA<CacheFailure>());
+        verify(mockEventLocalDataSource.getStreamRootHash(tPool, tStreamId));
+        verifyNoMoreInteractions(mockEventLocalDataSource);
+      },
+    );
+  });
 }
