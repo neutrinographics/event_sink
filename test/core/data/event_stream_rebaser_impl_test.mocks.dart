@@ -9,6 +9,7 @@ import 'package:event_sink/event_sink.dart' as _i2;
 import 'package:event_sink/src/feature/data/local/data_sources/event_local_data_source.dart'
     as _i3;
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:mockito/src/dummies.dart' as _i5;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -153,6 +154,31 @@ class MockEventLocalDataSource extends _i1.Mock
         returnValue: _i4.Future<void>.value(),
         returnValueForMissingStub: _i4.Future<void>.value(),
       ) as _i4.Future<void>);
+
+  @override
+  _i4.Future<String> getStreamRootHash(
+    String? poolId,
+    String? streamId,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getStreamRootHash,
+          [
+            poolId,
+            streamId,
+          ],
+        ),
+        returnValue: _i4.Future<String>.value(_i5.dummyValue<String>(
+          this,
+          Invocation.method(
+            #getStreamRootHash,
+            [
+              poolId,
+              streamId,
+            ],
+          ),
+        )),
+      ) as _i4.Future<String>);
 
   @override
   _i4.Future<List<String>> listStreamHashes(String? streamId) =>
