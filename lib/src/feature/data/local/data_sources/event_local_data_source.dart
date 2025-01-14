@@ -47,7 +47,7 @@ abstract class EventLocalDataSource {
   Future<String> getStreamRootHash(String poolId, String streamId);
 
   /// Returns list of hashes from a stream.
-  Future<List<StreamHash>> listStreamHashes(String streamId);
+  Future<List<StreamHash>> listStreamHashes(String poolId, String streamId);
 }
 
 class EventLocalDataSourceImpl extends EventLocalDataSource {
@@ -221,8 +221,11 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
   }
 
   @override
-  Future<List<StreamHash>> listStreamHashes(String streamId) async {
-    final events = await getPooledEvents('open_door');
+  Future<List<StreamHash>> listStreamHashes(
+    String poolId,
+    String streamId,
+  ) async {
+    final events = await getPooledEvents(poolId);
     final eventsInStream = events.where((e) => e.streamId == streamId);
     return eventsInStream
         .map((e) => StreamHash(eventId: e.eventId, hash: e.hash(hashGenerator)))
