@@ -55,6 +55,7 @@ void main() {
       poolCache: MemoryCache(),
       eventSorter: EventSorterImpl(),
       remoteAdapters: {},
+      hashGenerator: const HashGeneratorImpl(),
     );
     mockRemoteDataSource = MockEventRemoteDataSource();
     IdGeneratorImpl idGenerator = IdGeneratorImpl(const Uuid());

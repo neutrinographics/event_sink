@@ -6,14 +6,14 @@
 import 'dart:async' as _i3;
 
 import 'package:event_sink/event_sink.dart' as _i2;
-import 'package:event_sink/src/core/data/event_resolver.dart' as _i5;
-import 'package:event_sink/src/core/data/id_generator.dart' as _i6;
+import 'package:event_sink/src/core/data/event_resolver.dart' as _i6;
+import 'package:event_sink/src/core/data/id_generator.dart' as _i7;
 import 'package:event_sink/src/core/hash_generator.dart' as _i8;
 import 'package:event_sink/src/core/time/time_info.dart' as _i9;
 import 'package:event_sink/src/feature/data/local/data_sources/event_local_data_source.dart'
     as _i4;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i7;
+import 'package:mockito/src/dummies.dart' as _i5;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -226,12 +226,27 @@ class MockEventLocalDataSource extends _i1.Mock
         returnValue: _i3.Future<void>.value(),
         returnValueForMissingStub: _i3.Future<void>.value(),
       ) as _i3.Future<void>);
+
+  @override
+  _i3.Future<String> getRootHash() => (super.noSuchMethod(
+        Invocation.method(
+          #getRootHash,
+          [],
+        ),
+        returnValue: _i3.Future<String>.value(_i5.dummyValue<String>(
+          this,
+          Invocation.method(
+            #getRootHash,
+            [],
+          ),
+        )),
+      ) as _i3.Future<String>);
 }
 
 /// A class which mocks [EventResolver].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockEventResolver extends _i1.Mock implements _i5.EventResolver {
+class MockEventResolver extends _i1.Mock implements _i6.EventResolver {
   MockEventResolver() {
     _i1.throwOnMissingStub(this);
   }
@@ -273,7 +288,7 @@ class MockEventResolver extends _i1.Mock implements _i5.EventResolver {
 /// A class which mocks [IdGenerator].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockIdGenerator extends _i1.Mock implements _i6.IdGenerator {
+class MockIdGenerator extends _i1.Mock implements _i7.IdGenerator {
   MockIdGenerator() {
     _i1.throwOnMissingStub(this);
   }
@@ -284,7 +299,7 @@ class MockIdGenerator extends _i1.Mock implements _i6.IdGenerator {
           #generateId,
           [],
         ),
-        returnValue: _i7.dummyValue<String>(
+        returnValue: _i5.dummyValue<String>(
           this,
           Invocation.method(
             #generateId,
@@ -308,7 +323,7 @@ class MockHashGenerator extends _i1.Mock implements _i8.HashGenerator {
           #generateHash,
           [data],
         ),
-        returnValue: _i7.dummyValue<String>(
+        returnValue: _i5.dummyValue<String>(
           this,
           Invocation.method(
             #generateHash,

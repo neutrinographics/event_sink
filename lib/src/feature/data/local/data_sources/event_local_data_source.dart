@@ -2,6 +2,8 @@ import 'package:clean_cache/clean_cache.dart';
 import 'package:collection/collection.dart';
 import 'package:event_sink/event_sink.dart';
 import 'package:event_sink/src/core/data/event_sorter.dart';
+import 'package:event_sink/src/core/hash_generator.dart';
+import 'package:event_sink/src/feature/extensions.dart';
 
 import '../models/pool_model.dart';
 
@@ -39,6 +41,9 @@ abstract class EventLocalDataSource {
 
   /// Clears the cache in a single pool.
   Future<void> clearPool(String poolId);
+
+  /// Returns the hash of all events in a stream.
+  Future<String> getStreamRootHash(String poolId, String streamId);
 }
 
 class EventLocalDataSourceImpl extends EventLocalDataSource {
@@ -55,11 +60,15 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
   /// An [EventSorter] instance to sort events.
   final EventSorter eventSorter;
 
+  /// A [HashGenerator] instance to generate hashes.
+  final HashGenerator hashGenerator;
+
   EventLocalDataSourceImpl({
     required this.eventCache,
     required this.poolCache,
     required this.remoteAdapters,
     required this.eventSorter,
+    required this.hashGenerator,
   });
 
   @override
@@ -198,5 +207,12 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
       await eventCache.delete(id);
     }
     await poolCache.delete(poolId);
+  }
+
+  @override
+  Future<String> getStreamRootHash(String poolId, String streamId) async {
+    final events = await getPooledEvents(poolId);
+    final eventsInStream = events.where((e) => e.streamId == streamId);
+    return eventsInStream.asHash(hashGenerator);
   }
 }
