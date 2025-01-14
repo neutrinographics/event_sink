@@ -8,6 +8,8 @@ import 'dart:async' as _i4;
 import 'package:event_sink/event_sink.dart' as _i2;
 import 'package:event_sink/src/feature/data/local/data_sources/event_local_data_source.dart'
     as _i3;
+import 'package:event_sink/src/feature/data/local/models/stream_hash.dart'
+    as _i6;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i5;
 
@@ -181,12 +183,12 @@ class MockEventLocalDataSource extends _i1.Mock
       ) as _i4.Future<String>);
 
   @override
-  _i4.Future<List<String>> listStreamHashes(String? streamId) =>
+  _i4.Future<List<_i6.StreamHash>> listStreamHashes(String? streamId) =>
       (super.noSuchMethod(
         Invocation.method(
           #listStreamHashes,
           [streamId],
         ),
-        returnValue: _i4.Future<List<String>>.value(<String>[]),
-      ) as _i4.Future<List<String>>);
+        returnValue: _i4.Future<List<_i6.StreamHash>>.value(<_i6.StreamHash>[]),
+      ) as _i4.Future<List<_i6.StreamHash>>);
 }
