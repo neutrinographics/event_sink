@@ -417,7 +417,7 @@ void main() {
       when(mockEventSorter.sort(any, any)).thenAnswer((_) => [tEventModel]);
       when(mockHashGenerator.generateHash(any)).thenReturn(tHash);
       // act
-      final result = await dataSource.getStreamRootHash(tStreamId);
+      final result = await dataSource.getStreamRootHash(tPool, tStreamId);
       // assert
       expect(result, tHash);
       verify(mockHashGenerator.generateHash(any));
