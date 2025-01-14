@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:event_sink/event_sink.dart';
 import 'package:event_sink/src/core/data/event_sorter.dart';
 import 'package:event_sink/src/core/hash_generator.dart';
+import 'package:event_sink/src/feature/data/local/models/stream_hash.dart';
 import 'package:event_sink/src/feature/extensions.dart';
 
 import '../models/pool_model.dart';
@@ -46,7 +47,7 @@ abstract class EventLocalDataSource {
   Future<String> getStreamRootHash(String poolId, String streamId);
 
   /// Returns list of hashes from a stream.
-  Future<List<String>> listStreamHashes(String streamId);
+  Future<List<StreamHash>> listStreamHashes(String streamId);
 }
 
 class EventLocalDataSourceImpl extends EventLocalDataSource {
@@ -220,9 +221,11 @@ class EventLocalDataSourceImpl extends EventLocalDataSource {
   }
 
   @override
-  Future<List<String>> listStreamHashes(String streamId) async {
+  Future<List<StreamHash>> listStreamHashes(String streamId) async {
     final events = await getPooledEvents('open_door');
     final eventsInStream = events.where((e) => e.streamId == streamId);
-    return eventsInStream.map((e) => e.hash(hashGenerator)).toList();
+    return eventsInStream
+        .map((e) => StreamHash(eventId: e.eventId, hash: e.hash(hashGenerator)))
+        .toList();
   }
 }

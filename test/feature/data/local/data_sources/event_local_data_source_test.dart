@@ -8,6 +8,7 @@ import 'package:event_sink/src/event_remote_adapter.dart';
 import 'package:event_sink/src/feature/data/local/data_sources/event_local_data_source.dart';
 import 'package:event_sink/src/feature/data/local/models/event_model.dart';
 import 'package:event_sink/src/feature/data/local/models/pool_model.dart';
+import 'package:event_sink/src/feature/data/local/models/stream_hash.dart';
 import 'package:event_sink/src/feature/data/remote/models/remote_event_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -463,7 +464,7 @@ void main() {
       // act
       final result = await dataSource.listStreamHashes(tStreamId);
       // assert
-      expect(result, [tHash]);
+      expect(result, [const StreamHash(eventId: tEventId, hash: tHash)]);
     });
   });
 }
