@@ -280,6 +280,16 @@ class EventRepositoryImpl extends EventRepository {
   }
 
   @override
+  Future<Either<Failure, EventModel>> get(String eventId) async {
+    try {
+      final event = await localDataSource.getEvent(eventId);
+      return Right(event);
+    } on Exception catch (e, stack) {
+      return Left(CacheFailure(message: "$e\n\n$stack"));
+    }
+  }
+
+  @override
   Future<Either<Failure, void>> markApplied(EventStub event) async {
     try {
       final model = await localDataSource.getEvent(event.eventId);

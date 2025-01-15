@@ -887,6 +887,40 @@ void main() {
     );
   });
 
+  group('get', () {
+    test(
+      'should return an event',
+      () async {
+        // arrange
+        final tEventModel =
+            EventModel.fromJson(json.decode(fixture('event.json')));
+        when(mockEventLocalDataSource.getEvent(any))
+            .thenAnswer((_) async => tEventModel);
+        // act
+        final result = await repository.get(tEventModel.eventId);
+        // assert
+        expect(result, Right(tEventModel));
+        verify(mockEventLocalDataSource.getEvent(tEventModel.eventId));
+      },
+    );
+
+    test(
+      'should return CacheFailure if event cannot be read from cache',
+      () async {
+        // arrange
+        final tEventModel =
+            EventModel.fromJson(json.decode(fixture('event.json')));
+        final tEvent = tEventModel.toDomain();
+        when(mockEventLocalDataSource.getEvent(any)).thenThrow(Exception());
+        // act
+        final result = await repository.get(tEvent.eventId);
+        // assert
+        expect(result.swap().toOption().toNullable(), isA<CacheFailure>());
+        verify(mockEventLocalDataSource.getEvent(tEvent.eventId));
+      },
+    );
+  });
+
   group('markReduced', () {
     final tEventModel = EventModel.fromJson(json.decode(fixture('event.json')))
         .copyWith(applied: false);
