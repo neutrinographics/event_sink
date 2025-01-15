@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:event_sink/event_sink.dart';
 import 'package:event_sink/src/event_controller.dart';
 import 'package:event_sink/src/feature/data/local/models/stream_hash.dart';
+
 import 'injection_container.dart' as ic;
 
 typedef EventDataGenerator = EventData Function(Map<String, dynamic>);
@@ -60,4 +61,8 @@ abstract class EventSink {
   Future<Either<Failure, List<StreamHash>>> listStreamHashes(
           String pool, String streamId) =>
       _controller.listStreamHashes(pool, streamId);
+
+  /// Returns the event by its ID.
+  Future<Either<Failure, EventModel>> getEvent(String eventId) =>
+      _controller.getEvent(eventId);
 }

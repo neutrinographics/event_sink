@@ -4,6 +4,7 @@ import 'package:event_sink/src/feature/data/local/models/stream_hash.dart';
 import 'package:event_sink/src/feature/domain/use_cases/add_event.dart';
 import 'package:event_sink/src/feature/domain/use_cases/apply_events.dart';
 import 'package:event_sink/src/feature/domain/use_cases/clear_cache.dart';
+import 'package:event_sink/src/feature/domain/use_cases/get_event.dart';
 import 'package:event_sink/src/feature/domain/use_cases/get_stream_root_hash.dart';
 import 'package:event_sink/src/feature/domain/use_cases/list_events.dart';
 import 'package:event_sink/src/feature/domain/use_cases/list_stream_hashes.dart';
@@ -17,6 +18,7 @@ class EventController {
   final AddEvent _addEvent;
   final ClearCache _clearCache;
   final ListEvents _listEvents;
+  final GetEvent _getEvent;
   final GetStreamRootHash _getStreamRootHash;
   final ListStreamHashes _listStreamHashes;
 
@@ -26,6 +28,7 @@ class EventController {
     required AddEvent addEvent,
     required ClearCache clearCache,
     required ListEvents listEvents,
+    required GetEvent getEvent,
     required GetStreamRootHash getStreamRootHash,
     required ListStreamHashes listStreamHashes,
   })  : _syncEvents = syncEvents,
@@ -33,6 +36,7 @@ class EventController {
         _addEvent = addEvent,
         _clearCache = clearCache,
         _listEvents = listEvents,
+        _getEvent = getEvent,
         _getStreamRootHash = getStreamRootHash,
         _listStreamHashes = listStreamHashes;
 
@@ -78,4 +82,7 @@ class EventController {
   Future<Either<Failure, List<StreamHash>>> listStreamHashes(
           String pool, String streamId) =>
       _listStreamHashes(ListStreamHashesParams(pool: pool, streamId: streamId));
+
+  Future<Either<Failure, EventModel>> getEvent(String eventId) =>
+      _getEvent(GetEventParams(eventId: eventId));
 }
