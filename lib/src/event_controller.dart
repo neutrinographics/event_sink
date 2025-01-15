@@ -1,9 +1,12 @@
 import 'package:dartz/dartz.dart';
 import 'package:event_sink/event_sink.dart';
+import 'package:event_sink/src/feature/data/local/models/stream_hash.dart';
 import 'package:event_sink/src/feature/domain/use_cases/add_event.dart';
 import 'package:event_sink/src/feature/domain/use_cases/apply_events.dart';
 import 'package:event_sink/src/feature/domain/use_cases/clear_cache.dart';
+import 'package:event_sink/src/feature/domain/use_cases/get_stream_root_hash.dart';
 import 'package:event_sink/src/feature/domain/use_cases/list_events.dart';
+import 'package:event_sink/src/feature/domain/use_cases/list_stream_hashes.dart';
 import 'package:event_sink/src/feature/domain/use_cases/sync_events.dart';
 
 // this is sort of in the position of a bloc.
@@ -14,6 +17,8 @@ class EventController {
   final AddEvent _addEvent;
   final ClearCache _clearCache;
   final ListEvents _listEvents;
+  final GetStreamRootHash _getStreamRootHash;
+  final ListStreamHashes _listStreamHashes;
 
   EventController({
     required SyncEvents syncEvents,
@@ -21,11 +26,15 @@ class EventController {
     required AddEvent addEvent,
     required ClearCache clearCache,
     required ListEvents listEvents,
+    required GetStreamRootHash getStreamRootHash,
+    required ListStreamHashes listStreamHashes,
   })  : _syncEvents = syncEvents,
         _applyEvents = applyEvents,
         _addEvent = addEvent,
         _clearCache = clearCache,
-        _listEvents = listEvents;
+        _listEvents = listEvents,
+        _getStreamRootHash = getStreamRootHash,
+        _listStreamHashes = listStreamHashes;
 
   /// Synchronizes events with the server
   Future<Either<Failure, void>> sync({
@@ -58,4 +67,15 @@ class EventController {
 
   Future<Either<Failure, List<EventModel>>> listEvents(String pool) =>
       _listEvents(ListEventsParams(pool: pool));
+
+  Future<Either<Failure, String>> getStreamRootHash(
+    String pool,
+    String streamId,
+  ) =>
+      _getStreamRootHash(
+          GetStreamRootHashParams(pool: pool, streamId: streamId));
+
+  Future<Either<Failure, List<StreamHash>>> listStreamHashes(
+          String pool, String streamId) =>
+      _listStreamHashes(ListStreamHashesParams(pool: pool, streamId: streamId));
 }
