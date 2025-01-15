@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:event_sink/event_sink.dart';
 import 'package:event_sink/src/event_controller.dart';
+import 'package:event_sink/src/feature/data/local/models/stream_hash.dart';
 import 'injection_container.dart' as ic;
 
 typedef EventDataGenerator = EventData Function(Map<String, dynamic>);
@@ -49,4 +50,14 @@ abstract class EventSink {
   /// Deletes all of the locally cached data in the pool
   Future<Either<Failure, void>> drainPool(String pool) =>
       _controller.deletePoolCache(pool);
+
+  /// Gets the root hash of the stream.
+  Future<Either<Failure, String>> getStreamRootHash(
+          String pool, String streamId) =>
+      _controller.getStreamRootHash(pool, streamId);
+
+  /// Lists all of the stream hashes.
+  Future<Either<Failure, List<StreamHash>>> listStreamHashes(
+          String pool, String streamId) =>
+      _controller.listStreamHashes(pool, streamId);
 }

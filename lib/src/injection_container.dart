@@ -17,7 +17,9 @@ import 'package:event_sink/src/feature/domain/repositories/event_repository.dart
 import 'package:event_sink/src/feature/domain/use_cases/add_event.dart';
 import 'package:event_sink/src/feature/domain/use_cases/apply_events.dart';
 import 'package:event_sink/src/feature/domain/use_cases/clear_cache.dart';
+import 'package:event_sink/src/feature/domain/use_cases/get_stream_root_hash.dart';
 import 'package:event_sink/src/feature/domain/use_cases/list_events.dart';
+import 'package:event_sink/src/feature/domain/use_cases/list_stream_hashes.dart';
 import 'package:event_sink/src/feature/domain/use_cases/sync_events.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
@@ -41,6 +43,8 @@ Future<void> init({
         addEvent: sl(),
         clearCache: sl(),
         listEvents: sl(),
+        getStreamRootHash: sl(),
+        listStreamHashes: sl(),
       ));
 
   // Remote adapters
@@ -55,6 +59,8 @@ Future<void> init({
       ));
   sl.registerLazySingleton(() => AddEvent(eventRepository: sl()));
   sl.registerLazySingleton(() => ListEvents(eventRepository: sl()));
+  sl.registerLazySingleton(() => GetStreamRootHash(eventRepository: sl()));
+  sl.registerLazySingleton(() => ListStreamHashes(eventRepository: sl()));
 
   // Repositories
   sl.registerLazySingleton<EventRepository>(() => EventRepositoryImpl(
