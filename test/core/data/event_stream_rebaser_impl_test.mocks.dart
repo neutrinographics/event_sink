@@ -5,9 +5,10 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i4;
 
-import 'package:event_sink/event_sink.dart' as _i2;
 import 'package:event_sink/src/feature/data/local/data_sources/event_local_data_source.dart'
     as _i3;
+import 'package:event_sink/src/feature/data/local/models/event_model.dart'
+    as _i2;
 import 'package:event_sink/src/feature/data/local/models/stream_hash.dart'
     as _i6;
 import 'package:mockito/mockito.dart' as _i1;

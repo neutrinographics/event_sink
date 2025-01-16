@@ -1,8 +1,9 @@
 import 'package:clean_cache/clean_cache.dart';
 import 'package:collection/collection.dart';
-import 'package:event_sink/event_sink.dart';
 import 'package:event_sink/src/core/data/event_sorter.dart';
 import 'package:event_sink/src/core/hash_generator.dart';
+import 'package:event_sink/src/event_remote_adapter.dart';
+import 'package:event_sink/src/feature/data/local/models/event_model.dart';
 import 'package:event_sink/src/feature/data/local/models/stream_hash.dart';
 import 'package:event_sink/src/feature/extensions.dart';
 

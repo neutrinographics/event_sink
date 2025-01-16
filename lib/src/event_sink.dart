@@ -1,7 +1,12 @@
 import 'package:dartz/dartz.dart';
-import 'package:event_sink/event_sink.dart';
+import 'package:event_sink/src/core/error/failure.dart';
 import 'package:event_sink/src/event_controller.dart';
+import 'package:event_sink/src/event_data.dart';
+import 'package:event_sink/src/event_handler.dart';
+import 'package:event_sink/src/event_remote_adapter.dart';
+import 'package:event_sink/src/feature/data/local/models/event_model.dart';
 import 'package:event_sink/src/feature/data/local/models/stream_hash.dart';
+import 'package:event_sink/src/feature/domain/entities/event_info.dart';
 
 import 'injection_container.dart' as ic;
 

@@ -6,14 +6,12 @@
 import 'dart:async' as _i3;
 
 import 'package:event_sink/event_sink.dart' as _i2;
-import 'package:event_sink/src/core/data/event_resolver.dart' as _i7;
-import 'package:event_sink/src/core/data/id_generator.dart' as _i8;
-import 'package:event_sink/src/core/hash_generator.dart' as _i9;
-import 'package:event_sink/src/core/time/time_info.dart' as _i10;
+import 'package:event_sink/src/core/data/event_resolver.dart' as _i6;
+import 'package:event_sink/src/core/data/id_generator.dart' as _i7;
+import 'package:event_sink/src/core/hash_generator.dart' as _i8;
+import 'package:event_sink/src/core/time/time_info.dart' as _i9;
 import 'package:event_sink/src/feature/data/local/data_sources/event_local_data_source.dart'
     as _i4;
-import 'package:event_sink/src/feature/data/local/models/stream_hash.dart'
-    as _i6;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i5;
 
@@ -256,7 +254,7 @@ class MockEventLocalDataSource extends _i1.Mock
       ) as _i3.Future<String>);
 
   @override
-  _i3.Future<List<_i6.StreamHash>> listStreamHashes(
+  _i3.Future<List<_i2.StreamHash>> listStreamHashes(
     String? poolId,
     String? streamId,
   ) =>
@@ -268,14 +266,14 @@ class MockEventLocalDataSource extends _i1.Mock
             streamId,
           ],
         ),
-        returnValue: _i3.Future<List<_i6.StreamHash>>.value(<_i6.StreamHash>[]),
-      ) as _i3.Future<List<_i6.StreamHash>>);
+        returnValue: _i3.Future<List<_i2.StreamHash>>.value(<_i2.StreamHash>[]),
+      ) as _i3.Future<List<_i2.StreamHash>>);
 }
 
 /// A class which mocks [EventResolver].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockEventResolver extends _i1.Mock implements _i7.EventResolver {
+class MockEventResolver extends _i1.Mock implements _i6.EventResolver {
   MockEventResolver() {
     _i1.throwOnMissingStub(this);
   }
@@ -317,7 +315,7 @@ class MockEventResolver extends _i1.Mock implements _i7.EventResolver {
 /// A class which mocks [IdGenerator].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockIdGenerator extends _i1.Mock implements _i8.IdGenerator {
+class MockIdGenerator extends _i1.Mock implements _i7.IdGenerator {
   MockIdGenerator() {
     _i1.throwOnMissingStub(this);
   }
@@ -341,7 +339,7 @@ class MockIdGenerator extends _i1.Mock implements _i8.IdGenerator {
 /// A class which mocks [HashGenerator].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockHashGenerator extends _i1.Mock implements _i9.HashGenerator {
+class MockHashGenerator extends _i1.Mock implements _i8.HashGenerator {
   MockHashGenerator() {
     _i1.throwOnMissingStub(this);
   }
@@ -365,7 +363,7 @@ class MockHashGenerator extends _i1.Mock implements _i9.HashGenerator {
 /// A class which mocks [TimeInfo].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockTimeInfo extends _i1.Mock implements _i10.TimeInfo {
+class MockTimeInfo extends _i1.Mock implements _i9.TimeInfo {
   MockTimeInfo() {
     _i1.throwOnMissingStub(this);
   }
