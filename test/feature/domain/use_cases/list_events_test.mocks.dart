@@ -6,10 +6,14 @@
 import 'dart:async' as _i4;
 
 import 'package:dartz/dartz.dart' as _i2;
-import 'package:event_sink/event_sink.dart' as _i5;
+import 'package:event_sink/src/core/error/failure.dart' as _i5;
+import 'package:event_sink/src/event_data.dart' as _i7;
+import 'package:event_sink/src/feature/data/local/models/event_model.dart'
+    as _i9;
 import 'package:event_sink/src/feature/data/local/models/stream_hash.dart'
-    as _i7;
-import 'package:event_sink/src/feature/domain/entities/event_stub.dart' as _i6;
+    as _i10;
+import 'package:event_sink/src/feature/domain/entities/event_info.dart' as _i6;
+import 'package:event_sink/src/feature/domain/entities/event_stub.dart' as _i8;
 import 'package:event_sink/src/feature/domain/repositories/event_repository.dart'
     as _i3;
 import 'package:mockito/mockito.dart' as _i1;
@@ -121,7 +125,7 @@ class MockEventRepository extends _i1.Mock implements _i3.EventRepository {
 
   @override
   _i4.Future<_i2.Either<_i5.Failure, void>> add(
-    _i5.EventInfo<_i5.EventData>? event,
+    _i6.EventInfo<_i7.EventData>? event,
     String? pool,
   ) =>
       (super.noSuchMethod(
@@ -146,25 +150,25 @@ class MockEventRepository extends _i1.Mock implements _i3.EventRepository {
       ) as _i4.Future<_i2.Either<_i5.Failure, void>>);
 
   @override
-  _i4.Future<_i2.Either<_i5.Failure, List<_i6.EventStub>>> list(String? pool) =>
+  _i4.Future<_i2.Either<_i5.Failure, List<_i8.EventStub>>> list(String? pool) =>
       (super.noSuchMethod(
         Invocation.method(
           #list,
           [pool],
         ),
         returnValue:
-            _i4.Future<_i2.Either<_i5.Failure, List<_i6.EventStub>>>.value(
-                _FakeEither_0<_i5.Failure, List<_i6.EventStub>>(
+            _i4.Future<_i2.Either<_i5.Failure, List<_i8.EventStub>>>.value(
+                _FakeEither_0<_i5.Failure, List<_i8.EventStub>>(
           this,
           Invocation.method(
             #list,
             [pool],
           ),
         )),
-      ) as _i4.Future<_i2.Either<_i5.Failure, List<_i6.EventStub>>>);
+      ) as _i4.Future<_i2.Either<_i5.Failure, List<_i8.EventStub>>>);
 
   @override
-  _i4.Future<_i2.Either<_i5.Failure, List<_i5.EventModel>>> listEvents(
+  _i4.Future<_i2.Either<_i5.Failure, List<_i9.EventModel>>> listEvents(
           String? pool) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -172,35 +176,35 @@ class MockEventRepository extends _i1.Mock implements _i3.EventRepository {
           [pool],
         ),
         returnValue:
-            _i4.Future<_i2.Either<_i5.Failure, List<_i5.EventModel>>>.value(
-                _FakeEither_0<_i5.Failure, List<_i5.EventModel>>(
+            _i4.Future<_i2.Either<_i5.Failure, List<_i9.EventModel>>>.value(
+                _FakeEither_0<_i5.Failure, List<_i9.EventModel>>(
           this,
           Invocation.method(
             #listEvents,
             [pool],
           ),
         )),
-      ) as _i4.Future<_i2.Either<_i5.Failure, List<_i5.EventModel>>>);
+      ) as _i4.Future<_i2.Either<_i5.Failure, List<_i9.EventModel>>>);
 
   @override
-  _i4.Future<_i2.Either<_i5.Failure, _i5.EventModel>> get(String? eventId) =>
+  _i4.Future<_i2.Either<_i5.Failure, _i9.EventModel>> get(String? eventId) =>
       (super.noSuchMethod(
         Invocation.method(
           #get,
           [eventId],
         ),
-        returnValue: _i4.Future<_i2.Either<_i5.Failure, _i5.EventModel>>.value(
-            _FakeEither_0<_i5.Failure, _i5.EventModel>(
+        returnValue: _i4.Future<_i2.Either<_i5.Failure, _i9.EventModel>>.value(
+            _FakeEither_0<_i5.Failure, _i9.EventModel>(
           this,
           Invocation.method(
             #get,
             [eventId],
           ),
         )),
-      ) as _i4.Future<_i2.Either<_i5.Failure, _i5.EventModel>>);
+      ) as _i4.Future<_i2.Either<_i5.Failure, _i9.EventModel>>);
 
   @override
-  _i4.Future<_i2.Either<_i5.Failure, void>> markApplied(_i6.EventStub? event) =>
+  _i4.Future<_i2.Either<_i5.Failure, void>> markApplied(_i8.EventStub? event) =>
       (super.noSuchMethod(
         Invocation.method(
           #markApplied,
@@ -218,7 +222,7 @@ class MockEventRepository extends _i1.Mock implements _i3.EventRepository {
 
   @override
   _i4.Future<_i2.Either<_i5.Failure, void>> markAppliedList(
-          List<_i6.EventStub>? events) =>
+          List<_i8.EventStub>? events) =>
       (super.noSuchMethod(
         Invocation.method(
           #markAppliedList,
@@ -294,7 +298,7 @@ class MockEventRepository extends _i1.Mock implements _i3.EventRepository {
       ) as _i4.Future<_i2.Either<_i5.Failure, String>>);
 
   @override
-  _i4.Future<_i2.Either<_i5.Failure, List<_i7.StreamHash>>> listStreamHashes(
+  _i4.Future<_i2.Either<_i5.Failure, List<_i10.StreamHash>>> listStreamHashes(
     String? pool,
     String? streamId,
   ) =>
@@ -307,8 +311,8 @@ class MockEventRepository extends _i1.Mock implements _i3.EventRepository {
           ],
         ),
         returnValue:
-            _i4.Future<_i2.Either<_i5.Failure, List<_i7.StreamHash>>>.value(
-                _FakeEither_0<_i5.Failure, List<_i7.StreamHash>>(
+            _i4.Future<_i2.Either<_i5.Failure, List<_i10.StreamHash>>>.value(
+                _FakeEither_0<_i5.Failure, List<_i10.StreamHash>>(
           this,
           Invocation.method(
             #listStreamHashes,
@@ -318,5 +322,5 @@ class MockEventRepository extends _i1.Mock implements _i3.EventRepository {
             ],
           ),
         )),
-      ) as _i4.Future<_i2.Either<_i5.Failure, List<_i7.StreamHash>>>);
+      ) as _i4.Future<_i2.Either<_i5.Failure, List<_i10.StreamHash>>>);
 }
