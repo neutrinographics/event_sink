@@ -45,7 +45,7 @@ class EventRemoteDataSourceImpl implements EventRemoteDataSource {
         host,
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer $token",
+          "Authentication-Token": token ?? "",
         },
         body: json.encode(
           {
@@ -84,7 +84,7 @@ class EventRemoteDataSourceImpl implements EventRemoteDataSource {
         host,
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer $token",
+          "Authentication-Token": token ?? "",
         },
       );
       if (response.statusCode != 200) {
