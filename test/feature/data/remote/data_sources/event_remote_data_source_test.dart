@@ -38,7 +38,7 @@ void main() {
     final tBody = fixture('remote_events.json');
     final tHeaders = {
       "Content-Type": "application/json",
-      "Authorization": "Bearer $tToken",
+      "Authentication-Token": tToken
     };
     final tResponse = ResponseImpl(tBody, 201);
 
@@ -103,7 +103,7 @@ void main() {
     final tJsonEvents = json.decode(tBody);
     final tHeaders = {
       "Content-Type": "application/json",
-      "Authorization": "Bearer $tToken",
+      "Authentication-Token": tToken
     };
     final tResponse = ResponseImpl(tBody, 200);
 
