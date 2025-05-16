@@ -62,12 +62,8 @@ mixin _$EventModel {
   @HiveField(9)
   Map<String, dynamic> get data => throw _privateConstructorUsedError;
 
-  /// Serializes this EventModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of EventModel
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $EventModelCopyWith<EventModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -101,8 +97,6 @@ class _$EventModelCopyWithImpl<$Res, $Val extends EventModel>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of EventModel
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -191,8 +185,6 @@ class __$$EventModelImplCopyWithImpl<$Res>
       _$EventModelImpl _value, $Res Function(_$EventModelImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of EventModel
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -366,7 +358,7 @@ class _$EventModelImpl extends _EventModel {
             const DeepCollectionEquality().equals(other._data, _data));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -381,9 +373,7 @@ class _$EventModelImpl extends _EventModel {
       createdAt,
       const DeepCollectionEquality().hash(_data));
 
-  /// Create a copy of EventModel
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$EventModelImplCopyWith<_$EventModelImpl> get copyWith =>
@@ -417,62 +407,60 @@ abstract class _EventModel extends EventModel {
   factory _EventModel.fromJson(Map<String, dynamic> json) =
       _$EventModelImpl.fromJson;
 
-  /// The unique identifier for the event.
   @override
+
+  /// The unique identifier for the event.
   @JsonKey(name: 'event_id')
   @HiveField(0)
   String get eventId;
+  @override
 
   /// The order in which the event should be applied.
-  @override
   @JsonKey(name: 'sort_order')
   @HiveField(1)
   int get order;
+  @override
 
   /// List of remote adapters that have synced this event.
-  @override
   @HiveField(2)
   List<String> get synced;
+  @override
 
   /// Indicates the event has already been applied to the local aggregate.
-  @override
   @HiveField(3)
   bool get applied;
+  @override
 
   /// The ID of the stream being manipulated by this event.
-  @override
   @JsonKey(name: 'stream_id')
   @HiveField(4)
   String get streamId;
+  @override
 
   /// The version of the stream's state.
-  @override
   @HiveField(5)
   int get version;
+  @override
 
   /// The name of the event.
-  @override
   @HiveField(6)
   String get name;
+  @override
 
   /// The pool to which the event belongs.
-  @override
   @HiveField(7)
   String get pool;
   @override
   @JsonKey(name: 'created_at')
   @HiveField(8)
   DateTime get createdAt;
+  @override
 
   /// Custom event data
-  @override
   @HiveField(9)
   Map<String, dynamic> get data;
-
-  /// Create a copy of EventModel
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$EventModelImplCopyWith<_$EventModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

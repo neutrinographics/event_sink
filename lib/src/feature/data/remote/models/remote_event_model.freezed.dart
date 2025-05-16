@@ -48,12 +48,8 @@ mixin _$RemoteEventModel {
   @JsonKey(name: 'created_at')
   DateTime get createdAt => throw _privateConstructorUsedError;
 
-  /// Serializes this RemoteEventModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of RemoteEventModel
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $RemoteEventModelCopyWith<RemoteEventModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -84,8 +80,6 @@ class _$RemoteEventModelCopyWithImpl<$Res, $Val extends RemoteEventModel>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of RemoteEventModel
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -156,8 +150,6 @@ class __$$RemoteEventModelImplCopyWithImpl<$Res>
       $Res Function(_$RemoteEventModelImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of RemoteEventModel
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -281,14 +273,12 @@ class _$RemoteEventModelImpl implements _RemoteEventModel {
                 other.createdAt == createdAt));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, eventId, streamId, order,
       version, name, const DeepCollectionEquality().hash(_data), createdAt);
 
-  /// Create a copy of RemoteEventModel
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$RemoteEventModelImplCopyWith<_$RemoteEventModelImpl> get copyWith =>
@@ -317,45 +307,43 @@ abstract class _RemoteEventModel implements RemoteEventModel {
   factory _RemoteEventModel.fromJson(Map<String, dynamic> json) =
       _$RemoteEventModelImpl.fromJson;
 
-  /// The unique ID of this event
   @override
+
+  /// The unique ID of this event
   @JsonKey(name: 'event_id')
   String get eventId;
+  @override
 
   /// The ID of the stream affected by this event.
-  @override
   @JsonKey(name: 'stream_id')
   String get streamId;
+  @override
 
   /// The order in which the event should be applied
-  @override
   @JsonKey(name: 'sort_order')
   int get order;
+  @override
 
   /// The version of the stream's state.
   /// This is effectively the number of events that have been added to the
   /// stream indicated by the [streamId].
-  @override
   int get version;
+  @override
 
   /// The name of the event
-  @override
   @JsonKey(name: 'action_type')
   String get name;
+  @override
 
   /// Custom event data
-  @override
   Map<String, dynamic> get data;
+  @override
 
   /// The time when the event was created on the server
-  @override
   @JsonKey(name: 'created_at')
   DateTime get createdAt;
-
-  /// Create a copy of RemoteEventModel
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$RemoteEventModelImplCopyWith<_$RemoteEventModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

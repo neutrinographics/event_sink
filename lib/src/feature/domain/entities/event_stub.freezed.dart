@@ -34,12 +34,13 @@ mixin _$EventStub {
   /// Indicates the event has already been applied to the aggregate.
   bool get applied => throw _privateConstructorUsedError;
 
+  /// The time when the event was created.
+  DateTime get createdAt => throw _privateConstructorUsedError;
+
   /// The data needed to perform the action
   Map<String, dynamic> get data => throw _privateConstructorUsedError;
 
-  /// Create a copy of EventStub
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $EventStubCopyWith<EventStub> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -56,6 +57,7 @@ abstract class $EventStubCopyWith<$Res> {
       String pool,
       int version,
       bool applied,
+      DateTime createdAt,
       Map<String, dynamic> data});
 }
 
@@ -69,8 +71,6 @@ class _$EventStubCopyWithImpl<$Res, $Val extends EventStub>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of EventStub
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -80,6 +80,7 @@ class _$EventStubCopyWithImpl<$Res, $Val extends EventStub>
     Object? pool = null,
     Object? version = null,
     Object? applied = null,
+    Object? createdAt = null,
     Object? data = null,
   }) {
     return _then(_value.copyWith(
@@ -107,6 +108,10 @@ class _$EventStubCopyWithImpl<$Res, $Val extends EventStub>
           ? _value.applied
           : applied // ignore: cast_nullable_to_non_nullable
               as bool,
+      createdAt: null == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,
       data: null == data
           ? _value.data
           : data // ignore: cast_nullable_to_non_nullable
@@ -130,6 +135,7 @@ abstract class _$$EventStubImplCopyWith<$Res>
       String pool,
       int version,
       bool applied,
+      DateTime createdAt,
       Map<String, dynamic> data});
 }
 
@@ -141,8 +147,6 @@ class __$$EventStubImplCopyWithImpl<$Res>
       _$EventStubImpl _value, $Res Function(_$EventStubImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of EventStub
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -152,6 +156,7 @@ class __$$EventStubImplCopyWithImpl<$Res>
     Object? pool = null,
     Object? version = null,
     Object? applied = null,
+    Object? createdAt = null,
     Object? data = null,
   }) {
     return _then(_$EventStubImpl(
@@ -179,6 +184,10 @@ class __$$EventStubImplCopyWithImpl<$Res>
           ? _value.applied
           : applied // ignore: cast_nullable_to_non_nullable
               as bool,
+      createdAt: null == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,
       data: null == data
           ? _value._data
           : data // ignore: cast_nullable_to_non_nullable
@@ -197,6 +206,7 @@ class _$EventStubImpl implements _EventStub {
       required this.pool,
       required this.version,
       required this.applied,
+      required this.createdAt,
       required final Map<String, dynamic> data})
       : _data = data;
 
@@ -224,6 +234,10 @@ class _$EventStubImpl implements _EventStub {
   @override
   final bool applied;
 
+  /// The time when the event was created.
+  @override
+  final DateTime createdAt;
+
   /// The data needed to perform the action
   final Map<String, dynamic> _data;
 
@@ -237,7 +251,7 @@ class _$EventStubImpl implements _EventStub {
 
   @override
   String toString() {
-    return 'EventStub(eventId: $eventId, streamId: $streamId, name: $name, pool: $pool, version: $version, applied: $applied, data: $data)';
+    return 'EventStub(eventId: $eventId, streamId: $streamId, name: $name, pool: $pool, version: $version, applied: $applied, createdAt: $createdAt, data: $data)';
   }
 
   @override
@@ -252,16 +266,16 @@ class _$EventStubImpl implements _EventStub {
             (identical(other.pool, pool) || other.pool == pool) &&
             (identical(other.version, version) || other.version == version) &&
             (identical(other.applied, applied) || other.applied == applied) &&
+            (identical(other.createdAt, createdAt) ||
+                other.createdAt == createdAt) &&
             const DeepCollectionEquality().equals(other._data, _data));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, eventId, streamId, name, pool,
-      version, applied, const DeepCollectionEquality().hash(_data));
+      version, applied, createdAt, const DeepCollectionEquality().hash(_data));
 
-  /// Create a copy of EventStub
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$EventStubImplCopyWith<_$EventStubImpl> get copyWith =>
@@ -276,40 +290,43 @@ abstract class _EventStub implements EventStub {
       required final String pool,
       required final int version,
       required final bool applied,
+      required final DateTime createdAt,
       required final Map<String, dynamic> data}) = _$EventStubImpl;
 
-  /// The local ID of the event.
   @override
+
+  /// The local ID of the event.
   String get eventId;
+  @override
 
   /// The id of the stream being modified
-  @override
   String get streamId;
+  @override
 
   /// The name of the event
-  @override
   String get name;
+  @override
 
   /// Pool to which the event belongs
-  @override
   String get pool;
+  @override
 
   /// The stream version
-  @override
   int get version;
+  @override
 
   /// Indicates the event has already been applied to the aggregate.
-  @override
   bool get applied;
+  @override
+
+  /// The time when the event was created.
+  DateTime get createdAt;
+  @override
 
   /// The data needed to perform the action
-  @override
   Map<String, dynamic> get data;
-
-  /// Create a copy of EventStub
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$EventStubImplCopyWith<_$EventStubImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

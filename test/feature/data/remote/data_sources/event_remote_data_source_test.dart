@@ -32,6 +32,7 @@ void main() {
       eventId: 'event-id',
       streamId: tEvent.streamId,
       version: tEvent.version,
+      createdAt: tEvent.createdAt,
       name: tEvent.name,
       data: tEvent.data,
     );

@@ -59,7 +59,7 @@ class EventModel extends HiveObject with _$EventModel {
     return EventModel(
       eventId: remoteEvent.eventId,
       applied: false,
-      createdAt: DateTime.now(),
+      createdAt: remoteEvent.createdAt,
       streamId: remoteEvent.streamId,
       version: remoteEvent.version,
       synced: [remoteAdapterName],
@@ -87,6 +87,7 @@ class EventModel extends HiveObject with _$EventModel {
       eventId: eventId,
       streamId: streamId,
       version: version,
+      createdAt: createdAt,
       name: name,
       data: data,
     );
@@ -97,6 +98,7 @@ class EventModel extends HiveObject with _$EventModel {
       eventId: eventId,
       version: version,
       streamId: streamId,
+      createdAt: createdAt,
       data: data,
       applied: applied,
       name: name,

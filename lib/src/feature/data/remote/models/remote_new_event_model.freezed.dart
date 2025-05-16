@@ -37,15 +37,15 @@ mixin _$RemoteNewEventModel {
   @JsonKey(name: 'action_type')
   String get name => throw _privateConstructorUsedError;
 
+  /// The time when the event was created.
+  @JsonKey(name: 'created_at')
+  DateTime get createdAt => throw _privateConstructorUsedError;
+
   /// Custom event data
   Map<String, dynamic> get data => throw _privateConstructorUsedError;
 
-  /// Serializes this RemoteNewEventModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of RemoteNewEventModel
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $RemoteNewEventModelCopyWith<RemoteNewEventModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -61,6 +61,7 @@ abstract class $RemoteNewEventModelCopyWith<$Res> {
       @JsonKey(name: 'stream_id') String streamId,
       int version,
       @JsonKey(name: 'action_type') String name,
+      @JsonKey(name: 'created_at') DateTime createdAt,
       Map<String, dynamic> data});
 }
 
@@ -74,8 +75,6 @@ class _$RemoteNewEventModelCopyWithImpl<$Res, $Val extends RemoteNewEventModel>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of RemoteNewEventModel
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -83,6 +82,7 @@ class _$RemoteNewEventModelCopyWithImpl<$Res, $Val extends RemoteNewEventModel>
     Object? streamId = null,
     Object? version = null,
     Object? name = null,
+    Object? createdAt = null,
     Object? data = null,
   }) {
     return _then(_value.copyWith(
@@ -102,6 +102,10 @@ class _$RemoteNewEventModelCopyWithImpl<$Res, $Val extends RemoteNewEventModel>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
+      createdAt: null == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,
       data: null == data
           ? _value.data
           : data // ignore: cast_nullable_to_non_nullable
@@ -123,6 +127,7 @@ abstract class _$$RemoteNewEventModelImplCopyWith<$Res>
       @JsonKey(name: 'stream_id') String streamId,
       int version,
       @JsonKey(name: 'action_type') String name,
+      @JsonKey(name: 'created_at') DateTime createdAt,
       Map<String, dynamic> data});
 }
 
@@ -134,8 +139,6 @@ class __$$RemoteNewEventModelImplCopyWithImpl<$Res>
       $Res Function(_$RemoteNewEventModelImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of RemoteNewEventModel
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -143,6 +146,7 @@ class __$$RemoteNewEventModelImplCopyWithImpl<$Res>
     Object? streamId = null,
     Object? version = null,
     Object? name = null,
+    Object? createdAt = null,
     Object? data = null,
   }) {
     return _then(_$RemoteNewEventModelImpl(
@@ -162,6 +166,10 @@ class __$$RemoteNewEventModelImplCopyWithImpl<$Res>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
+      createdAt: null == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,
       data: null == data
           ? _value._data
           : data // ignore: cast_nullable_to_non_nullable
@@ -178,6 +186,7 @@ class _$RemoteNewEventModelImpl implements _RemoteNewEventModel {
       @JsonKey(name: 'stream_id') required this.streamId,
       required this.version,
       @JsonKey(name: 'action_type') required this.name,
+      @JsonKey(name: 'created_at') required this.createdAt,
       required final Map<String, dynamic> data})
       : _data = data;
 
@@ -205,6 +214,11 @@ class _$RemoteNewEventModelImpl implements _RemoteNewEventModel {
   @JsonKey(name: 'action_type')
   final String name;
 
+  /// The time when the event was created.
+  @override
+  @JsonKey(name: 'created_at')
+  final DateTime createdAt;
+
   /// Custom event data
   final Map<String, dynamic> _data;
 
@@ -218,7 +232,7 @@ class _$RemoteNewEventModelImpl implements _RemoteNewEventModel {
 
   @override
   String toString() {
-    return 'RemoteNewEventModel(eventId: $eventId, streamId: $streamId, version: $version, name: $name, data: $data)';
+    return 'RemoteNewEventModel(eventId: $eventId, streamId: $streamId, version: $version, name: $name, createdAt: $createdAt, data: $data)';
   }
 
   @override
@@ -231,17 +245,17 @@ class _$RemoteNewEventModelImpl implements _RemoteNewEventModel {
                 other.streamId == streamId) &&
             (identical(other.version, version) || other.version == version) &&
             (identical(other.name, name) || other.name == name) &&
+            (identical(other.createdAt, createdAt) ||
+                other.createdAt == createdAt) &&
             const DeepCollectionEquality().equals(other._data, _data));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, eventId, streamId, version, name,
-      const DeepCollectionEquality().hash(_data));
+      createdAt, const DeepCollectionEquality().hash(_data));
 
-  /// Create a copy of RemoteNewEventModel
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$RemoteNewEventModelImplCopyWith<_$RemoteNewEventModelImpl> get copyWith =>
@@ -262,40 +276,44 @@ abstract class _RemoteNewEventModel implements RemoteNewEventModel {
       @JsonKey(name: 'stream_id') required final String streamId,
       required final int version,
       @JsonKey(name: 'action_type') required final String name,
+      @JsonKey(name: 'created_at') required final DateTime createdAt,
       required final Map<String, dynamic> data}) = _$RemoteNewEventModelImpl;
 
   factory _RemoteNewEventModel.fromJson(Map<String, dynamic> json) =
       _$RemoteNewEventModelImpl.fromJson;
 
-  /// The unique ID of this event
   @override
+
+  /// The unique ID of this event
   @JsonKey(name: 'event_id')
   String get eventId;
+  @override
 
   /// The ID of the stream affected by this event.
-  @override
   @JsonKey(name: 'stream_id')
   String get streamId;
+  @override
 
   /// The version of the stream's state.
   /// This is effectively the number of events that have been added to the
   /// stream indicated by the [streamId].
-  @override
   int get version;
+  @override
 
   /// The name of the event
-  @override
   @JsonKey(name: 'action_type')
   String get name;
+  @override
+
+  /// The time when the event was created.
+  @JsonKey(name: 'created_at')
+  DateTime get createdAt;
+  @override
 
   /// Custom event data
-  @override
   Map<String, dynamic> get data;
-
-  /// Create a copy of RemoteNewEventModel
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$RemoteNewEventModelImplCopyWith<_$RemoteNewEventModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
