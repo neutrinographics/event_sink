@@ -60,7 +60,7 @@ class EventRepositoryImpl extends EventRepository {
         remoteEvent: e,
         pool: pool,
         remoteAdapterName: remoteAdapterName,
-      ).copyWith(createdAt: timeInfo.now());
+      );
       final resolvedEvent = await _resolveEvent(remoteEvent, remoteAdapterName);
       eventsToAdd.add(resolvedEvent);
     }
@@ -117,10 +117,7 @@ class EventRepositoryImpl extends EventRepository {
           remoteEvent,
           remoteAdapterName,
         );
-        return resolvedEvent.copyWith(
-          applied: isApplied,
-          createdAt: timeInfo.now(),
-        );
+        return resolvedEvent.copyWith(applied: isApplied);
       });
       final remotePushedEvents = await Future.wait(pushEvents);
       eventsToAdd.addAll(remotePushedEvents);
