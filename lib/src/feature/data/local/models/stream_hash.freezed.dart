@@ -19,9 +19,7 @@ mixin _$StreamHash {
   String get eventId => throw _privateConstructorUsedError;
   String get hash => throw _privateConstructorUsedError;
 
-  /// Create a copy of StreamHash
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $StreamHashCopyWith<StreamHash> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -45,8 +43,6 @@ class _$StreamHashCopyWithImpl<$Res, $Val extends StreamHash>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of StreamHash
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -85,8 +81,6 @@ class __$$StreamHashImplCopyWithImpl<$Res>
       _$StreamHashImpl _value, $Res Function(_$StreamHashImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of StreamHash
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -133,9 +127,7 @@ class _$StreamHashImpl implements _StreamHash {
   @override
   int get hashCode => Object.hash(runtimeType, eventId, hash);
 
-  /// Create a copy of StreamHash
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$StreamHashImplCopyWith<_$StreamHashImpl> get copyWith =>
@@ -151,11 +143,8 @@ abstract class _StreamHash implements StreamHash {
   String get eventId;
   @override
   String get hash;
-
-  /// Create a copy of StreamHash
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$StreamHashImplCopyWith<_$StreamHashImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

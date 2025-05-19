@@ -25,6 +25,9 @@ class EventStub with _$EventStub {
     /// Indicates the event has already been applied to the aggregate.
     required bool applied,
 
+    /// The time when the event was created.
+    required DateTime createdAt,
+
     /// The data needed to perform the action
     required Map<String, dynamic> data,
   }) = _EventStub;

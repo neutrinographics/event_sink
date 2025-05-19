@@ -13,6 +13,7 @@ _$RemoteNewEventModelImpl _$$RemoteNewEventModelImplFromJson(
       streamId: json['stream_id'] as String,
       version: (json['version'] as num).toInt(),
       name: json['action_type'] as String,
+      createdAt: DateTime.parse(json['created_at'] as String),
       data: json['data'] as Map<String, dynamic>,
     );
 
@@ -23,5 +24,6 @@ Map<String, dynamic> _$$RemoteNewEventModelImplToJson(
       'stream_id': instance.streamId,
       'version': instance.version,
       'action_type': instance.name,
+      'created_at': instance.createdAt.toIso8601String(),
       'data': instance.data,
     };

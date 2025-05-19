@@ -23,6 +23,9 @@ class RemoteNewEventModel with _$RemoteNewEventModel {
     /// The name of the event
     @JsonKey(name: 'action_type') required String name,
 
+    /// The time when the event was created.
+    @JsonKey(name: 'created_at') required DateTime createdAt,
+
     /// Custom event data
     required Map<String, dynamic> data,
   }) = _RemoteNewEventModel;
