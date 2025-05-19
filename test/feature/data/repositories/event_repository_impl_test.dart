@@ -137,7 +137,7 @@ void main() {
       },
     );
 
-    test('should cache remote event if it doesn\'t exists in the cache',
+    test('should cache remote event if it does not exists in the cache',
         () async {
       // arrange
       when(mockEventRemoteAdapter.pull(any, any))
@@ -160,7 +160,7 @@ void main() {
             remoteEvent: e,
             pool: tPool,
             remoteAdapterName: tFirstAdapter,
-          ).copyWith(createdAt: tTime);
+          );
         },
       ).toList();
       verify(mockEventLocalDataSource.addEvents(tExpectedEvents));
