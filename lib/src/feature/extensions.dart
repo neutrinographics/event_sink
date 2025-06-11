@@ -26,8 +26,6 @@ extension EventModelX on EventModel {
     final eventsJson = jsonEncode(
       {
         'eventId': eventId,
-        'version': version,
-        'order': order,
       },
     );
     return generator.generateHash(eventsJson);
@@ -39,8 +37,6 @@ extension EventModelsX on Iterable<EventModel> {
     final eventsJson = jsonEncode(
       map((e) => {
             'eventId': e.eventId,
-            'version': e.version,
-            'order': e.order,
           }).toList(),
     );
     return generator.generateHash(eventsJson);
