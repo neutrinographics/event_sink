@@ -423,8 +423,6 @@ void main() {
       final tExpectedHashParam = jsonEncode([
         {
           'eventId': tEventModel.eventId,
-          'version': tEventModel.version,
-          'order': tEventModel.order,
         }
       ]);
       expect(result, tHash);

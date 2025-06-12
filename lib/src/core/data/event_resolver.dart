@@ -41,6 +41,7 @@ class EventResolverImpl implements EventResolver {
     )) {
       return eventFromAdapter.copyWith(
         synced: syncedAdapters.toList(),
+        applied: existingEvent.applied,
       );
     } else {
       return existingEvent.copyWith(
