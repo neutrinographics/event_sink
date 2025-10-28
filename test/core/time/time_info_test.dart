@@ -7,7 +7,7 @@ import 'package:mockito/mockito.dart';
 import 'time_info_test.mocks.dart';
 
 @GenerateMocks([Clock])
-main() {
+void main() {
   late TimeInfoImpl timeInfo;
   late MockClock mockClock;
 
