@@ -1,9 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:event_sink/src/core/error/failure.dart';
-import 'package:event_sink/src/feature/domain/entities/event_info.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
 
 /// Tests that the result is a failure of type [T].
 /// Failures are always passed to the [Left] side of an [Either] object,
@@ -27,7 +25,7 @@ void expectFailure<F extends Failure>(Either result) {
 /// which causes the test to fail even if the lists contain the same data.
 /// This method gets around that be testing the equality of the [Either]
 /// separately from it's list contents.
-expectEitherEqualsList<T extends Either>(
+void expectEitherEqualsList<T extends Either>(
     Either<dynamic, dynamic> result, List<dynamic> expected) {
   result.fold(
     (left) {
@@ -44,7 +42,7 @@ expectEitherEqualsList<T extends Either>(
 /// Tests for [events] to be created in the order given.
 ///
 /// This ensures that no other events have been generated.
-verifyEventsInOrder(mockEventRepository, List<EventInfo> events) {
-  verifyInOrder(events.map((e) => mockEventRepository.add(e)).toList());
-  verifyNoMoreInteractions(mockEventRepository);
-}
+// void verifyEventsInOrder(mockEventRepository, List<EventInfo> events) {
+//   verifyInOrder(events.map((e) => mockEventRepository.add(e)).toList());
+//   verifyNoMoreInteractions(mockEventRepository);
+// }
