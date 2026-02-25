@@ -1,13 +1,12 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'remote_event_model.freezed.dart';
-
 part 'remote_event_model.g.dart';
 
 /// Events are small units of change that can be synchronized to the server.
 /// Events can be reduced to produce the current state of an entity in the graph.
 @freezed
-class RemoteEventModel with _$RemoteEventModel {
+abstract class RemoteEventModel with _$RemoteEventModel {
   factory RemoteEventModel({
     /// The unique ID of this event
     @JsonKey(name: 'event_id') required String eventId,
