@@ -3,12 +3,12 @@ import 'dart:io';
 
 import 'package:clean_cache/cache/memory_cache.dart';
 import 'package:clock/clock.dart';
+import 'package:event_sink/hive_registrar.g.dart';
 import 'package:event_sink/src/core/data/cache.dart';
 import 'package:event_sink/src/core/data/id_generator.dart';
 import 'package:event_sink/src/core/time/time_info.dart';
 import 'package:event_sink/src/feature/data/local/data_sources/event_local_data_source.dart';
 import 'package:event_sink/src/feature/data/local/models/event_model.dart';
-import 'package:event_sink/src/feature/data/local/models/pool_model.dart';
 import 'package:event_sink/src/feature/data/remote/data_sources/event_remote_data_source.dart';
 import 'package:event_sink/src/feature/data/remote/models/remote_event_model.dart';
 import 'package:event_sink/src/feature/data/repositories/event_repository_impl.dart';
@@ -38,8 +38,7 @@ void main() {
     }
     Hive
       ..init('test/staging/hive_testing_path')
-      ..registerAdapter(EventModelImplAdapter())
-      ..registerAdapter(PoolModelImplAdapter());
+      ..registerAdapters();
     final rawEvents =
         json.decode(fixture('ephemeral/many-events.json'))['events']
             as List<dynamic>;

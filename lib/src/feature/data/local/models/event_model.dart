@@ -5,12 +5,11 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive_ce/hive.dart';
 
 part 'event_model.freezed.dart';
-
 part 'event_model.g.dart';
 
 /// Represents a event
 @freezed
-class EventModel extends HiveObject with _$EventModel {
+abstract class EventModel extends HiveObject with _$EventModel {
   EventModel._();
 
   @HiveType(typeId: 1)

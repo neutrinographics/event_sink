@@ -6,9 +6,8 @@ part of 'remote_event_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$RemoteEventModelImpl _$$RemoteEventModelImplFromJson(
-        Map<String, dynamic> json) =>
-    _$RemoteEventModelImpl(
+_RemoteEventModel _$RemoteEventModelFromJson(Map<String, dynamic> json) =>
+    _RemoteEventModel(
       eventId: json['event_id'] as String,
       streamId: json['stream_id'] as String,
       order: (json['sort_order'] as num).toInt(),
@@ -18,8 +17,7 @@ _$RemoteEventModelImpl _$$RemoteEventModelImplFromJson(
       createdAt: DateTime.parse(json['created_at'] as String),
     );
 
-Map<String, dynamic> _$$RemoteEventModelImplToJson(
-        _$RemoteEventModelImpl instance) =>
+Map<String, dynamic> _$RemoteEventModelToJson(_RemoteEventModel instance) =>
     <String, dynamic>{
       'event_id': instance.eventId,
       'stream_id': instance.streamId,

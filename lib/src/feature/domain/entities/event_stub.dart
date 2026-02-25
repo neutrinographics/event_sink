@@ -5,7 +5,7 @@ part 'event_stub.freezed.dart';
 /// Represents an [Event] that has already been cached locally.
 /// This is designed to be used when reducing events into the aggregate graph state.
 @freezed
-class EventStub with _$EventStub {
+abstract class EventStub with _$EventStub {
   factory EventStub({
     /// The local ID of the event.
     required String eventId,
