@@ -2,7 +2,7 @@ import 'package:event_sink/src/feature/data/remote/models/remote_event_model.dar
 import 'package:event_sink/src/feature/data/remote/models/remote_new_event_model.dart';
 import 'package:event_sink/src/feature/domain/entities/event_stub.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:hive/hive.dart';
+import 'package:hive_ce/hive.dart';
 
 part 'event_model.freezed.dart';
 

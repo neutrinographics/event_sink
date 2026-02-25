@@ -1,7 +1,7 @@
 import 'package:clean_cache/cache/hybrid_cache.dart';
 import 'package:clean_cache/cache/memory_cache.dart';
 import 'package:clean_cache/clean_cache.dart';
-import 'package:hive/hive.dart';
+import 'package:hive_ce/hive.dart';
 
 /// Utility to create a hybrid cache from Hive and Memory.
 Future<HybridCache<K, T>> buildHybridHiveCache<K, T>(String boxName,

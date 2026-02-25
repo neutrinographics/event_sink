@@ -14,7 +14,7 @@ import 'package:event_sink/src/feature/data/remote/models/remote_event_model.dar
 import 'package:event_sink/src/feature/data/repositories/event_repository_impl.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hive/hive.dart';
+import 'package:hive_ce/hive.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:uuid/uuid.dart';
